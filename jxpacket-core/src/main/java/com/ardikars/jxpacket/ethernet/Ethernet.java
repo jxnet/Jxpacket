@@ -17,7 +17,7 @@
 
 package com.ardikars.jxpacket.ethernet;
 
-import com.ardikars.jxpacket.MacAddress;
+import com.ardikars.jxpacket.common.MacAddress;
 import com.ardikars.jxpacket.Packet;
 import com.ardikars.jxpacket.arp.ARP;
 import com.ardikars.jxpacket.ip.IPv4;

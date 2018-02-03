@@ -17,6 +17,7 @@
 
 package com.ardikars.jxpacket;
 
+import com.ardikars.jxpacket.common.NamedNumber;
 import com.ardikars.jxpacket.ip.IPv4;
 import com.ardikars.jxpacket.ip.IPv6;
 import com.ardikars.jxpacket.util.HexUtils;

@@ -17,7 +17,7 @@
 
 package com.ardikars.jxpacket.icmp.icmpv6;
 
-import com.ardikars.jxpacket.TwoKeyMap;
+import com.ardikars.jxpacket.common.TwoKeyMap;
 import com.ardikars.jxpacket.icmp.ICMPTypeAndCode;
 
 /**

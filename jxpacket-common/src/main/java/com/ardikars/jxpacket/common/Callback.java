@@ -15,19 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket;
+package com.ardikars.jxpacket.common;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.1.5
  */
-public interface Encoder<T, V> {
+public interface Callback<T> {
 
-    /**
-     * Decode data.
-     * @param data data.
-     * @return decoded data.
-     */
-    T encode(V data);
+    void onSuccess(T value);
+
+    void onFailure(Throwable throwable);
 
 }

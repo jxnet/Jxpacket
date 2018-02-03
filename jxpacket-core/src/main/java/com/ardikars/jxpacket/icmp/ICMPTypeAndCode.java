@@ -17,9 +17,9 @@
 
 package com.ardikars.jxpacket.icmp;
 
-import com.ardikars.jxpacket.Decoder;
-import com.ardikars.jxpacket.NamedTwoKeyMap;
-import com.ardikars.jxpacket.TwoKeyMap;
+import com.ardikars.jxpacket.common.Decoder;
+import com.ardikars.jxpacket.common.NamedTwoKeyMap;
+import com.ardikars.jxpacket.common.TwoKeyMap;
 import com.ardikars.jxpacket.icmp.icmpv4.ICMPv4DestinationUnreachable;
 import com.ardikars.jxpacket.icmp.icmpv4.ICMPv4EchoReply;
 import com.ardikars.jxpacket.icmp.icmpv4.ICMPv4EchoRequest;

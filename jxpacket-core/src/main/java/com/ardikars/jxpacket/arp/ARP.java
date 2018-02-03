@@ -17,9 +17,9 @@
 
 package com.ardikars.jxpacket.arp;
 
-import com.ardikars.jxpacket.DataLinkType;
-import com.ardikars.jxpacket.Inet4Address;
-import com.ardikars.jxpacket.MacAddress;
+import com.ardikars.jxpacket.common.DataLinkType;
+import com.ardikars.jxpacket.common.Inet4Address;
+import com.ardikars.jxpacket.common.MacAddress;
 import com.ardikars.jxpacket.Packet;
 import com.ardikars.jxpacket.ProtocolType;
 

@@ -17,7 +17,7 @@
 
 package com.ardikars.jxpacket.ndp;
 
-import com.ardikars.jxpacket.Inet6Address;
+import com.ardikars.jxpacket.common.Inet6Address;
 import com.ardikars.jxpacket.Packet;
 
 import java.nio.ByteBuffer;

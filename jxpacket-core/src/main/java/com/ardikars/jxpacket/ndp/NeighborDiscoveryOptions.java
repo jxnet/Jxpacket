@@ -17,7 +17,7 @@
 
 package com.ardikars.jxpacket.ndp;
 
-import com.ardikars.jxpacket.NamedNumber;
+import com.ardikars.jxpacket.common.NamedNumber;
 import com.ardikars.jxpacket.Packet;
 
 import java.nio.ByteBuffer;

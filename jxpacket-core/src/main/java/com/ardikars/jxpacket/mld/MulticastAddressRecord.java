@@ -1,6 +1,6 @@
 package com.ardikars.jxpacket.mld;
 
-import com.ardikars.jxpacket.Inet6Address;
+import com.ardikars.jxpacket.common.Inet6Address;
 
 import java.nio.ByteBuffer;
 

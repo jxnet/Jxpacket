@@ -17,7 +17,7 @@
 
 package com.ardikars.jxpacket.ip;
 
-import com.ardikars.jxpacket.Inet4Address;
+import com.ardikars.jxpacket.common.Inet4Address;
 import com.ardikars.jxpacket.tcp.TCP;
 import com.ardikars.jxpacket.udp.UDP;
 import com.ardikars.jxpacket.Packet;

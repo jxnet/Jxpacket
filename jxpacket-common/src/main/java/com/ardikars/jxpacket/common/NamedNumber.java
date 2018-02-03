@@ -15,28 +15,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket;
+package com.ardikars.jxpacket.common;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.1.0
  */
-public abstract class NamedTwoKeyMap<T, U, V extends NamedTwoKeyMap<T, U, ?>> {
+public abstract class NamedNumber<T extends Number, U extends NamedNumber<T, ?>> {
 
-    private final TwoKeyMap<T, U> key;
+    private final T value;
     private final String name;
 
-    public NamedTwoKeyMap(T firstKey, U secondKey, String name) {
-        this.key = TwoKeyMap.newInstance(firstKey, secondKey);
+    protected NamedNumber(T value, String name) {
+        this.value = value;
         this.name = name;
     }
 
-    public TwoKeyMap<T, U> getKey() {
-        return key;
+    public T getValue() {
+        return this.value;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -47,22 +47,23 @@ public abstract class NamedTwoKeyMap<T, U, V extends NamedTwoKeyMap<T, U, ?>> {
         if (obj.getClass() != this.getClass()) {
             return false;
         }
-        if (!(obj instanceof NamedTwoKeyMap)) {
+        if (!(obj instanceof NamedNumber)) {
             return false;
         }
-        return this.key.equals(this.getClass().cast(obj).getKey());
+        return this.value.equals(this.getClass().cast(obj).getValue());
     }
 
     @Override
     public int hashCode() {
-        return 17 * 37 + this.getKey().hashCode();
+        return value.hashCode();
     }
 
     @Override
     public String toString() {
-        return new StringBuilder()
-                .append("[Key: ").append(getKey().toString())
-                .append(", Name: ").append(this.getName().toString())
+        return new StringBuffer("[Value: ")
+                .append(this.value.toString())
+                .append(", Name: ")
+                .append(this.name.toString())
                 .append("]").toString();
     }
 

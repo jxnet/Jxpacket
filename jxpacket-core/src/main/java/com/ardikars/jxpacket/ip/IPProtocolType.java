@@ -17,8 +17,8 @@
 
 package com.ardikars.jxpacket.ip;
 
-import com.ardikars.jxpacket.Decoder;
-import com.ardikars.jxpacket.NamedNumber;
+import com.ardikars.jxpacket.common.Decoder;
+import com.ardikars.jxpacket.common.NamedNumber;
 import com.ardikars.jxpacket.icmp.ICMPv4;
 import com.ardikars.jxpacket.icmp.ICMPv6;
 import com.ardikars.jxpacket.ip.ipv6.EncapsulatingSecurityPayload;

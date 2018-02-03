@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket;
+package com.ardikars.jxpacket.common;
 
 /**
  * @author Ardika Rommy Sanjaya

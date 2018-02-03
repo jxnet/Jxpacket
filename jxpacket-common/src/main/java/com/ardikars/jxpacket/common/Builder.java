@@ -15,16 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket;
+package com.ardikars.jxpacket.common;
 
 /**
  * @author Ardika Rommy Sanjaya
- * @since 1.1.5
+ * @since 1.1.0
  */
-public interface Callback<T> {
+public interface Builder<T> {
 
-    void onSuccess(T value);
-
-    void onFailure(Throwable throwable);
+    /**
+     * Build object.
+     * @return object.
+     */
+    T build();
 
 }
