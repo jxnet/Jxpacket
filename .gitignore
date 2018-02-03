@@ -1,0 +1,14 @@
+/.idea
+/target
+/build
+/out
+/jxpacket-core/target
+/jxpacket-core/build
+/jxpacket-core/out
+/jxpacket-common/target
+/jxpacket-common/build
+/jxpacket-common/out
+*.log
+*~
+*.txt
+*.iml

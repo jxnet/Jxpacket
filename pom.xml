@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.ardikars</groupId>
+    <artifactId>jxpacket</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0</version>
+
+    <properties>
+        <jdk.version>1.7</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.version>3.7.0</maven.compiler.version>
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
+        <puppycrawl.version>6.18</puppycrawl.version>
+    </properties>
+
+    <modules>
+        <module>jxpacket-core</module>
+        <module>jxpacket-common</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <!--<verbose>true</verbose>-->
+                    <fork>true</fork>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <compilerVersion>${jdk.version}</compilerVersion>
+                    <compilerArgs>
+                        <!--<arg>-verbose</arg>-->
+                        <!--<arg>-Xlint:all,-options,-path</arg>-->
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven.checkstyle.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${puppycrawl.version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>verify-style</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <failOnViolation>false</failOnViolation>
+                    <failsOnError>true</failsOnError>
+                    <configLocation>.mvn/resources/checkstyle/checkstyle.xml</configLocation>
+                    <propertiesLocation>.mvn/resources/checkstyle/checkstyle.properties</propertiesLocation>
+                    <suppressionsLocation>.mvn/resources/checkstyle/suppression.xml</suppressionsLocation>
+                    <suppressionsFileExpression>suppressionFile</suppressionsFileExpression>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
