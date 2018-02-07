@@ -16,6 +16,8 @@
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
         <maven.compiler.target>${jdk.version}</maven.compiler.target>
         <maven.checkstyle.version>3.0.0</maven.checkstyle.version>
+        <maven.pmd.version>3.9.0</maven.pmd.version>
+        <maven.finbugs.version>3.0.5</maven.finbugs.version>
         <puppycrawl.version>6.18</puppycrawl.version>
     </properties>
 
@@ -42,26 +44,15 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven.checkstyle.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${puppycrawl.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>verify-style</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <failOnViolation>false</failOnViolation>
@@ -72,7 +63,29 @@
                     <suppressionsFileExpression>suppressionFile</suppressionsFileExpression>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
+            </plugin>
         </plugins>
-    </build>
+    </reporting>
 
 </project>

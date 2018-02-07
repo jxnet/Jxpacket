@@ -27,6 +27,9 @@ import java.util.NoSuchElementException;
  */
 public abstract class Packet implements Iterator<Packet> {
 
+    /**
+     * Next packet.
+     */
     private Packet next = this;
 
     protected ByteBuffer nextPacket;

@@ -13,7 +13,7 @@
     To completely disable a check, just comment it out or delete it from the file.
 
     Authors: Max Vetrenko, Ruslan Diachenko, Roman Ivanov.
-    Edited by Ardika Rommy Sanjaya for Jxnet project.
+    Edited by Ardika Rommy Sanjaya for Jxpacket project.
  -->
 
 <module name = "Checker">
