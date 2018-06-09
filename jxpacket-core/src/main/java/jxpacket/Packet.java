@@ -1,83 +1,71 @@
-/**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package jxpacket;
 
-import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
+import jxpacket.common.Builder;
+import jxpacket.common.NamedNumber;
+
+import java.io.Serializable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Predicate;
 
-/**
- * @author Ardika Rommy Sanjaya
- * @since 1.1.0
- */
-public abstract class Packet implements Iterator<Packet> {
+public interface Packet extends Iterable<Packet>, Serializable {
 
-    /**
-     * Next packet.
-     */
-    private Packet next = this;
+	Packet.Header getHeader();
 
-    protected ByteBuffer nextPacket;
+	Packet getPayload();
 
-    /**
-     * Set payload.
-     * @param packet paket.
-     * @return packet.
-     */
-    public Packet setPacket(final Packet packet) {
-        return this;
-    }
+	<T extends Packet> List<T> get(Class<T> clazz);
 
-    /**
-     * Get payload.
-     * @return packet.
-     */
-    public Packet getPacket() {
-        return null;
-    }
+	<T extends Packet> List<T> get(Class<T> clazz, Predicate<Packet> predicate);
 
-    public abstract byte[] bytes();
+	<T extends Packet> boolean contains(Class<T> clazz);
 
-    /**
-     * Return packet in DirectByteBuffer.
-     * @return DirectByteBuffer.
-     */
-    public abstract ByteBuffer buffer();
+	interface Header extends Serializable {
 
+		<T extends NamedNumber> T getPayloadType();
 
-    @Override
-    public boolean hasNext() {
-        return next != null;
-    }
+		int getLength();
 
-    @Override
-    public Packet next() {
-        if (next == null) {
-            throw new NoSuchElementException();
-        }
-        Packet current = next;
-        next = current.getPacket();
-        return current;
-    }
+		ByteBuf getBuffer();
 
-    @Override
-    public void remove() {
-        // do nothing
-    }
+	}
+
+	interface Builder extends jxpacket.common.Builder<Packet, ByteBuf> {
+
+	}
+
+	class PacketIterator implements Iterator<Packet> {
+
+		private Packet next;
+
+		private Packet previous;
+
+		public PacketIterator(final Packet packet) {
+			this.next = packet;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public Packet next() {
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			previous = next;
+			next = next.getPayload();
+			return previous;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+	}
 
 }
