@@ -213,4 +213,8 @@ public class Ipv6 extends Ip {
 
 	}
 
+	public abstract static class ExtensionHeader extends PacketHeader {
+
+	}
+
 }
