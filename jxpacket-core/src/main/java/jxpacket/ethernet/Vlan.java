@@ -5,6 +5,10 @@ import io.netty.buffer.PooledByteBufAllocator;
 import jxpacket.AbstractPacket;
 import jxpacket.Packet;
 import jxpacket.ProtocolType;
+import jxpacket.common.NamedNumber;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Vlan extends AbstractPacket {
 
@@ -31,11 +35,15 @@ public class Vlan extends AbstractPacket {
 		return this.payload;
 	}
 
+	/**
+	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_802.1ad">IEEE 802.1ad</a>
+	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_802.1Q">IEEE 802.1Q</a>
+	 */
 	public static final class Header extends PacketHeader {
 
 		public static final int VLAN_HEADER_LENGTH = 4;
 
-		private byte priorityCodePoint; // 3 bit
+		private PriorityCodePoint priorityCodePoint; // 3 bit
 		private byte canonicalFormatIndicator; // 1 bit
 		private short vlanIdentifier; // 12 bit
 		private ProtocolType type;
@@ -47,8 +55,8 @@ public class Vlan extends AbstractPacket {
 			this.type = builder.type;
 		}
 
-		public int getPriorityCodePoint() {
-			return priorityCodePoint & 0x07;
+		public PriorityCodePoint getPriorityCodePoint() {
+			return priorityCodePoint;
 		}
 
 		public int getCanonicalFormatIndicator() {
@@ -79,7 +87,7 @@ public class Vlan extends AbstractPacket {
 			int index = 0;
 			buffer.setShort(index, ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
 			index += 2;
-			buffer.setShort(index, (((priorityCodePoint << 13) & 0x07)
+			buffer.setShort(index, (((priorityCodePoint.getValue() << 13) & 0x07)
 					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff)));
 			return buffer;
 		}
@@ -99,7 +107,7 @@ public class Vlan extends AbstractPacket {
 
 	public static final class Builder extends PacketBuilder {
 
-		private byte priorityCodePoint; // 3 bit
+		private PriorityCodePoint priorityCodePoint; // 3 bit
 		private byte canonicalFormatIndicator; // 1 bit
 		private short vlanIdentifier; // 12 bit
 		private ProtocolType type;
@@ -110,8 +118,8 @@ public class Vlan extends AbstractPacket {
 
 		}
 
-		public Builder priorityCodePoint(final int priorityCodePoint) {
-			this.priorityCodePoint = (byte) (priorityCodePoint & 0x07);
+		public Builder priorityCodePoint(final PriorityCodePoint priorityCodePoint) {
+			this.priorityCodePoint = priorityCodePoint;
 			return this;
 		}
 
@@ -147,13 +155,68 @@ public class Vlan extends AbstractPacket {
 			index += 2;
 			short type = buffer.getShort(index);
 			Vlan.Builder builder = new Builder();
-			builder.priorityCodePoint = (byte) (tci >> 13 & 0x07);
+			builder.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));
 			builder.canonicalFormatIndicator = (byte) (tci >> 14 & 0x01);
 			builder.vlanIdentifier = (short) (tci & 0x0fff);
 			builder.type = ProtocolType.valueOf(type);
 			int size = index + 2;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			return new Vlan(builder);
+		}
+
+	}
+
+	/**
+	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_P802.1p">IEEE P802.1p</a>
+	 */
+	public static final class PriorityCodePoint extends NamedNumber<Byte, PriorityCodePoint> {
+
+		public static final PriorityCodePoint BK
+				= new PriorityCodePoint((byte) 1, "Background (priority=0)");
+		public static final PriorityCodePoint BE
+				= new PriorityCodePoint((byte) 0, "Best effort (default)/(priority=1)");
+		public static final PriorityCodePoint EE
+				= new PriorityCodePoint((byte) 2, "Excellent effort (priority=2)");
+		public static final PriorityCodePoint CA
+				= new PriorityCodePoint((byte) 3, "Critical applications (priority=3)");
+		public static final PriorityCodePoint VI
+				= new PriorityCodePoint((byte) 4, "Video, < 100 ms latency and jitter (priority=4)");
+		public static final PriorityCodePoint VO
+				= new PriorityCodePoint((byte) 5, "Voice, < 10 ms latency and jitter (priority=5)");
+		public static final PriorityCodePoint IC
+				= new PriorityCodePoint((byte) 6, "Internetwork control (priority=6)");
+		public static final PriorityCodePoint NC
+				= new PriorityCodePoint((byte) 7, "Network control (priority=7)");
+
+		private static final Map<Byte, PriorityCodePoint> registry
+				= new HashMap<>();
+
+		protected PriorityCodePoint(Byte value, String name) {
+			super(value, name);
+		}
+
+		public static PriorityCodePoint valueOf(final byte value) {
+			PriorityCodePoint priorityCodePoint = registry.get(value);
+			if (priorityCodePoint == null) {
+				return new PriorityCodePoint((byte) -1, "UNKONWN");
+			}
+			return priorityCodePoint;
+		}
+
+		public static PriorityCodePoint register(final PriorityCodePoint priorityCodePoint) {
+			registry.put(priorityCodePoint.getValue(), priorityCodePoint);
+			return priorityCodePoint;
+		}
+
+		static {
+			registry.put(BK.getValue(), BK);
+			registry.put(BE.getValue(), BE);
+			registry.put(EE.getValue(), EE);
+			registry.put(CA.getValue(), CA);
+			registry.put(VI.getValue(), VI);
+			registry.put(VO.getValue(), VO);
+			registry.put(IC.getValue(), IC);
+			registry.put(NC.getValue(), NC);
 		}
 
 	}

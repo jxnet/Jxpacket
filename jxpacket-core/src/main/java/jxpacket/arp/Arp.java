@@ -38,6 +38,9 @@ public class Arp extends AbstractPacket {
 		return new Arp.Builder().build(buffer);
 	}
 
+	/**
+	 * @see <a href="https://tools.ietf.org/html/rfc826">Arp Header (RFC826)</a>
+	 */
 	public static final class Header implements Packet.Header {
 
 		public static final int ARP_HEADER_LENGTH = 28;

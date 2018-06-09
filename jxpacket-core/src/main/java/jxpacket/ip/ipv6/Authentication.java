@@ -28,6 +28,9 @@ public class Authentication extends AbstractPacket {
 		return payload;
 	}
 
+	/**
+	 * @see <a href="https://tools.ietf.org/html/rfc4302">Authentication Header</a>
+	 */
 	public static final class Header extends PacketHeader {
 
 		public static final byte FIXED_HEADER_LENGTH = 12; // bytes

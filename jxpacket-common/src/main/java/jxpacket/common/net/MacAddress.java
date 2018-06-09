@@ -17,9 +17,12 @@
 
 package jxpacket.common.net;
 
+import jxpacket.common.NamedNumber;
 import jxpacket.common.util.Validate;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -120,8 +123,12 @@ public final class MacAddress {
 		this.address = macAddress.toBytes();
 	}
 
+	public Oui getOui() {
+		return Oui.valueOf(this);
+	}
+
 	/**
-	 * Reuturning length of MAC Address.
+	 * Returns length of MAC Address.
 	 * @return MAC Address length.
 	 */
 	public int length() {
@@ -129,7 +136,7 @@ public final class MacAddress {
 	}
 
 	/**
-	 * Returning bytes MAC Address.
+	 * Returns bytes MAC Address.
 	 * @return bytes MAC Address.
 	 */
 	public byte[] toBytes() {
@@ -173,6 +180,24 @@ public final class MacAddress {
 		return (this.address[0] & 0x01) != 0;
 	}
 
+	/**
+	 *
+	 * @return returns true if the MAC address represented by this object is
+	 *         a globally unique address; otherwise false.
+	 */
+	public boolean isGloballyUnique() {
+		return (address[0] & 2) == 0;
+	}
+
+	/**
+	 *
+	 * @return true if the MAC address represented by this object is
+	 *         a unicast address; otherwise false.
+	 */
+	public boolean isUnicast() {
+		return (address[0] & 1) == 0;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -203,6 +228,136 @@ public final class MacAddress {
 			sb.append(hex.length() == 1 ? "0" + hex : hex);
 		}
 		return sb.toString();
+	}
+
+	public static final class Oui extends NamedNumber<Integer, Oui> {
+
+		/**
+		 * Cisco: 0x00000C
+		 */
+		public static final Oui CISCO_00000C
+				= new Oui(0x00000C, "Cisco");
+
+		/**
+		 * Fujitsu: 0x00000E
+		 */
+		public static final Oui FUJITSU_00000E
+				= new Oui(0x00000E, "Fujitsu");
+
+		/**
+		 * Hewlett-Packard: 0x080009
+		 */
+		public static final Oui HEWLETT_PACKARD_080009
+				= new Oui(0x080009, "Hewlett-Packard");
+
+		/**
+		 * Fuji-Xerox: 0x080037
+		 */
+		public static final Oui FUJI_XEROX_080037
+				= new Oui(0x080037, "Fuji-Xerox");
+
+		/**
+		 * IBM: 0x08005A
+		 */
+		public static final Oui IBM_08005A
+				= new Oui(0x08005A, "IBM");
+
+		/**
+		 * Cisco: 0x000142
+		 */
+		public static final Oui CISCO_000142
+				= new Oui(0x000142, "Cisco");
+
+		/**
+		 * Cisco: 0x000143
+		 */
+		public static final Oui CISCO_000143
+				= new Oui(0x000143, "Cisco");
+
+		/**
+		 * AlaxalA: 0x0012E2
+		 */
+		public static final Oui ALAXALA_0012E2
+				= new Oui(0x0012E2, "AlaxalA");
+
+		/**
+		 * Hitachi: 0x001F67
+		 */
+		public static final Oui Hitachi_001F67
+				= new Oui(0x001F67, "Hitachi");
+
+		/**
+		 * Hitachi Cable: 0x004066
+		 */
+		public static final Oui HITACHI_CABLE_004066
+				= new Oui(0x004066, "Hitachi Cable");
+
+		/**
+		 * Microsoft Corporation: 0x485073
+		 */
+		public static final Oui MICROSOFT_CORPORATION
+				= new Oui(0x485073, "Microsoft Corporation");
+
+		private static final Map<Integer, Oui> registry
+				= new HashMap<Integer, Oui>();
+
+		/**
+		 *
+		 * @param value value
+		 * @param name name
+		 */
+		public Oui(Integer value, String name) {
+			super(value, name);
+			if ((value & 0xFF000000) != 0) {
+				throw new IllegalArgumentException(
+						value + " is invalid value. "
+								+"value must be between 0 and 0x00FFFFFF"
+				);
+			}
+		}
+
+		/**
+		 *
+		 * @param macAddress value
+		 * @return a Oui object.
+		 */
+		public static Oui valueOf(final MacAddress macAddress) {
+			int offset = 0;
+			byte[] array = new byte[] { 0, macAddress.address[0], macAddress.address[1], macAddress.address[2] };
+			int value = ((array[offset]) << (24))
+					| ((0xFF & array[offset + 1]) << (16))
+					| ((0xFF & array[offset + 2]) << (8))
+					| ((0xFF & array[offset + 3]));
+			Oui oui = registry.get(value);
+			if (oui == null) {
+				return new Oui(1, "UNKNOWN");
+			}
+			return oui;
+		}
+
+		/**
+		 *
+		 * @param version version
+		 * @return a Oui object.
+		 */
+		public static Oui register(Oui version) {
+			return registry.put(version.getValue(), version);
+		}
+
+		static {
+			registry.put(CISCO_00000C.getValue(), CISCO_00000C);
+			registry.put(FUJITSU_00000E.getValue(), FUJITSU_00000E);
+			registry.put(HEWLETT_PACKARD_080009.getValue(), HEWLETT_PACKARD_080009);
+			registry.put(FUJI_XEROX_080037.getValue(), FUJI_XEROX_080037);
+			registry.put(IBM_08005A.getValue(), IBM_08005A);
+			registry.put(CISCO_000142.getValue(), CISCO_000142);
+			registry.put(CISCO_000143.getValue(), CISCO_000143);
+			registry.put(ALAXALA_0012E2.getValue(), ALAXALA_0012E2);
+			registry.put(Hitachi_001F67.getValue(), Hitachi_001F67);
+			registry.put(HITACHI_CABLE_004066.getValue(), HITACHI_CABLE_004066);
+			registry.put(MICROSOFT_CORPORATION.getValue(), MICROSOFT_CORPORATION);
+		}
+
 	}
 
 }

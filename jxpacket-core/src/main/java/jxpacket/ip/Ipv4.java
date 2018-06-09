@@ -28,6 +28,9 @@ public class Ipv4 extends Ip {
 		return this.payload;
 	}
 
+	/**
+	 * @see <a href="https://tools.ietf.org/html/rfc760">IPV4 Header</a>
+	 */
 	public static final class Header extends AbstractIpHeader {
 
 		public static final int IPV4_HEADER_LENGTH = 20;

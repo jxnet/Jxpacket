@@ -164,6 +164,71 @@ public final class Inet6Address extends InetAddress {
 		return new Inet6Address(rawBytes.array());
 	}
 
+	@Override
+	public boolean isMulticastAddress() {
+		return ((address[0] & 0xff) == 0xff);
+	}
+
+	@Override
+	public boolean isAnyLocalAddress() {
+		byte test = 0x00;
+		for (int i = 0; i < Inet6Address.IPV6_ADDRESS_LENGTH; i++) {
+			test |= address[i];
+		}
+		return (test == 0x00);
+	}
+
+	@Override
+	public boolean isLoopbackAddress() {
+		byte test = 0x00;
+		for (int i = 0; i < 15; i++) {
+			test |= address[i];
+		}
+		return (test == 0x00) && (address[15] == 0x01);
+	}
+
+	@Override
+	public boolean isLinkLocalAddress() {
+		return ((address[0] & 0xff) == 0xfe
+				&& (address[1] & 0xc0) == 0x80);
+	}
+
+	@Override
+	public boolean isSiteLocalAddress() {
+		return ((address[0] & 0xff) == 0xfe
+				&& (address[1] & 0xc0) == 0xc0);
+	}
+
+	@Override
+	public boolean isMcGlobal() {
+		return ((address[0] & 0xff) == 0xff
+				&& (address[1] & 0x0f) == 0x0e);
+	}
+
+	@Override
+	public boolean isMcNodeLocal() {
+		return ((address[0] & 0xff) == 0xff
+				&& (address[1] & 0x0f) == 0x01);
+	}
+
+	@Override
+	public boolean isMcLinkLocal() {
+		return ((address[0] & 0xff) == 0xff
+				&& (address[1] & 0x0f) == 0x02);
+	}
+
+	@Override
+	public boolean isMcSiteLocal() {
+		return ((address[0] & 0xff) == 0xff
+				&& (address[1] & 0x0f) == 0x05);
+	}
+
+	@Override
+	public boolean isMcOrgLocal() {
+		return ((address[0] & 0xff) == 0xff
+				&& (address[1] & 0x0f) == 0x08);
+	}
+
 	/**
 	 * Returning bytes address of Inet6Address.
 	 * @return bytes ipv6 address.

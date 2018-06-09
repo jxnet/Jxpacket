@@ -5,6 +5,9 @@ import jxpacket.common.NamedNumber;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @see <a href="https://www.rfc-editor.org/rfc/rfc7133.txt">Data link layer</a>
+ */
 public class DataLinkType extends NamedNumber<Short,DataLinkType> {
 
 	/**

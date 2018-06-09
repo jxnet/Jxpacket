@@ -26,6 +26,9 @@ public class Ipv6 extends Ip {
 		return payload;
 	}
 
+	/**
+	 * @see <a href="https://tools.ietf.org/html/rfc8200">IPv6 Header</a>
+	 */
 	public static final class Header extends AbstractIpHeader {
 
 		public static final int IPV6_HEADER_LENGTH = 40;

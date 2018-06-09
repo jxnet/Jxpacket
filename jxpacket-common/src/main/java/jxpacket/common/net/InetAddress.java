@@ -23,8 +23,6 @@ package jxpacket.common.net;
  */
 public abstract class InetAddress {
 
-	public abstract byte[] toBytes();
-
 	/**
 	 * Create instance of Inet4Address or Inet6Address/
 	 * @param ipString ipv4 or ipv6 string address.
@@ -60,9 +58,7 @@ public abstract class InetAddress {
 	 * an IP multicast address
 	 * @since   1.1
 	 */
-	public boolean isMulticastAddress() {
-		return false;
-	}
+	public abstract boolean isMulticastAddress();
 
 	/**
 	 * Utility routine to check if the InetAddress is a wildcard address.
@@ -70,9 +66,7 @@ public abstract class InetAddress {
 	 *         a wildcard address.
 	 * @since 1.4
 	 */
-	public boolean isAnyLocalAddress() {
-		return false;
-	}
+	public abstract boolean isAnyLocalAddress();
 
 	/**
 	 * Utility routine to check if the InetAddress is a loopback address.
@@ -81,9 +75,7 @@ public abstract class InetAddress {
 	 * a loopback address; or false otherwise.
 	 * @since 1.4
 	 */
-	public boolean isLoopbackAddress() {
-		return false;
-	}
+	public abstract boolean isLoopbackAddress();
 
 	/**
 	 * Utility routine to check if the InetAddress is an link local address.
@@ -92,9 +84,7 @@ public abstract class InetAddress {
 	 * a link local address; or false if address is not a link local unicast address.
 	 * @since 1.4
 	 */
-	public boolean isLinkLocalAddress() {
-		return false;
-	}
+	public abstract boolean isLinkLocalAddress();
 
 	/**
 	 * Utility routine to check if the InetAddress is a site local address.
@@ -103,9 +93,7 @@ public abstract class InetAddress {
 	 * a site local address; or false if address is not a site local unicast address.
 	 * @since 1.4
 	 */
-	public boolean isSiteLocalAddress() {
-		return false;
-	}
+	public abstract boolean isSiteLocalAddress();
 
 	/**
 	 * Utility routine to check if the multicast address has global scope.
@@ -115,9 +103,7 @@ public abstract class InetAddress {
 	 *         of global scope or it is not a multicast address
 	 * @since 1.4
 	 */
-	public boolean isMcGlobal() {
-		return false;
-	}
+	public abstract boolean isMcGlobal();
 
 	/**
 	 * Utility routine to check if the multicast address has node scope.
@@ -127,9 +113,7 @@ public abstract class InetAddress {
 	 *         of node-local scope or it is not a multicast address
 	 * @since 1.4
 	 */
-	public boolean isMcNodeLocal() {
-		return false;
-	}
+	public abstract boolean isMcNodeLocal();
 
 	/**
 	 * Utility routine to check if the multicast address has link scope.
@@ -139,9 +123,7 @@ public abstract class InetAddress {
 	 *         of link-local scope or it is not a multicast address
 	 * @since 1.4
 	 */
-	public boolean isMcLinkLocal() {
-		return false;
-	}
+	public abstract boolean isMcLinkLocal();
 
 	/**
 	 * Utility routine to check if the multicast address has site scope.
@@ -151,9 +133,7 @@ public abstract class InetAddress {
 	 *         of site-local scope or it is not a multicast address
 	 * @since 1.4
 	 */
-	public boolean isMcSiteLocal() {
-		return false;
-	}
+	public abstract boolean isMcSiteLocal();
 
 	/**
 	 * Utility routine to check if the multicast address has organization scope.
@@ -164,8 +144,8 @@ public abstract class InetAddress {
 	 *         or it is not a multicast address
 	 * @since 1.4
 	 */
-	public boolean isMcOrgLocal() {
-		return false;
-	}
+	public abstract boolean isMcOrgLocal();
+
+	public abstract byte[] toBytes();
 
 }

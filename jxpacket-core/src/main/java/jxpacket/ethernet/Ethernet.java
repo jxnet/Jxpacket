@@ -32,6 +32,9 @@ public class Ethernet extends AbstractPacket {
 		return this.payload;
 	}
 
+	/**
+	 * @see <a href="https://en.wikipedia.org/wiki/Ethernet_frame">Ethernet II Structure</a>
+	 */
 	public static class Header extends PacketHeader {
 
 		public static final int ETHERNET_HEADER_LENGTH = 14;
