@@ -1,83 +1,76 @@
-/**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package jxpacket;
 
-import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
 
-/**
- * @author Ardika Rommy Sanjaya
- * @since 1.1.5
- */
-public class UnknownPacket extends Packet {
+public class UnknownPacket extends AbstractPacket {
 
-    private ByteBuffer data;
+	private final UnknownPacket.Header header;
 
-    public static UnknownPacket newInstance(final ByteBuffer buffer) {
-        UnknownPacket unknownPacket = new UnknownPacket();
-        unknownPacket.data = buffer;
-        return unknownPacket;
-    }
+	private UnknownPacket(final Builder builder) {
+		this.header = new UnknownPacket.Header(builder);
+	}
 
-    public static UnknownPacket newInstance(final byte[] bytes) {
-        return newInstance(bytes, 0, bytes.length);
-    }
+	public static UnknownPacket newPacket(final ByteBuf buffer) {
+		return new UnknownPacket.Builder().build(buffer);
+	}
 
-    public static UnknownPacket newInstance(final byte[] bytes, final int offset, final int length) {
-        return newInstance(ByteBuffer.wrap(bytes, offset, length));
-    }
+	@Override
+	public UnknownPacket.Header getHeader() {
+		return this.header;
+	}
 
-    public UnknownPacket setData(final ByteBuffer buffer) {
-        this.data = buffer;
-        return this;
-    }
+	@Override
+	public Packet getPayload() {
+		return null;
+	}
 
-    public UnknownPacket setData(final byte[] data) {
-        this.data = ByteBuffer.wrap(data);
-        return this;
-    }
+	public static final class Header extends PacketHeader {
 
-    @Override
-    public Packet setPacket(final Packet packet) {
-        return this;
-    }
+		private ByteBuf buffer;
 
-    @Override
-    public Packet getPacket() {
-        return null;
-    }
+		public Header(final Builder builder) {
+			this.buffer = builder.payloadBuffer;
+		}
 
-    @Override
-    public byte[] bytes() {
-        ByteBuffer buffer = buffer().duplicate();
-        byte[] data = new byte[buffer.capacity()];
-        buffer.get(data, 0, data.length);
-        return data;
-    }
+		@Override
+		public int getLength() {
+			return buffer.capacity();
+		}
 
-    @Override
-    public ByteBuffer buffer() {
-        return this.data;
-    }
+		@Override
+		public ByteBuf getBuffer() {
+			return this.buffer;
+		}
 
-    @Override
-    public String toString() {
-//        return "[Unknown: 0x" + HexUtils.toHexString(this.getData()) + "]";
-        return (this.data != null) ? this.data.toString() : "";
-    }
+		@Override
+		public ProtocolType getPayloadType() {
+			return ProtocolType.UNKNOWN;
+		}
+	}
+
+	public static final class Builder extends PacketBuilder {
+
+		private ByteBuf payloadBuffer;
+
+		public Builder() { }
+
+		public Builder payloadBuffer(final ByteBuf buffer) {
+			this.payloadBuffer = buffer;
+			return this;
+		}
+
+		@Override
+		public UnknownPacket build() {
+			return new UnknownPacket(this);
+		}
+
+		@Override
+		public UnknownPacket build(ByteBuf buffer) {
+			Builder builder = new Builder()
+					.payloadBuffer(buffer);
+			return new UnknownPacket(builder);
+		}
+
+	}
 
 }

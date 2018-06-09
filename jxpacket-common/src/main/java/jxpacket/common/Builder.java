@@ -21,12 +21,14 @@ package jxpacket.common;
  * @author Ardika Rommy Sanjaya
  * @since 1.1.0
  */
-public interface Builder<T> {
+public interface Builder<T, V> {
 
     /**
      * Build object.
      * @return object.
      */
     T build();
+
+    T build(V value);
 
 }

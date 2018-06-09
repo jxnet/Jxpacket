@@ -18,11 +18,7 @@
 package jxpacket;
 
 import jxpacket.common.NamedNumber;
-import jxpacket.ip.IPv4;
-import jxpacket.ip.IPv6;
-import jxpacket.util.HexUtils;
 
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,146 +28,130 @@ import java.util.Map;
  */
 public final class ProtocolType extends NamedNumber<Short, ProtocolType> {
 
-    /**
-     * MTU Size (1500)
-     */
-    public static final int IEEE802_3_MAX_LENGTH = 1500;
+	/**
+	 * MTU Size (1500)
+	 */
+	public static final int IEEE802_3_MAX_LENGTH = 1500;
 
-    /**
-     * IPv4: 0x0800
-     */
-    public static final ProtocolType IPV4
-            = new ProtocolType((short) 0x0800, "IPv4");
+	/**
+	 * IPv4: 0x0800
+	 */
+	public static final ProtocolType IPV4
+			= new ProtocolType((short) 0x0800, "IPv4");
 
-    /**
-     * ARP: 0x0806
-     */
-    public static final ProtocolType ARP
-            = new ProtocolType((short) 0x0806, "ARP");
+	/**
+	 * ARP: 0x0806
+	 */
+	public static final ProtocolType ARP
+			= new ProtocolType((short) 0x0806, "ARP");
 
-    /**
-     * IEEE 802.1Q VLAN-tagged frames: 0x8100
-     */
-    public static final ProtocolType DOT1Q_VLAN_TAGGED_FRAMES
-            = new ProtocolType((short) 0x8100, "IEEE 802.1Q VLAN-tagged frames");
+	/**
+	 * IEEE 802.1Q VLAN-tagged frames: 0x8100
+	 */
+	public static final ProtocolType DOT1Q_VLAN_TAGGED_FRAMES
+			= new ProtocolType((short) 0x8100, "IEEE 802.1Q VLAN-tagged frames");
 
-    /**
-     * RARP: 0x8035
-     */
-    public static final ProtocolType RARP
-            = new ProtocolType((short) 0x8035, "RARP");
+	/**
+	 * QinQ: 0x88a8
+	 */
+	public static final ProtocolType IEEE_802_1_AD
+			= new ProtocolType((short) 0x88a8, "QinQ");
+	/**
+	 * RARP: 0x8035
+	 */
+	public static final ProtocolType RARP
+			= new ProtocolType((short) 0x8035, "RARP");
 
-    /**
-     * Appletalk: 0x809b
-     */
-    public static final ProtocolType APPLETALK
-            = new ProtocolType((short) 0x809b, "Appletalk");
+	/**
+	 * Appletalk: 0x809b
+	 */
+	public static final ProtocolType APPLETALK
+			= new ProtocolType((short) 0x809b, "Appletalk");
 
-    /**
-     * IPv6: 0x86dd
-     */
-    public static final ProtocolType IPV6
-            = new ProtocolType((short) 0x86dd, "IPv6");
+	/**
+	 * IPv6: 0x86dd
+	 */
+	public static final ProtocolType IPV6
+			= new ProtocolType((short) 0x86dd, "IPv6");
 
-    /**
-     * PPP: 0x880b
-     */
-    public static final ProtocolType PPP
-            = new ProtocolType((short) 0x880b, "PPP");
+	/**
+	 * PPP: 0x880b
+	 */
+	public static final ProtocolType PPP
+			= new ProtocolType((short) 0x880b, "PPP");
 
-    /**
-     * MPLS: 0x8847
-     */
-    public static final ProtocolType MPLS
-            = new ProtocolType((short) 0x8847, "MPLS");
+	/**
+	 * MPLS: 0x8847
+	 */
+	public static final ProtocolType MPLS
+			= new ProtocolType((short) 0x8847, "MPLS");
 
-    /**
-     * PPPoED Discovery Stage: 0x8863
-     */
-    public static final ProtocolType PPPOE_DISCOVERY_STAGE
-            = new ProtocolType((short) 0x8863, "PPPoED Discovery Stage");
+	/**
+	 * PPPoED Discovery Stage: 0x8863
+	 */
+	public static final ProtocolType PPPOE_DISCOVERY_STAGE
+			= new ProtocolType((short) 0x8863, "PPPoED Discovery Stage");
 
-    /**
-     * PPPoED Session Stage: 0x8864
-     */
-    public static final ProtocolType PPPOE_SESSION_STAGE
-            = new ProtocolType((short) 0x8864, "PPPoED Session Stage");
+	/**
+	 * PPPoED Session Stage: 0x8864
+	 */
+	public static final ProtocolType PPPOE_SESSION_STAGE
+			= new ProtocolType((short) 0x8864, "PPPoED Session Stage");
 
-    public static final ProtocolType UNKNOWN
-            = new ProtocolType((short) -1, "Unknown");
+	public static final ProtocolType UNKNOWN
+			= new ProtocolType((short) -1, "Unknown");
 
-    private static final Map<Short, ProtocolType> registry
-            = new HashMap<Short, ProtocolType>();
+	private static final Map<Short, ProtocolType> registry
+			= new HashMap<Short, ProtocolType>();
 
-    static {
-        registry.put(IPV4.getValue(), IPV4);
-        registry.put(ARP.getValue(), ARP);
-        registry.put(DOT1Q_VLAN_TAGGED_FRAMES.getValue(), DOT1Q_VLAN_TAGGED_FRAMES);
-        registry.put(RARP.getValue(), RARP);
-        registry.put(APPLETALK.getValue(), APPLETALK);
-        registry.put(IPV6.getValue(), IPV6);
-        registry.put(PPP.getValue(), PPP);
-        registry.put(MPLS.getValue(), MPLS);
-        registry.put(PPPOE_DISCOVERY_STAGE.getValue(), PPPOE_DISCOVERY_STAGE);
-        registry.put(PPPOE_SESSION_STAGE.getValue(), PPPOE_SESSION_STAGE);
-    }
+	/**
+	 * @param value value
+	 * @param name  name
+	 */
+	public ProtocolType(Short value, String name) {
+		super(value, name);
+	}
 
-    /**
-     * @param value value
-     * @param name  name
-     */
-    public ProtocolType(Short value, String name) {
-        super(value, name);
-    }
+	/**
+	 * @param value value
+	 * @return a ProtocolType object.
+	 */
+	public static ProtocolType valueOf(final Short value) {
+		if ((value & 0xFFFF) <= IEEE802_3_MAX_LENGTH) {
+			return UNKNOWN;
+		}
+		ProtocolType protocolType = registry.get(value);
+		if (protocolType == null) {
+			return UNKNOWN;
+		}
+		return protocolType;
+	}
 
-    /**
-     * @param value value
-     * @return a ProtocolType object.
-     */
-    public static ProtocolType getInstance(final Short value) {
-        if (registry.containsKey(value)) {
-            return registry.get(value);
-        } else if ((value & 0xFFFF) <= IEEE802_3_MAX_LENGTH) {
-            return new ProtocolType(value, "-");
-        } else {
-            return UNKNOWN;
-        }
-    }
+	/**
+	 * @param type type
+	 * @return a ProtocolType object.
+	 */
+	public static ProtocolType register(ProtocolType type) {
+		return registry.put(type.getValue(), type);
+	}
 
-    /**
-     * Decode payload.
-     * @param buffer byte array.
-     * @return packet.
-     */
-    public Packet decode(final ByteBuffer buffer) {
-        if (buffer == null || buffer.capacity() == 0) {
-            return null;
-        }
-        buffer.rewind();
-        String v = HexUtils.toHexString(super.getValue());
-        switch (v) {
-            case "0800":
-                return IPv4.newInstance(buffer);
-            case "0806":
-                return jxpacket.arp.ARP.newInstance(buffer);
-            case "86dd":
-                return IPv6.newInstance(buffer);
-            default:
-                return null;
-        }
-    }
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 
-    /**
-     * @param type type
-     * @return a ProtocolType object.
-     */
-    public static ProtocolType register(ProtocolType type) {
-        return registry.put(type.getValue(), type);
-    }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
+	static {
+		registry.put(IPV4.getValue(), IPV4);
+		registry.put(ARP.getValue(), ARP);
+		registry.put(DOT1Q_VLAN_TAGGED_FRAMES.getValue(), DOT1Q_VLAN_TAGGED_FRAMES);
+		registry.put(RARP.getValue(), RARP);
+		registry.put(APPLETALK.getValue(), APPLETALK);
+		registry.put(IPV6.getValue(), IPV6);
+		registry.put(PPP.getValue(), PPP);
+		registry.put(MPLS.getValue(), MPLS);
+		registry.put(PPPOE_DISCOVERY_STAGE.getValue(), PPPOE_DISCOVERY_STAGE);
+		registry.put(PPPOE_SESSION_STAGE.getValue(), PPPOE_SESSION_STAGE);
+		registry.put(IEEE_802_1_AD.getValue(), IEEE_802_1_AD);
+	}
 
 }
