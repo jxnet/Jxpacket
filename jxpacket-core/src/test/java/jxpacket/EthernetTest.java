@@ -3,7 +3,6 @@ package jxpacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 import jxpacket.ethernet.Ethernet;
-import jxpacket.ethernet.Vlan;
 import jxpacket.ip.Ip;
 import jxpacket.ip.Ipv6;
 import jxpacket.ip.ipv6.Authentication;
@@ -15,7 +14,7 @@ import java.util.stream.StreamSupport;
 
 public class EthernetTest extends BaseTest {
 
-	private byte[] data = StringUtil.decodeHexDump(IPV6_AH);
+	private byte[] data = StringUtil.decodeHexDump(IPV6_ROUTING);
 
 	private Ethernet ethernet;
 	private ByteBuf buf = allocator.directBuffer(1500);
@@ -42,7 +41,7 @@ public class EthernetTest extends BaseTest {
 
 	@Test
 	public void filterWithPredicate() {
-		ethernet.get(Ipv6.class, packet -> packet.getHeader().getPayloadType() == Ip.IpType.IPV6_AH)
+		ethernet.get(Ipv6.class, packet -> packet.getHeader().getPayloadType() == Ip.Type.IPV6_AH)
 				.stream().map(pkt -> pkt.getHeader())
 				.forEach(System.out::println);
 	}

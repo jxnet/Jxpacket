@@ -35,7 +35,7 @@ public class Authentication extends AbstractPacket {
 
 		public static final byte FIXED_HEADER_LENGTH = 12; // bytes
 
-		private Ip.IpType nextHeader;
+		private Ip.Type nextHeader;
 		private byte payloadLength;
 		private int securityParameterIndex;
 		private int sequenceNumber;
@@ -49,7 +49,7 @@ public class Authentication extends AbstractPacket {
 			this.integrityCheckValue = builder.integrityCheckValue;
 		}
 
-		public Ip.IpType getNextHeader() {
+		public Ip.Type getNextHeader() {
 			return nextHeader;
 		}
 
@@ -70,7 +70,7 @@ public class Authentication extends AbstractPacket {
 		}
 
 		@Override
-		public Ip.IpType getPayloadType() {
+		public Ip.Type getPayloadType() {
 			return nextHeader;
 		}
 
@@ -115,13 +115,13 @@ public class Authentication extends AbstractPacket {
 
 	public static final class Builder extends PacketBuilder {
 
-		private Ip.IpType nextHeader;
+		private Ip.Type nextHeader;
 		private byte payloadLength;
 		private int securityParameterIndex;
 		private int sequenceNumber;
 		private byte[] integrityCheckValue;
 
-		public Builder nextHeader(final Ip.IpType nextHeader) {
+		public Builder nextHeader(final Ip.Type nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
 		}
@@ -155,7 +155,7 @@ public class Authentication extends AbstractPacket {
 		public Packet build(final ByteBuf buffer) {
 			Builder builder = new Builder();
 			int index = 0;
-			builder.nextHeader = Ip.IpType.valueOf(buffer.getByte(index));
+			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(index));
 			index += 1;
 			builder.payloadLength = buffer.getByte(index);
 			index += 1 ;

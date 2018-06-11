@@ -43,7 +43,7 @@ public class Ipv4 extends Ip {
 		private byte flags;
 		private short fragmentOffset;
 		private byte ttl;
-		private IpType protocol;
+		private Type protocol;
 		private short checksum;
 		private Inet4Address sourceAddress;
 		private Inet4Address destinationAddress;
@@ -98,7 +98,7 @@ public class Ipv4 extends Ip {
 			return ttl;
 		}
 
-		public IpType getProtocol() {
+		public Type getProtocol() {
 			return protocol;
 		}
 
@@ -119,7 +119,7 @@ public class Ipv4 extends Ip {
 		}
 
 		@Override
-		public IpType getPayloadType() {
+		public Type getPayloadType() {
 			return this.protocol;
 		}
 
@@ -201,7 +201,7 @@ public class Ipv4 extends Ip {
 		private byte flags;
 		private short fragmentOffset;
 		private byte ttl;
-		private IpType protocol;
+		private Type protocol;
 		private short checksum;
 		private Inet4Address sourceAddress;
 		private Inet4Address destinationAddress;
@@ -249,7 +249,7 @@ public class Ipv4 extends Ip {
 			return this;
 		}
 
-		public Builder protocol(IpType protocol) {
+		public Builder protocol(Type protocol) {
 			this.protocol = protocol;
 			return this;
 		}
@@ -303,7 +303,7 @@ public class Ipv4 extends Ip {
 			index += 2;
 			builder.ttl = buffer.getByte(index);
 			index += 1;
-			builder.protocol = IpType.valueOf(buffer.getByte(index));
+			builder.protocol = Type.valueOf(buffer.getByte(index));
 			index += 1;
 			builder.checksum = ((short) (buffer.getShort(index) & 0xffff));
 

@@ -6,24 +6,26 @@ import jxpacket.AbstractPacket;
 import jxpacket.ip.Ip;
 import jxpacket.ip.Ipv6;
 
-public class Options {
+import java.util.Arrays;
 
-	public abstract static class Header extends Ipv6.ExtensionHeader {
+public abstract class Options extends AbstractPacket {
+
+	abstract static class Header extends Ipv6.ExtensionHeader {
 
 		public static int FIXED_OPTIONS_LENGTH = 6;
 		public static int LENGTH_UNIT = 8;
 
-		protected Ip.IpType nextHeader;
+		protected Ip.Type nextHeader;
 		protected int extensionLength;
 		protected byte[] options;
 
-		protected Header(final Builder builder, Ip.IpType nextHeader) {
+		protected Header(final Builder builder, Ip.Type nextHeader) {
 			this.nextHeader = nextHeader;
 			this.extensionLength = builder.extensionLength;
 			this.options = builder.options;
 		}
 
-		public Ip.IpType getNextHeader() {
+		public Ip.Type getNextHeader() {
 			return nextHeader;
 		}
 
@@ -36,7 +38,7 @@ public class Options {
 		}
 
 		@Override
-		public Ip.IpType getPayloadType() {
+		public Ip.Type getPayloadType() {
 			return nextHeader;
 		}
 
@@ -59,15 +61,25 @@ public class Options {
 			return buffer;
 		}
 
+		@Override
+		public String toString() {
+			final StringBuilder sb = new StringBuilder("Header{");
+			sb.append("nextHeader=").append(getNextHeader());
+			sb.append(", extensionLength=").append(getExtensionLength());
+			sb.append(", options=").append(Arrays.toString(getOptions()));
+			sb.append('}');
+			return sb.toString();
+		}
+
 	}
 
-	public abstract static class Builder extends AbstractPacket.PacketBuilder {
+	abstract static class Builder extends AbstractPacket.PacketBuilder {
 
-		protected Ip.IpType nextHeader;
+		protected Ip.Type nextHeader;
 		protected int extensionLength;
 		protected byte[] options;
 
-		public Builder(final Ip.IpType nextHeader) {
+		public Builder(final Ip.Type nextHeader) {
 			this.nextHeader = nextHeader;
 		}
 

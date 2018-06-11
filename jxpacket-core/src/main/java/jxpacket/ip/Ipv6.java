@@ -36,7 +36,7 @@ public class Ipv6 extends Ip {
 		private byte trafficClass;
 		private int flowLabel;
 		private short payloadLength;
-		private IpType nextHeader;
+		private Type nextHeader;
 		private byte hopLimit;
 		private Inet6Address sourceAddress;
 		private Inet6Address destinationAddress;
@@ -64,7 +64,7 @@ public class Ipv6 extends Ip {
 			return payloadLength & 0xffff;
 		}
 
-		public IpType getNextHeader() {
+		public Type getNextHeader() {
 			return nextHeader;
 		}
 
@@ -81,7 +81,7 @@ public class Ipv6 extends Ip {
 		}
 
 		@Override
-		public IpType getPayloadType() {
+		public Type getPayloadType() {
 			return nextHeader;
 		}
 
@@ -130,7 +130,7 @@ public class Ipv6 extends Ip {
 		private byte trafficClass;
 		private int flowLabel;
 		private short payloadLength;
-		private IpType nextHeader;
+		private Type nextHeader;
 		private byte hopLimit;
 		private Inet6Address sourceAddress;
 		private Inet6Address destinationAddress;
@@ -152,7 +152,7 @@ public class Ipv6 extends Ip {
 			return this;
 		}
 
-		public Builder nextHeader(final IpType nextHeader) {
+		public Builder nextHeader(final Type nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
 		}
@@ -192,7 +192,7 @@ public class Ipv6 extends Ip {
 			builder.flowLabel = (iscratch & 0xfffff);
 			builder.payloadLength = buffer.getShort(index);
 			index += 2;
-			builder.nextHeader = IpType.valueOf(buffer.getByte(index));
+			builder.nextHeader = Type.valueOf(buffer.getByte(index));
 			index += 1;
 			builder.hopLimit = buffer.getByte(index);
 			index += 1;
