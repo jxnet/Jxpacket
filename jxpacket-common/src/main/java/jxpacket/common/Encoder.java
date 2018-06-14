@@ -18,15 +18,16 @@
 package jxpacket.common;
 
 /**
+ * Encoder interface.
  * @author Ardika Rommy Sanjaya
  * @since 1.1.5
  */
 public interface Encoder<T, V> {
 
     /**
-     * Decode data.
+     * Encode data.
      * @param data data.
-     * @return decoded data.
+     * @return encoded data.
      */
     T encode(V data);
 

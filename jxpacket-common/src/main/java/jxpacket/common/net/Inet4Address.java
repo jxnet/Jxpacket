@@ -22,6 +22,8 @@ import jxpacket.common.util.Validate;
 import java.util.Arrays;
 
 /**
+ * This class represents an Internet Protocol version 4 (IPv4) address.
+ * Defined by <a href="https://tools.ietf.org/html/rfc790">IPv4 Address</a>
  * @author Ardika Rommy Sanjaya
  * @since 1.0.0
  */
@@ -55,13 +57,13 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Create Inet4Address instance.
-	 * @param inet4Address ipv4 string address.
-	 * @return Inet4Address instance.
+	 * Determines the IPv4 address.
+	 * @param stringAddress ipv4 string address.
+	 * @return an IPv4 address.
 	 */
-	public static Inet4Address valueOf(String inet4Address) {
-		inet4Address = Validate.nullPointer(inet4Address, "0.0.0.0");
-		String[] parts = inet4Address.split("\\.");
+	public static Inet4Address valueOf(String stringAddress) {
+		stringAddress = Validate.nullPointer(stringAddress, "0.0.0.0");
+		String[] parts = stringAddress.split("\\.");
 		byte[] result = new byte[parts.length];
 		Validate.notIllegalArgument(result.length == IPV4_ADDRESS_LENGTH);
 		for (int i = 0; i < result.length; i++) {
@@ -74,23 +76,23 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Create IPv4Address instance.
-	 * @param address ipv4 bytes address.
-	 * @return IPv4Address instance.
+	 * Determines the IPv4 address.
+	 * @param bytesAddress ipv4 bytes address.
+	 * @return an IPv4 address.
 	 */
-	public static Inet4Address valueOf(final byte[] address) {
-		return new Inet4Address(address);
+	public static Inet4Address valueOf(final byte[] bytesAddress) {
+		return new Inet4Address(bytesAddress);
 	}
 
 	/**
-	 * Create Inet4Address instance.
-	 * @param address ipv4 int address.
-	 * @return Inet4Address instance.
+	 * Determines the IPv4 address.
+	 * @param intAddress ipv4 int address.
+	 * @return an IPv4 address.
 	 */
-	public static Inet4Address valueOf(final int address) {
-		return new Inet4Address(new byte[]{(byte) (address >>> 24),
-				(byte) (address >>> 16), (byte) (address >>> 8),
-				(byte) address});
+	public static Inet4Address valueOf(final int intAddress) {
+		return new Inet4Address(new byte[]{(byte) (intAddress >>> 24),
+				(byte) (intAddress >>> 16), (byte) (intAddress >>> 8),
+				(byte) intAddress});
 	}
 
 	@Override
@@ -105,13 +107,11 @@ public final class Inet4Address extends InetAddress {
 
 	@Override
 	public boolean isLoopbackAddress() {
-		/* 127.x.x.x */
-		return address[0] == 127;
+		return address[0] == 127; /* 127.x.x.x */
 	}
 
 	@Override
 	public boolean isLinkLocalAddress() {
-		// link-local unicast in IPv4 (169.254.0.0/16)
 		// defined in "Documenting Special Use IPv4 Address Blocks
 		// that have been Registered with IANA" by Bill Manning
 		// draft-manning-dsua-06.txt
@@ -175,8 +175,9 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Returning int address of Inet4Address.
-	 * @return int ipv4 address.
+	 * Returns the int IPv4 address of this {@code Inet4Address}
+	 * object.
+	 * @return  the int IPv4 address of this object.
 	 */
 	public int toInt() {
 		int ip = 0;
@@ -188,15 +189,18 @@ public final class Inet4Address extends InetAddress {
 	}
 
 	/**
-	 * Returning bytes address of Inet4Address.
-	 * @return bytes ipv4 address.
+	 * Returns the raw IPv4 address of this {@code Inet4Address}
+	 * object. The result is in network byte order: the highest order
+	 * byte of the address is in {@code toBytes()[0]}.
+	 *
+	 * @return  the raw IPv4 address of this object.
 	 */
 	public byte[] toBytes() {
 		return Arrays.copyOf(this.address, this.address.length);
 	}
 
 	/**
-	 * Change value of Inet4address.
+	 * Change address of this {@code Inet4Address} object.
 	 * @param inet4address Inet4Address.
 	 */
 	public void update(final Inet4Address inet4address) {

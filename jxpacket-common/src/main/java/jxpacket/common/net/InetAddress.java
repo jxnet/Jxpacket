@@ -18,134 +18,62 @@
 package jxpacket.common.net;
 
 /**
+ * This class is a abstraction for IP Address.
+ * @see Inet4Address
+ * @see java.net.InetAddress
  * @author Ardika Rommy Sanjaya
  * @since 1.0.0
  */
 public abstract class InetAddress {
 
 	/**
-	 * Create instance of Inet4Address or Inet6Address/
-	 * @param ipString ipv4 or ipv6 string address.
-	 * @return Inet4Address or Inet6Address.
+	 * Determines the IPv4 or IPv6 address.
+	 * @param stringAddress ipv4 or ipv6 string address.
+	 * @return an IPv4 or IPv6 address.
 	 */
-	public static InetAddress valueOf(String ipString) {
-		if (ipString.contains(":")) {
-			return Inet6Address.valueOf(ipString);
+	public static InetAddress valueOf(String stringAddress) {
+		if (stringAddress.contains(":")) {
+			return Inet6Address.valueOf(stringAddress);
 		} else {
-			return Inet4Address.valueOf(ipString);
+			return Inet4Address.valueOf(stringAddress);
 		}
 	}
 
 	/**
-	 * Validate ipv4 or ipv6 address.
-	 * @param ipString ipv4 or ipv6 string address.
-	 * @return true is valid, false otherwise.
+	 * Validate given ip string address.
+	 * @param stringAddress ipv4 or ipv6 string address.
+	 * @return a {@code boolean} indicating if the stringAddress is a valid ip address;
+	 * or false otherwise.
 	 */
-	public static boolean isValidAddress(String ipString) {
+	public static boolean isValidAddress(String stringAddress) {
 		try {
-			valueOf(ipString);
+			valueOf(stringAddress);
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
 	}
 
-	//
-	/**
-	 * Utility routine to check if the InetAddress is an
-	 * IP multicast address.
-	 * @return a {@code boolean} indicating if the InetAddress is
-	 * an IP multicast address
-	 * @since   1.1
-	 */
-	public abstract boolean isMulticastAddress();
+	protected abstract boolean isMulticastAddress();
 
-	/**
-	 * Utility routine to check if the InetAddress is a wildcard address.
-	 * @return a {@code boolean} indicating if the Inetaddress is
-	 *         a wildcard address.
-	 * @since 1.4
-	 */
-	public abstract boolean isAnyLocalAddress();
+	protected abstract boolean isAnyLocalAddress();
 
-	/**
-	 * Utility routine to check if the InetAddress is a loopback address.
-	 *
-	 * @return a {@code boolean} indicating if the InetAddress is
-	 * a loopback address; or false otherwise.
-	 * @since 1.4
-	 */
-	public abstract boolean isLoopbackAddress();
+	protected abstract boolean isLoopbackAddress();
 
-	/**
-	 * Utility routine to check if the InetAddress is an link local address.
-	 *
-	 * @return a {@code boolean} indicating if the InetAddress is
-	 * a link local address; or false if address is not a link local unicast address.
-	 * @since 1.4
-	 */
-	public abstract boolean isLinkLocalAddress();
+	protected abstract boolean isLinkLocalAddress();
 
-	/**
-	 * Utility routine to check if the InetAddress is a site local address.
-	 *
-	 * @return a {@code boolean} indicating if the InetAddress is
-	 * a site local address; or false if address is not a site local unicast address.
-	 * @since 1.4
-	 */
-	public abstract boolean isSiteLocalAddress();
+	protected abstract boolean isSiteLocalAddress();
 
-	/**
-	 * Utility routine to check if the multicast address has global scope.
-	 *
-	 * @return a {@code boolean} indicating if the address has
-	 *         is a multicast address of global scope, false if it is not
-	 *         of global scope or it is not a multicast address
-	 * @since 1.4
-	 */
-	public abstract boolean isMcGlobal();
+	protected abstract boolean isMcGlobal();
 
-	/**
-	 * Utility routine to check if the multicast address has node scope.
-	 *
-	 * @return a {@code boolean} indicating if the address has
-	 *         is a multicast address of node-local scope, false if it is not
-	 *         of node-local scope or it is not a multicast address
-	 * @since 1.4
-	 */
-	public abstract boolean isMcNodeLocal();
+	protected abstract boolean isMcNodeLocal();
 
-	/**
-	 * Utility routine to check if the multicast address has link scope.
-	 *
-	 * @return a {@code boolean} indicating if the address has
-	 *         is a multicast address of link-local scope, false if it is not
-	 *         of link-local scope or it is not a multicast address
-	 * @since 1.4
-	 */
-	public abstract boolean isMcLinkLocal();
+	protected abstract boolean isMcLinkLocal();
 
-	/**
-	 * Utility routine to check if the multicast address has site scope.
-	 *
-	 * @return a {@code boolean} indicating if the address has
-	 *         is a multicast address of site-local scope, false if it is not
-	 *         of site-local scope or it is not a multicast address
-	 * @since 1.4
-	 */
-	public abstract boolean isMcSiteLocal();
+	protected abstract boolean isMcSiteLocal();
 
-	/**
-	 * Utility routine to check if the multicast address has organization scope.
-	 *
-	 * @return a {@code boolean} indicating if the address has
-	 *         is a multicast address of organization-local scope,
-	 *         false if it is not of organization-local scope
-	 *         or it is not a multicast address
-	 * @since 1.4
-	 */
-	public abstract boolean isMcOrgLocal();
+	protected abstract boolean isMcOrgLocal();
 
-	public abstract byte[] toBytes();
+	protected abstract byte[] toBytes();
 
 }

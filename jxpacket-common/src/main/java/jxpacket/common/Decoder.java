@@ -18,6 +18,7 @@
 package jxpacket.common;
 
 /**
+ * Decoder interface.
  * @author Ardika Rommy Sanjaya
  * @since 1.1.5
  */

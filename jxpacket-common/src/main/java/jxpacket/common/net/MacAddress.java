@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
+ * This class represents an Media Access Controll (MAC) address.
  * @author Ardika Rommy Sanjaya
  * @since 1.0.0
  */
@@ -67,13 +68,13 @@ public final class MacAddress {
 	}
 
 	/**
-	 * Create MacAddress instance.
-	 * @param address string MAC Address.
-	 * @return MacAddress instance.
+	 * Determines the MacAddress address.
+	 * @param stringAddress MAC string address.
+	 * @return an Mac address object.
 	 */
-	public static MacAddress valueOf(String address) {
-		address = Validate.nullPointer(address, "00:00:00:00:00:00");
-		final String[] elements = address.split(":|-");
+	public static MacAddress valueOf(String stringAddress) {
+		stringAddress = Validate.nullPointer(stringAddress, "00:00:00:00:00:00");
+		final String[] elements = stringAddress.split(":|-");
 		Validate.notIllegalArgument(elements.length == MAC_ADDRESS_LENGTH);
 		final byte[] b = new byte[MAC_ADDRESS_LENGTH];
 		for (int i = 0; i < MAC_ADDRESS_LENGTH; i++) {
@@ -84,45 +85,54 @@ public final class MacAddress {
 	}
 
 	/**
-	 * Create MacAddress instance.
-	 * @param address bytes MAC Address.
-	 * @return MacAddress instance.
+	 * Determines the MacAddress address.
+	 * @param bytesAddress MAC bytes address.
+	 * @return an Mac address object.
 	 */
-	public static MacAddress valueOf(final byte[] address) {
-		return new MacAddress(address);
+	public static MacAddress valueOf(final byte[] bytesAddress) {
+		return new MacAddress(bytesAddress);
 	}
 
 	/**
-	 * Create MacAddress instance.
-	 * @param address long MAC Address.
-	 * @return MacAddress instance.
+	 * Determines the MacAddress address.
+	 * @param longAddress MAC long address.
+	 * @return an Mac address object.
 	 */
-	public static MacAddress valueOf(final long address) {
+	public static MacAddress valueOf(final long longAddress) {
 		final byte[] bytes = new byte[] {
-				(byte) (address >> 40 & 0xff),
-				(byte) (address >> 32 & 0xff),
-				(byte) (address >> 24 & 0xff),
-				(byte) (address >> 16 & 0xff),
-				(byte) (address >> 8 & 0xff),
-				(byte) (address >> 0 & 0xff)};
+				(byte) (longAddress >> 40 & 0xff),
+				(byte) (longAddress >> 32 & 0xff),
+				(byte) (longAddress >> 24 & 0xff),
+				(byte) (longAddress >> 16 & 0xff),
+				(byte) (longAddress >> 8 & 0xff),
+				(byte) (longAddress >> 0 & 0xff)};
 		return new MacAddress(bytes);
 	}
 
 	/**
-	 * Validate Mac Address.
-	 * @param address string address.
-	 * @return true is valid, false otherwise.
+	 * Validate given mac string address.
+	 * @param stringAddress mac string address.
+	 * @return a {@code boolean} indicating if the stringAddress is a valid mac address;
+	 * or false otherwise.
 	 */
-	public static boolean isValidAddress(final String address) {
-		Validate.nullPointer(address);
-		return Pattern.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", address);
+	public static boolean isValidAddress(final String stringAddress) {
+		Validate.nullPointer(stringAddress);
+		return Pattern.matches("^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", stringAddress);
 	}
 
+	/**
+	 * Change address of this {@code MacAddress} object.
+	 * @param macAddress mac address.
+	 */
 	public void update(final MacAddress macAddress) {
 		Validate.nullPointer(macAddress);
 		this.address = macAddress.toBytes();
 	}
 
+	/**
+	 *
+	 * @return oui.
+	 */
 	public Oui getOui() {
 		return Oui.valueOf(this);
 	}

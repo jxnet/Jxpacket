@@ -18,6 +18,7 @@
 package jxpacket.common;
 
 /**
+ * Builder interface.
  * @author Ardika Rommy Sanjaya
  * @since 1.1.0
  */
@@ -29,6 +30,11 @@ public interface Builder<T, V> {
      */
     T build();
 
+    /**
+     * Build object with given argument.
+     * @param value value.
+     * @return object.
+     */
     T build(V value);
 
 }

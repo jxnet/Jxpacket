@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * This class represents an Internet Protocol version 6 (IPv6) address.
+ * Defined by <a href="https://tools.ietf.org/html/rfc2373">IPv6 Address</a>
  * @author Ardika Rommy Sanjaya
  * @since 1.0.0
  */
@@ -66,36 +68,36 @@ public final class Inet6Address extends InetAddress {
 	}
 
 	/**
-	 * Create Inet6Address instance.
-	 * @param address ipv6 bytes address.
-	 * @return Inet6Address instance.
+	 * Determines the IPv6 address.
+	 * @param bytesAddress ipv6 bytesAddress address.
+	 * @return an IPv6 address.
 	 */
-	public static Inet6Address valueOf(final byte[] address) {
-		return new Inet6Address(address);
+	public static Inet6Address valueOf(final byte[] bytesAddress) {
+		return new Inet6Address(bytesAddress);
 	}
 
 	/**
-	 * Create Inet6Address instance.
-	 * @param inet6Address ipv6 string address.
-	 * @return Inet6Address instance.
+	 * Determines the IPv6 address.
+	 * @param stringAddress ipv6 stringAddress address.
+	 * @return an IPv6 address.
 	 */
-	public static Inet6Address valueOf(String inet6Address) {
+	public static Inet6Address valueOf(String stringAddress) {
 
-		inet6Address = Validate.nullPointer(inet6Address, "::");
+		stringAddress = Validate.nullPointer(stringAddress, "::");
 
 		final int ipv6MaxHexGroups = 8;
 		final int ipv6MaxHexDigitsPerGroup = 4;
 
-		boolean containsCompressedZeroes = inet6Address.contains("::");
-		Validate.notIllegalArgument(!(containsCompressedZeroes && (inet6Address.indexOf("::") != inet6Address.lastIndexOf("::"))));
-		Validate.notIllegalArgument(!((inet6Address.startsWith(":") && !inet6Address.startsWith("::"))
-				|| (inet6Address.endsWith(":") && !inet6Address.endsWith("::"))));
-		String[] parts = inet6Address.split(":");
+		boolean containsCompressedZeroes = stringAddress.contains("::");
+		Validate.notIllegalArgument(!(containsCompressedZeroes && (stringAddress.indexOf("::") != stringAddress.lastIndexOf("::"))));
+		Validate.notIllegalArgument(!((stringAddress.startsWith(":") && !stringAddress.startsWith("::"))
+				|| (stringAddress.endsWith(":") && !stringAddress.endsWith("::"))));
+		String[] parts = stringAddress.split(":");
 		if (containsCompressedZeroes) {
 			List<String> partsAsList = new ArrayList<String>(Arrays.asList(parts));
-			if (inet6Address.endsWith("::")) {
+			if (stringAddress.endsWith("::")) {
 				partsAsList.add("");
-			} else if (inet6Address.startsWith("::") && !partsAsList.isEmpty()) {
+			} else if (stringAddress.startsWith("::") && !partsAsList.isEmpty()) {
 				partsAsList.remove(0);
 			}
 			parts = partsAsList.toArray(new String[partsAsList.size()]);
@@ -113,10 +115,10 @@ public final class Inet6Address extends InetAddress {
 				if (index == parts.length - 1 && octet.contains(".")) {
 					byte[] quad;
 					quad = Inet4Address.valueOf(octet).toBytes();
-					String initialPart = inet6Address.substring(0, inet6Address.lastIndexOf(":") + 1);
+					String initialPart = stringAddress.substring(0, stringAddress.lastIndexOf(":") + 1);
 					String penultimate = Integer.toHexString(((quad[0] & 0xff) << 8) | (quad[1] & 0xff));
 					String ultimate = Integer.toHexString(((quad[2] & 0xff) << 8) | (quad[3] & 0xff));
-					inet6Address = initialPart + penultimate + ultimate;
+					stringAddress = initialPart + penultimate + ultimate;
 					validOctets += 2;
 					continue;
 				}
@@ -125,7 +127,7 @@ public final class Inet6Address extends InetAddress {
 			validOctets++;
 		}
 		Validate.notIllegalArgument(!(validOctets > ipv6MaxHexGroups || (validOctets < ipv6MaxHexGroups && !containsCompressedZeroes)));
-		parts = inet6Address.split(":", 8 + 2);
+		parts = stringAddress.split(":", 8 + 2);
 		Validate.notIllegalArgument(!(parts.length < 3 || parts.length > 8 + 1));
 		int skipIndex = -1;
 		for (int i = 1; i < parts.length - 1; i++) {
@@ -230,8 +232,9 @@ public final class Inet6Address extends InetAddress {
 	}
 
 	/**
-	 * Returning bytes address of Inet6Address.
-	 * @return bytes ipv6 address.
+	 * Returns the raw IPv6 address of this {@code Inet6Address}
+	 * object.
+	 * @return  the raw IPv6 address of this object.
 	 */
 	public byte[] toBytes() {
 		return this.address.clone();
@@ -251,6 +254,10 @@ public final class Inet6Address extends InetAddress {
 		return (short) hextet;
 	}
 
+	/**
+	 * Change address of this {@code Inet6Address} object.
+	 * @param inet6address Inet6Address.
+	 */
 	public void update(final Inet6Address inet6address) {
 		Validate.nullPointer(inet6address);
 		this.address = inet6address.toBytes();
