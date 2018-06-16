@@ -166,6 +166,7 @@ public class Authentication extends AbstractPacket {
 			index += 4;
 			builder.integrityCheckValue = new byte[((builder.payloadLength + 2) * 8) - 12];
 			buffer.getBytes(index, builder.integrityCheckValue);
+			buffer.release();
 			return new Authentication(builder);
 		}
 

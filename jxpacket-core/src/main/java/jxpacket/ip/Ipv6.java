@@ -12,7 +12,7 @@ public class Ipv6 extends Ip {
 
 	private Ipv6(final Builder builder) {
 		this.header = new Ipv6.Header(builder);
-		this.payload =  getBuilder(this.header)
+		this.payload =  super.getBuilder(this.header)
 				.build(builder.payloadBuffer);
 	}
 
@@ -208,6 +208,7 @@ public class Ipv6 extends Ip {
 			index += Inet6Address.IPV6_ADDRESS_LENGTH;
 			int size = index;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			buffer.release();
 			return new Ipv6(builder);
 		}
 

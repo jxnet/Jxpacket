@@ -68,6 +68,7 @@ public class UnknownPacket extends AbstractPacket {
 		public UnknownPacket build(ByteBuf buffer) {
 			Builder builder = new Builder()
 					.payloadBuffer(buffer);
+			buffer.release();
 			return new UnknownPacket(builder);
 		}
 

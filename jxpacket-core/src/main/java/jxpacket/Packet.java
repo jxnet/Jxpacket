@@ -1,6 +1,8 @@
 package jxpacket;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
 import jxpacket.common.Builder;
 import jxpacket.common.NamedNumber;
 
@@ -9,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public interface Packet extends Iterable<Packet>, Serializable {
 
@@ -19,6 +22,14 @@ public interface Packet extends Iterable<Packet>, Serializable {
 	<T extends Packet> List<T> get(Class<T> clazz);
 
 	<T extends Packet> List<T> get(Class<T> clazz, Predicate<Packet> predicate);
+
+	<T extends Packet> Stream<T> getAsStream(Class<T> clazz);
+
+	<T extends Packet> Stream<T> getAsStream(Class<T> clazz, Predicate<Packet> predicate);
+
+	<T extends Packet> T getFirst(Class<T> clazz);
+
+	<T extends Packet> T getFirst(Class<T> clazz, Predicate<Packet> predicate);
 
 	<T extends Packet> boolean contains(Class<T> clazz);
 

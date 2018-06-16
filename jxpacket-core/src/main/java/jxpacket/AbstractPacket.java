@@ -12,33 +12,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public abstract class AbstractPacket implements Packet {
 
-//	@Override
-//	public Header getHeader() {
-//		throw new UnsupportedOperationException();
-//	}
-//
-//	@Override
-//	public Packet getPayload() {
-//		throw new UnsupportedOperationException();
-//	}
-
+	@Override
 	public <T extends Packet> List<T> get(Class<T> clazz) {
-		return StreamSupport.stream(this.spliterator(), false)
-				.filter(packet -> clazz.isInstance(packet))
-				.map(packet -> clazz.cast(packet))
-				.collect(Collectors.toList());
+		return get(clazz, packet -> true);
 	}
 
+	@Override
 	public <T extends Packet> List<T> get(Class<T> clazz, Predicate<Packet> predicate) {
-		return StreamSupport.stream(this.spliterator(), false)
+		return StreamSupport.stream(this.spliterator(), true)
 				.filter(packet -> clazz.isInstance(packet))
 				.filter(predicate)
 				.map(packet -> clazz.cast(packet))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public <T extends Packet> Stream<T> getAsStream(Class<T> clazz) {
+		return getAsStream(clazz, packet -> true);
+	}
+
+	@Override
+	public <T extends Packet> Stream<T> getAsStream(Class<T> clazz, Predicate<Packet> predicate) {
+		return StreamSupport.stream(this.spliterator(), true)
+				.filter(packet -> clazz.isInstance(packet))
+				.filter(predicate)
+				.map(packet -> clazz.cast(packet));
+	}
+
+	@Override
+	public <T extends Packet> T getFirst(Class<T> clazz) {
+		return getFirst(clazz, packet -> true);
+	}
+
+	@Override
+	public <T extends Packet> T getFirst(Class<T> clazz, Predicate<Packet> predicate) {
+		return StreamSupport.stream(this.spliterator(), true)
+				.filter(packet -> clazz.isInstance(packet))
+				.filter(predicate)
+				.map(packet -> clazz.cast(packet))
+				.findFirst().get();
 	}
 
 	@Override
@@ -57,36 +74,11 @@ public abstract class AbstractPacket implements Packet {
 
 	public static abstract class PacketHeader implements Packet.Header {
 
-//		@Override
-//		public <T extends NamedNumber> T getPayloadType() {
-//			throw new UnsupportedOperationException();
-//		}
-//
-//		@Override
-//		public int getLength() {
-//			throw new UnsupportedOperationException();
-//		}
-//
-//		@Override
-//		public ByteBuf getBuffer() {
-//			throw new UnsupportedOperationException();
-//		}
-
 	}
 
 	public static abstract class PacketBuilder implements Packet.Builder {
 
 		private static Map<ProtocolType, Builder> registry = new HashMap<>();
-
-//		@Override
-//		public Packet build() {
-//			throw new UnsupportedOperationException();
-//		}
-//
-//		@Override
-//		public Packet build(final ByteBuf buffer) {
-//			throw new UnsupportedOperationException();
-//		}
 
 		public static <T extends NamedNumber> Packet.Builder getBuilder(T protocolType) {
 			Packet.Builder builder = registry.get(protocolType);

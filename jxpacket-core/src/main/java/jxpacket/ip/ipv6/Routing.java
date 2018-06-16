@@ -185,6 +185,7 @@ public class Routing extends AbstractPacket {
 			index += 1;
 			builder.routingData = new byte[Header.FIXED_ROUTING_DATA_LENGTH + 8 * builder.extensionLength];
 			buffer.getBytes(index, builder.routingData);
+			buffer.release();
 			return new Routing(builder);
 		}
 

@@ -97,6 +97,7 @@ public class Fragment extends AbstractPacket {
 			builder.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
 			index += 2;
 			builder.identification = buffer.getInt(index);
+			buffer.release();
 			return new Fragment(this);
 		}
 

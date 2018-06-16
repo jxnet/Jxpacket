@@ -48,7 +48,7 @@ public class EthernetTest extends BaseTest {
 
 	@After
 	public void after() {
-		buf.release();
+//		buf.release(); // buffer already release to the pool
 	}
 
 }

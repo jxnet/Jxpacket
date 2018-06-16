@@ -53,6 +53,7 @@ public class HopByHopOptions extends Options {
 			builder.options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
 					+ Options.Header.LENGTH_UNIT * builder.extensionLength];
 			buffer.getBytes(index, options);
+			buffer.release();
 			return new HopByHopOptions(this);
 		}
 

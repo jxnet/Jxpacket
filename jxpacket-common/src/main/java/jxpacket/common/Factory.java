@@ -5,6 +5,7 @@ package jxpacket.common;
  * @param <T> target type.
  * @param <V> source type.
  */
+@FunctionalInterface
 public interface Factory<T, V> {
 
 	/**

@@ -22,6 +22,7 @@ package jxpacket.common;
  * @author Ardika Rommy Sanjaya
  * @since 1.1.5
  */
+@FunctionalInterface
 public interface Encoder<T, V> {
 
     /**

@@ -24,6 +24,7 @@
     <modules>
         <module>jxpacket-common</module>
         <module>jxpacket-core</module>
+        <module>jxpacket-benchmark</module>
     </modules>
 
     <build>

@@ -161,6 +161,7 @@ public class Vlan extends AbstractPacket {
 			builder.type = ProtocolType.valueOf(type);
 			int size = index + 2;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			buffer.release();
 			return new Vlan(builder);
 		}
 

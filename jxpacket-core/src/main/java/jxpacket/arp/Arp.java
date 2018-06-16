@@ -270,6 +270,7 @@ public class Arp extends AbstractPacket {
 
 			int size = index;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			buffer.release();
 			return new Arp(builder);
 		}
 	}

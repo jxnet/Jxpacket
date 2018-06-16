@@ -16,6 +16,7 @@ public class Ipv4 extends Ip {
 	private Ipv4(final Builder builder) {
 		this.header = new Ipv4.Header(builder);
 		this.payload = null;
+		builder.payloadBuffer.release();
 	}
 
 	@Override
@@ -325,6 +326,7 @@ public class Ipv4 extends Ip {
 			}
 			int size = index;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			buffer.release();
 			return new Ipv4(builder);
 		}
 

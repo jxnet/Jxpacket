@@ -151,7 +151,7 @@ public class Ethernet extends AbstractPacket {
 
 			int size = index + 2;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
-
+			buffer.release();
 			return new Ethernet(builder);
 		}
 
