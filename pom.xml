@@ -4,13 +4,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>jxpacket</groupId>
+    <groupId>com.ardikars.jxpacket</groupId>
     <artifactId>jxpacket</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0</version>
 
     <properties>
-        <jdk.version>9</jdk.version>
+        <jdk.version>8</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>3.7.0</maven.compiler.version>
         <maven.compiler.source>${jdk.version}</maven.compiler.source>
@@ -22,33 +22,9 @@
     </properties>
 
     <modules>
-        <module>jxpacket-common</module>
         <module>jxpacket-core</module>
-        <module>jxpacket-benchmark</module>
+        <!--<module>jxpacket-benchmark</module>-->
     </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.compiler.version}</version>
-                <configuration>
-                    <!--<verbose>true</verbose>-->
-                    <fork>true</fork>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                    <compilerVersion>${jdk.version}</compilerVersion>
-                    <compilerArgs>
-                        <!--<arg>-verbose</arg>-->
-                        <!--<arg>-Xlint:all,-options,-path</arg>-->
-                    </compilerArgs>
-                    <encoding>UTF-8</encoding>
-                    <executable>/usr/local/jdk9/bin/javac</executable>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <reporting>
         <plugins>

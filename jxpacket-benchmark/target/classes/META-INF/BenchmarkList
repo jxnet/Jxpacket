@@ -1,0 +1,2 @@
+JMH S 32 jxpacket.benchmark.PacketFactory S 59 jxpacket.benchmark.generated.PacketFactory_jxpacket_jmhTest S 8 jxpacket S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E E E E 
+JMH S 32 jxpacket.benchmark.PacketFactory S 57 jxpacket.benchmark.generated.PacketFactory_pcap4j_jmhTest S 6 pcap4j S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E E E E 
