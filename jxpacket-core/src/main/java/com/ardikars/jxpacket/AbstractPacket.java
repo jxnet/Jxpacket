@@ -2,10 +2,13 @@ package com.ardikars.jxpacket;
 
 import com.ardikars.jxpacket.arp.Arp;
 import com.ardikars.jxpacket.ethernet.Vlan;
+import com.ardikars.jxpacket.ip.Ip;
 import com.ardikars.jxpacket.ip.Ipv4;
 import com.ardikars.jxpacket.ip.Ipv6;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.jxpacket.tcp.Tcp;
+import com.ardikars.jxpacket.udp.Udp;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,23 +82,36 @@ public abstract class AbstractPacket implements Packet {
 
 	public static abstract class PacketBuilder implements Packet.Builder {
 
-		private static Map<ProtocolType, Builder> registry = new HashMap<>();
+		private static Map<ProtocolType, Builder> dataLinkRegistry = new HashMap<>();
+		private static Map<Ip.Type, Builder> networkRegistry = new HashMap<>();
 
 		public static <T extends NamedNumber> Packet.Builder getBuilder(T protocolType) {
-			Packet.Builder builder = registry.get(protocolType);
-			if (builder == null) {
-				return new UnknownPacket.Builder();
+			if (protocolType instanceof ProtocolType) {
+				Packet.Builder builder = dataLinkRegistry.get(protocolType);
+				if (builder == null) {
+					return new UnknownPacket.Builder();
+				}
+				return builder;
+			} else if (protocolType instanceof Ip.Type) {
+				Packet.Builder builder = networkRegistry.get(protocolType);
+				if (builder == null) {
+					return new UnknownPacket.Builder();
+				}
+				return builder;
 			}
-			return builder;
+			return new UnknownPacket.Builder();
 		}
 
 		static {
-			registry.put(ProtocolType.IEEE_802_1_AD, new Vlan.Builder());
-			registry.put(ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES, new Vlan.Builder());
-			registry.put(ProtocolType.ARP, new Arp.Builder());
-			registry.put(ProtocolType.IPV4, new Ipv4.Builder());
-			registry.put(ProtocolType.IPV6, new Ipv6.Builder());
-			registry.put(ProtocolType.UNKNOWN, new UnknownPacket.Builder());
+			dataLinkRegistry.put(ProtocolType.IEEE_802_1_AD, new Vlan.Builder());
+			dataLinkRegistry.put(ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES, new Vlan.Builder());
+			dataLinkRegistry.put(ProtocolType.ARP, new Arp.Builder());
+			dataLinkRegistry.put(ProtocolType.IPV4, new Ipv4.Builder());
+			dataLinkRegistry.put(ProtocolType.IPV6, new Ipv6.Builder());
+			dataLinkRegistry.put(ProtocolType.UNKNOWN, new UnknownPacket.Builder());
+
+			networkRegistry.put(Ip.Type.TCP, new Tcp.Builder());
+			networkRegistry.put(Ip.Type.UDP, new Udp.Builder());
 		}
 
 	}

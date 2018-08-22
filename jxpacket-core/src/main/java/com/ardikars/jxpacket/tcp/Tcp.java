@@ -7,6 +7,8 @@ import com.ardikars.jxpacket.ProtocolType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
+import java.util.Arrays;
+
 public class Tcp extends AbstractPacket {
 
     private final Tcp.Header header;
@@ -14,13 +16,13 @@ public class Tcp extends AbstractPacket {
 
     private Tcp(final Builder builder) {
         this.header = new Tcp.Header(builder);
-        this.payload = super.getPayloadBuilder(this.header)
-                .build(builder.payloadBuffer);
+        this.payload = null;//super.getPayloadBuilder(this.header)
+                //.build(builder.payloadBuffer);
     }
 
     @Override
     public Tcp.Header getHeader() {
-        return null;
+        return this.header;
     }
 
     @Override
@@ -135,6 +137,23 @@ public class Tcp extends AbstractPacket {
             return buffer;
         }
 
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("Header{");
+            sb.append("sourcePort=").append(sourcePort & 0xffff);
+            sb.append(", destinationPort=").append(destinationPort & 0xffff);
+            sb.append(", sequence=").append(sequence & 0xffffffffL);
+            sb.append(", acknowledge=").append(acknowledge & 0xffffffffL);
+            sb.append(", dataOffset=").append(dataOffset & 0xf);
+            sb.append(", flags=").append(flags);
+            sb.append(", windowSize=").append(windowSize & 0xffff);
+            sb.append(", checksum=").append(checksum & 0xffff);
+            sb.append(", urgentPointer=").append(urgentPointer & 0xffff);
+            sb.append(", options=").append(Arrays.toString(options));
+            sb.append('}');
+            return sb.toString();
+        }
+
     }
 
     public static class Builder extends PacketBuilder {
@@ -218,7 +237,7 @@ public class Tcp extends AbstractPacket {
             this.destinationPort = buffer.getShort(2);
             this.sequence = buffer.getInt(4);
             this.acknowledge = buffer.getInt(8);
-            short flags = buffer.getShort(buffer.getShort(12));
+            short flags = buffer.getShort(12);
             this.dataOffset = (byte) (flags >> 12 & 0xf);
             this.flags = new TcpFlags.Builder().build((short) (flags & 0x1ff));
             this.windowSize = buffer.getShort(14);
@@ -231,7 +250,10 @@ public class Tcp extends AbstractPacket {
                 }
                 this.options = new byte[optionLength];
                 buffer.getBytes(20, options);
+                int length = 20 + optionLength;
+                this.payloadBuffer = buffer.copy(length, buffer.capacity() - length);
             }
+            this.payloadBuffer = buffer.copy(20, buffer.capacity() - 20);
             return new Tcp(this);
         }
 

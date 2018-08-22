@@ -14,7 +14,7 @@ import java.util.stream.StreamSupport;
 
 public class EthernetTest extends BaseTest {
 
-	private byte[] data = StringUtil.decodeHexDump(IPV6_ROUTING);
+	private byte[] data = StringUtil.decodeHexDump(ETHERNET_IPV4_UDP);
 
 	private Ethernet ethernet;
 	private ByteBuf buf = allocator.directBuffer(1500);

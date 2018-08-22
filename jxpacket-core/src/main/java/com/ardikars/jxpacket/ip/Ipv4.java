@@ -14,8 +14,8 @@ public class Ipv4 extends Ip {
 
 	private Ipv4(final Builder builder) {
 		this.header = new Ipv4.Header(builder);
-		this.payload = null;
-		builder.payloadBuffer.release();
+		this.payload = super.getPayloadBuilder(this.header)
+				.build(builder.payloadBuffer);
 	}
 
 	@Override
@@ -285,45 +285,33 @@ public class Ipv4 extends Ip {
 
 		@Override
 		public Packet build(final ByteBuf buffer) {
-			int index = 0;
 			Builder builder = new Builder();
-			builder.headerLength = (byte) (buffer.getByte(index) & 0xf);
-			index += 1;
-			byte tmp = buffer.getByte(index);
+			builder.headerLength = (byte) (buffer.getByte(0) & 0xf);
+			byte tmp = buffer.getByte(1);
 			builder.diffServ = (byte) ((tmp >> 2) & 0x3f);
 			builder.expCon = (byte) (tmp & 0x3);
-			index += 1;
-			builder.totalLength = buffer.getShort(index);
-			index += 2;
-			builder.identification = buffer.getShort(index);
-			index += 2;
-			short sscratch = buffer.getShort(index);
+			builder.totalLength = buffer.getShort(2);
+			builder.identification = buffer.getShort(4);
+			short sscratch = buffer.getShort(6);
 			builder.flags = (byte) (sscratch >> 13 & 0x7);
 			builder.fragmentOffset = (short) (sscratch & 0x1fff);
-			index += 2;
-			builder.ttl = buffer.getByte(index);
-			index += 1;
-			builder.protocol = Type.valueOf(buffer.getByte(index));
-			index += 1;
-			builder.checksum = ((short) (buffer.getShort(index) & 0xffff));
-
-			index += 2;
+			builder.ttl = buffer.getByte(8);
+			builder.protocol = Type.valueOf(buffer.getByte(9));
+			builder.checksum = ((short) (buffer.getShort(10) & 0xffff));
 			byte[] ipv4Buffer;
 			ipv4Buffer = new byte[Inet4Address.IPV4_ADDRESS_LENGTH];
-			buffer.getBytes(index, ipv4Buffer);
+			buffer.getBytes(12, ipv4Buffer);
 			builder.sourceAddress = Inet4Address.valueOf(ipv4Buffer);
-			index += Inet4Address.IPV4_ADDRESS_LENGTH;
 			ipv4Buffer = new byte[Inet4Address.IPV4_ADDRESS_LENGTH];
-			buffer.getBytes(index, ipv4Buffer);
+			buffer.getBytes(16, ipv4Buffer);
 			builder.destinationAddress = Inet4Address.valueOf(ipv4Buffer);
-			index += Inet4Address.IPV4_ADDRESS_LENGTH;
+			int size = 20;
 			if (builder.headerLength > 5) {
 				int optionsLength = (builder.headerLength - 5) * 4;
 				builder.options = new byte[optionsLength];
-				buffer.getBytes(index, builder.options);
-				index += optionsLength;
+				buffer.getBytes(20, builder.options);
+				size += optionsLength;
 			}
-			int size = index;
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			buffer.release();
 			return new Ipv4(builder);
