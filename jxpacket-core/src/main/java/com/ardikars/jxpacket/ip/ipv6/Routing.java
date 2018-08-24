@@ -56,16 +56,16 @@ public class Routing extends AbstractPacket {
 			return nextHeader;
 		}
 
-		public byte getExtensionLength() {
-			return extensionLength;
+		public int getExtensionLength() {
+			return extensionLength & 0xff;
 		}
 
 		public Type getRoutingType() {
 			return routingType;
 		}
 
-		public byte getSegmentLeft() {
-			return segmentLeft;
+		public int getSegmentLeft() {
+			return segmentLeft & 0xff;
 		}
 
 		public byte[] getRoutingData() {
@@ -85,16 +85,11 @@ public class Routing extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setByte(index, nextHeader.getValue());
-			index += 1;
-			buffer.setByte(index, extensionLength);
-			index += 1;
-			buffer.setByte(index, routingType.getValue());
-			index += 1;
-			buffer.setByte(index, segmentLeft);
-			index += 1;
-			buffer.setBytes(index, routingData);
+			buffer.setByte(0, nextHeader.getValue());
+			buffer.setByte(1, extensionLength);
+			buffer.setByte(2, routingType.getValue());
+			buffer.setByte(3, segmentLeft);
+			buffer.setBytes(4, routingData);
 			return buffer;
 		}
 
@@ -120,26 +115,6 @@ public class Routing extends AbstractPacket {
 		private byte segmentLeft;
 
 		private byte[] routingData;
-
-		public Ip.Type getNextHeader() {
-			return nextHeader;
-		}
-
-		public int getExtensionLength() {
-			return extensionLength & 0xff;
-		}
-
-		public Type getRoutingType() {
-			return routingType;
-		}
-
-		public int getSegmentLeft() {
-			return segmentLeft & 0xff;
-		}
-
-		public byte[] getRoutingData() {
-			return routingData;
-		}
 
 		public Builder nextHeader(final Ip.Type nextHeader) {
 			this.nextHeader = nextHeader;

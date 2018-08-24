@@ -84,10 +84,8 @@ public class Vlan extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setShort(index, ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
-			index += 2;
-			buffer.setShort(index, (((priorityCodePoint.getValue() << 13) & 0x07)
+			buffer.setShort(0, ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
+			buffer.setShort(2, (((priorityCodePoint.getValue() << 13) & 0x07)
 					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff)));
 			return buffer;
 		}
@@ -150,17 +148,14 @@ public class Vlan extends AbstractPacket {
 
 		@Override
 		public Vlan build(final ByteBuf buffer) {
-			int index = 0;
-			short tci = buffer.getShort(index);
-			index += 2;
-			short type = buffer.getShort(index);
+			short tci = buffer.getShort(0);
+			short type = buffer.getShort(2);
 			Vlan.Builder builder = new Builder();
 			builder.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));
 			builder.canonicalFormatIndicator = (byte) (tci >> 14 & 0x01);
 			builder.vlanIdentifier = (short) (tci & 0x0fff);
 			builder.type = ProtocolType.valueOf(type);
-			int size = index + 2;
-			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			builder.payloadBuffer = buffer.copy(Header.VLAN_HEADER_LENGTH, buffer.capacity() - Header.VLAN_HEADER_LENGTH);
 			buffer.release();
 			return new Vlan(builder);
 		}

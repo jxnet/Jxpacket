@@ -50,13 +50,10 @@ public abstract class Options extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setByte(index, nextHeader.getValue());
-			index += 1;
-			buffer.setInt(index, extensionLength);
+			buffer.setByte(0, nextHeader.getValue());
+			buffer.setInt(1, extensionLength);
 			if (options != null) {
-				index += 4;
-				buffer.setBytes(index, options);
+				buffer.setBytes(5, options);
 			}
 			return buffer;
 		}

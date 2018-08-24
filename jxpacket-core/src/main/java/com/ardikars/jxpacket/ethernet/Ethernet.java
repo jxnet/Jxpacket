@@ -75,12 +75,9 @@ public class Ethernet extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setBytes(index, destinationMacAddress.toBytes());
-			index += MacAddress.MAC_ADDRESS_LENGTH;
-			buffer.setBytes(index, sourceMacAddress.toBytes());
-			index += MacAddress.MAC_ADDRESS_LENGTH;
-			buffer.setShort(index, ethernetType.getValue());
+			buffer.setBytes(0, destinationMacAddress.toBytes());
+			buffer.setBytes(6, sourceMacAddress.toBytes());
+			buffer.setShort(12, ethernetType.getValue());
 			return buffer;
 		}
 
@@ -134,23 +131,15 @@ public class Ethernet extends AbstractPacket {
 		@Override
 		public Ethernet build(final ByteBuf buffer) {
 			Ethernet.Builder builder = new Ethernet.Builder();
-
-			int index = 0;
 			byte[] hardwareAddressBuffer;
 			hardwareAddressBuffer = new byte[MacAddress.MAC_ADDRESS_LENGTH];
-			buffer.getBytes(index, hardwareAddressBuffer);
+			buffer.getBytes(0, hardwareAddressBuffer);
 			builder.destinationMacAddress = MacAddress.valueOf(hardwareAddressBuffer);
-			index += MacAddress.MAC_ADDRESS_LENGTH;
-
 			hardwareAddressBuffer = new byte[MacAddress.MAC_ADDRESS_LENGTH];
-			buffer.getBytes(index, hardwareAddressBuffer);
+			buffer.getBytes(6, hardwareAddressBuffer);
 			builder.sourceMacAddress = MacAddress.valueOf(hardwareAddressBuffer);
-			index += MacAddress.MAC_ADDRESS_LENGTH;
-
-			builder.ethernetType = ProtocolType.valueOf(buffer.getShort(index));
-
-			int size = index + 2;
-			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			builder.ethernetType = ProtocolType.valueOf(buffer.getShort(12));
+			builder.payloadBuffer = buffer.copy(Header.ETHERNET_HEADER_LENGTH, buffer.capacity() - Header.ETHERNET_HEADER_LENGTH);
 			buffer.release();
 			return new Ethernet(builder);
 		}

@@ -22,12 +22,12 @@ public class Fragment extends AbstractPacket {
 
 	@Override
 	public Packet.Header getHeader() {
-		return null;
+		return header;
 	}
 
 	@Override
 	public Packet getPayload() {
-		return null;
+		return payload;
 	}
 
 	public static final class Header extends AbstractPacket.PacketHeader {
@@ -46,6 +46,22 @@ public class Fragment extends AbstractPacket {
 			this.identification = builder.identification;
 		}
 
+		public Ip.Type getNextHeader() {
+			return nextHeader;
+		}
+
+		public int getFragmentOffset() {
+			return fragmentOffset & 0x1fff;
+		}
+
+		public FlagType getFlagType() {
+			return flagType;
+		}
+
+		public int getIdentification() {
+			return identification & 0xffffffff;
+		}
+
 		@Override
 		public Ip.Type getPayloadType() {
 			return nextHeader;
@@ -59,15 +75,11 @@ public class Fragment extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setByte(index, nextHeader.getValue());
-			index += 1;
-			buffer.setByte(index, (byte) 0); // reserved
-			index += 1;
-			buffer.setShort(index, (short) ((fragmentOffset & 0x1fff) << 3 |
+			buffer.setByte(0, nextHeader.getValue());
+			buffer.setByte(1, (byte) 0); // reserved
+			buffer.setShort(2, (short) ((fragmentOffset & 0x1fff) << 3 |
 							flagType.getValue() & 0x1));
-			index += 1;
-			buffer.setInt(index, identification);
+			buffer.setInt(3, identification);
 			return buffer;
 		}
 
@@ -80,6 +92,26 @@ public class Fragment extends AbstractPacket {
 		private FlagType flagType;
 		private int identification;
 
+		public Builder nextHeader(Ip.Type nextHeader) {
+			this.nextHeader = nextHeader;
+			return this;
+		}
+
+		public Builder fragmentOffset(int fragmentOffset) {
+			this.fragmentOffset = (short) (fragmentOffset & 0x1fff);
+			return this;
+		}
+
+		public Builder flagType(FlagType flagType) {
+			this.flagType = flagType;
+			return this;
+		}
+
+		public Builder identification(int identification) {
+			this.identification = identification & 0xffffffff;
+			return this;
+		}
+
 		@Override
 		public Fragment build() {
 			return new Fragment(this);
@@ -88,15 +120,11 @@ public class Fragment extends AbstractPacket {
 		@Override
 		public Fragment build(final ByteBuf buffer) {
 			Builder builder = new Builder();
-			int index = 0;
-			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(index));
-			index += 1;
-			index += 1; // reserved
-			short sscratch = buffer.getShort(index);
+			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(0));
+			short sscratch = buffer.getShort(2);
 			builder.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
 			builder.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
-			index += 2;
-			builder.identification = buffer.getInt(index);
+			builder.identification = buffer.getInt(4);
 			buffer.release();
 			return new Fragment(this);
 		}

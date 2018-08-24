@@ -67,35 +67,35 @@ public class Ipv4 extends Ip {
 		}
 
 		public int getHeaderLength() {
-			return headerLength;
+			return headerLength & 0xf;
 		}
 
 		public int getDiffServ() {
-			return diffServ;
+			return diffServ & 0x3f;
 		}
 
 		public int getExpCon() {
-			return expCon;
+			return expCon & 0x3;
 		}
 
 		public int getTotalLength() {
-			return totalLength;
+			return totalLength & 0xffff;
 		}
 
 		public int getIdentification() {
-			return identification;
+			return identification & 0xffff;
 		}
 
 		public int getFlags() {
-			return flags;
+			return flags & 0x7;
 		}
 
 		public int getFragmentOffset() {
-			return fragmentOffset;
+			return fragmentOffset & 0x1fff;
 		}
 
 		public int getTtl() {
-			return ttl;
+			return ttl & 0xff;
 		}
 
 		public Type getProtocol() {

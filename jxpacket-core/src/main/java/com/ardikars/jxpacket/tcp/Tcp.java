@@ -16,8 +16,8 @@ public class Tcp extends AbstractPacket {
 
     private Tcp(final Builder builder) {
         this.header = new Tcp.Header(builder);
-        this.payload = null;//super.getPayloadBuilder(this.header)
-                //.build(builder.payloadBuffer);
+        this.payload = super.getPayloadBuilder(this.header)
+                .build(builder.payloadBuffer);
     }
 
     @Override

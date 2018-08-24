@@ -93,18 +93,12 @@ public class Ipv6 extends Ip {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setInt(index, (super.version & 0xf) << 28 | (trafficClass & 0xff) << 20 | flowLabel & 0xfffff);
-			index += 4;
-			buffer.setShort(index, payloadLength);
-			index += 2;
-			buffer.setByte(index, nextHeader.getValue());
-			index += 1;
-			buffer.setByte(index, hopLimit);
-			index += 1;
-			buffer.setBytes(index, sourceAddress.toBytes());
-			index += Inet6Address.IPV6_ADDRESS_LENGTH;
-			buffer.setBytes(index, destinationAddress.toBytes());
+			buffer.setInt(0, (super.version & 0xf) << 28 | (trafficClass & 0xff) << 20 | flowLabel & 0xfffff);
+			buffer.setShort(4, payloadLength);
+			buffer.setByte(6, nextHeader.getValue());
+			buffer.setByte(7, hopLimit);
+			buffer.setBytes(8, sourceAddress.toBytes());
+			buffer.setBytes(24, destinationAddress.toBytes());
 			return buffer;
 		}
 
@@ -184,30 +178,20 @@ public class Ipv6 extends Ip {
 
 		@Override
 		public Packet build(final ByteBuf buffer) {
-			int index = 0;
-			int iscratch = buffer.getInt(index);
-			index += 4;
+			int iscratch = buffer.getInt(0);
 			Builder builder = new Builder();
 			builder.trafficClass = (byte) (iscratch >> 20 & 0xff);
 			builder.flowLabel = (iscratch & 0xfffff);
-			builder.payloadLength = buffer.getShort(index);
-			index += 2;
-			builder.nextHeader = Type.valueOf(buffer.getByte(index));
-			index += 1;
-			builder.hopLimit = buffer.getByte(index);
-			index += 1;
-
+			builder.payloadLength = buffer.getShort(4);
+			builder.nextHeader = Type.valueOf(buffer.getByte(6));
+			builder.hopLimit = buffer.getByte(7);
 			byte[] addrBuf = new byte[Inet6Address.IPV6_ADDRESS_LENGTH];
-			buffer.getBytes(index, addrBuf);
+			buffer.getBytes(8, addrBuf);
 			builder.sourceAddress = Inet6Address.valueOf(addrBuf);
-			index += Inet6Address.IPV6_ADDRESS_LENGTH;
-
 			addrBuf = new byte[Inet6Address.IPV6_ADDRESS_LENGTH];
-			buffer.getBytes(index, addrBuf);
+			buffer.getBytes(24, addrBuf);
 			builder.destinationAddress = Inet6Address.valueOf(addrBuf);
-			index += Inet6Address.IPV6_ADDRESS_LENGTH;
-			int size = index;
-			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
+			builder.payloadBuffer = buffer.copy(Header.IPV6_HEADER_LENGTH, buffer.capacity() - Header.IPV6_HEADER_LENGTH);
 			buffer.release();
 			return new Ipv6(builder);
 		}

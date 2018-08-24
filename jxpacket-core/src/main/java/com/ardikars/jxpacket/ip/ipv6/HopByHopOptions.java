@@ -45,14 +45,11 @@ public class HopByHopOptions extends Options {
 
 		@Override
 		public HopByHopOptions build(final ByteBuf buffer) {
-			int index = 0;
 			Builder builder = new Builder();
-			index += 1;
-			builder.extensionLength = buffer.getInt(index);
-			index += 4;
+			builder.extensionLength = buffer.getInt(1);
 			builder.options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
 					+ Options.Header.LENGTH_UNIT * builder.extensionLength];
-			buffer.getBytes(index, options);
+			buffer.getBytes(5, options);
 			buffer.release();
 			return new HopByHopOptions(this);
 		}

@@ -83,19 +83,13 @@ public class Authentication extends AbstractPacket {
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT
 					.directBuffer(getLength());
-			int index = 0;
-			buffer.setByte(index, nextHeader.getValue());
-			index += 1;
-			buffer.setByte(index, payloadLength);
-			index += 1;
-			buffer.setShort(index, (short) 0); // reserved
-			index += 2;
-			buffer.setInt(index, sequenceNumber);
-			index += 4;
-			buffer.setInt(index, securityParameterIndex);
+			buffer.setByte(0, nextHeader.getValue());
+			buffer.setByte(1, payloadLength);
+			buffer.setShort(2, (short) 0); // reserved
+			buffer.setInt(4, sequenceNumber);
+			buffer.setInt(8, securityParameterIndex);
 			if (integrityCheckValue != null) {
-				index += 4;
-				buffer.setBytes(index, integrityCheckValue);
+				buffer.setBytes(12, integrityCheckValue);
 			}
 			return buffer;
 		}
@@ -154,18 +148,14 @@ public class Authentication extends AbstractPacket {
 		@Override
 		public Packet build(final ByteBuf buffer) {
 			Builder builder = new Builder();
-			int index = 0;
-			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(index));
-			index += 1;
-			builder.payloadLength = buffer.getByte(index);
-			index += 1 ;
-			index += 2; //reserved
-			builder.securityParameterIndex = buffer.getInt(index);
-			index += 4;
-			builder.sequenceNumber = buffer.getInt(index);
-			index += 4;
+			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(0));
+			builder.payloadLength = buffer.getByte(1);
+			builder.securityParameterIndex = buffer.getInt(4);
+			builder.sequenceNumber = buffer.getInt(8);
 			builder.integrityCheckValue = new byte[((builder.payloadLength + 2) * 8) - 12];
-			buffer.getBytes(index, builder.integrityCheckValue);
+			if (builder.integrityCheckValue != null) {
+				buffer.getBytes(12, builder.integrityCheckValue);
+			}
 			buffer.release();
 			return new Authentication(builder);
 		}
