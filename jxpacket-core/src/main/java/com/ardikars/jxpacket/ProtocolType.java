@@ -40,10 +40,10 @@ public final class ProtocolType extends NamedNumber<Short, ProtocolType> {
 			= new ProtocolType((short) 0x0800, "IPv4");
 
 	/**
-	 * ARP: 0x0806
+	 * Arp: 0x0806
 	 */
 	public static final ProtocolType ARP
-			= new ProtocolType((short) 0x0806, "ARP");
+			= new ProtocolType((short) 0x0806, "Arp");
 
 	/**
 	 * IEEE 802.1Q VLAN-tagged frames: 0x8100

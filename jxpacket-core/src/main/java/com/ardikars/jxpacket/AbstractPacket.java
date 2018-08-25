@@ -3,8 +3,8 @@ package com.ardikars.jxpacket;
 import com.ardikars.jxpacket.arp.Arp;
 import com.ardikars.jxpacket.ethernet.Vlan;
 import com.ardikars.jxpacket.ip.Ip;
-import com.ardikars.jxpacket.ip.Ipv4;
-import com.ardikars.jxpacket.ip.Ipv6;
+import com.ardikars.jxpacket.ip.Ip4;
+import com.ardikars.jxpacket.ip.Ip6;
 
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.tcp.Tcp;
@@ -106,8 +106,8 @@ public abstract class AbstractPacket implements Packet {
 			dataLinkRegistry.put(ProtocolType.IEEE_802_1_AD, new Vlan.Builder());
 			dataLinkRegistry.put(ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES, new Vlan.Builder());
 			dataLinkRegistry.put(ProtocolType.ARP, new Arp.Builder());
-			dataLinkRegistry.put(ProtocolType.IPV4, new Ipv4.Builder());
-			dataLinkRegistry.put(ProtocolType.IPV6, new Ipv6.Builder());
+			dataLinkRegistry.put(ProtocolType.IPV4, new Ip4.Builder());
+			dataLinkRegistry.put(ProtocolType.IPV6, new Ip6.Builder());
 			dataLinkRegistry.put(ProtocolType.UNKNOWN, new UnknownPacket.Builder());
 
 			networkRegistry.put(Ip.Type.TCP, new Tcp.Builder());

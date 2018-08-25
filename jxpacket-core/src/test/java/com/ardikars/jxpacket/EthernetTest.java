@@ -2,8 +2,8 @@ package com.ardikars.jxpacket;
 
 import com.ardikars.jxpacket.ethernet.Ethernet;
 import com.ardikars.jxpacket.ip.Ip;
-import com.ardikars.jxpacket.ip.Ipv6;
-import com.ardikars.jxpacket.ip.ipv6.Authentication;
+import com.ardikars.jxpacket.ip.Ip6;
+import com.ardikars.jxpacket.ip.ip6.Authentication;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 import org.junit.After;
@@ -41,7 +41,7 @@ public class EthernetTest extends BaseTest {
 
 	@Test
 	public void filterWithPredicate() {
-		ethernet.get(Ipv6.class, packet -> packet.getHeader().getPayloadType() == Ip.Type.IPV6_AH)
+		ethernet.get(Ip6.class, packet -> packet.getHeader().getPayloadType() == Ip.Type.IPV6_AH)
 				.stream().map(pkt -> pkt.getHeader())
 				.forEach(System.out::println);
 	}

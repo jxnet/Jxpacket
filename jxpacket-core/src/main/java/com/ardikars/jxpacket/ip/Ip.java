@@ -3,9 +3,9 @@ package com.ardikars.jxpacket.ip;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.AbstractPacket;
 import com.ardikars.jxpacket.UnknownPacket;
-import com.ardikars.jxpacket.ip.ipv6.Authentication;
-import com.ardikars.jxpacket.ip.ipv6.DestinationOptions;
-import com.ardikars.jxpacket.ip.ipv6.HopByHopOptions;
+import com.ardikars.jxpacket.ip.ip6.Authentication;
+import com.ardikars.jxpacket.ip.ip6.DestinationOptions;
+import com.ardikars.jxpacket.ip.ip6.HopByHopOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,11 +23,11 @@ public abstract class Ip extends AbstractPacket {
 		return builder;
 	}
 
-	protected static abstract class AbstractIpHeader extends AbstractPacket.PacketHeader {
+	protected static abstract class IpHeader extends AbstractPacket.PacketHeader {
 
 		protected final byte version;
 
-		protected AbstractIpHeader(final byte version) {
+		protected IpHeader(final byte version) {
 			this.version = version;
 		}
 
@@ -41,13 +41,13 @@ public abstract class Ip extends AbstractPacket {
 
 		public static final Type ICMP = new Type((byte) 1, "Internet Control Message Protocol Version 4");
 
-		public static final Type IPV6 = new Type((byte) 41, "IPv6 Header.");
+		public static final Type IPV6 = new Type((byte) 41, "IPv6 HeaderAbstract.");
 
 		public static final Type IPV6_ICMP = new Type((byte) 58, "Internet Control Message Protocol Version 6");
 
-		public static final Type IPV6_ROUTING = new Type((byte) 43, "Routing Header for IPv6.");
+		public static final Type IPV6_ROUTING = new Type((byte) 43, "Routing HeaderAbstract for IPv6.");
 
-		public static final Type IPV6_FRAGMENT = new Type((byte) 44, "Fragment Header for IPv6.");
+		public static final Type IPV6_FRAGMENT = new Type((byte) 44, "Fragment HeaderAbstract for IPv6.");
 
 		public static final Type IPV6_HOPOPT = new Type((byte) 0, "IPv6 Hop by Hop NeighborDiscoveryOptions.");
 
@@ -55,7 +55,7 @@ public abstract class Ip extends AbstractPacket {
 
 		public static final Type IPV6_ESP = new Type((byte) 50, "IPv6 ESP.");
 
-		public static final Type IPV6_AH = new Type((byte) 51, "IPv6 Authentication Header.");
+		public static final Type IPV6_AH = new Type((byte) 51, "IPv6 Authentication HeaderAbstract.");
 
 		public static final Type IGMP = new Type((byte) 2, "Internet Group Management Protocol");
 

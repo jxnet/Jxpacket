@@ -39,7 +39,7 @@ public class Arp extends AbstractPacket {
 	}
 
 	/**
-	 * @see <a href="https://tools.ietf.org/html/rfc826">Arp Header (RFC826)</a>
+	 * @see <a href="https://tools.ietf.org/html/rfc826">Arp HeaderAbstract (RFC826)</a>
 	 */
 	public static final class Header extends PacketHeader {
 
@@ -130,7 +130,7 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("Header{");
+			final StringBuilder sb = new StringBuilder("ArpHeader{");
 			sb.append("hardwareType=").append(getHardwareType());
 			sb.append(", protocolType=").append(getPayloadType());
 			sb.append(", hardwareAddressLength=").append(getHardwareAddressLength());
@@ -249,9 +249,9 @@ public class Arp extends AbstractPacket {
 
 	public static final class OperationCode extends NamedNumber<Short, OperationCode> {
 
-		public static final OperationCode ARP_REQUEST = new OperationCode((short) 0x01, "ARP Request");
+		public static final OperationCode ARP_REQUEST = new OperationCode((short) 0x01, "Arp Request");
 
-		public static final OperationCode ARP_REPLY = new OperationCode((short) 0x02, "ARP Reply");
+		public static final OperationCode ARP_REPLY = new OperationCode((short) 0x02, "Arp Reply");
 
 		public static final OperationCode UNKNOWN = new OperationCode((short) -1, "Unknown");
 

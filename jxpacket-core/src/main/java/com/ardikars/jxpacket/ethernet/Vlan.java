@@ -92,7 +92,7 @@ public class Vlan extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("Header{");
+			final StringBuilder sb = new StringBuilder("VlanHeader{");
 			sb.append("priorityCodePoint=").append(getPriorityCodePoint());
 			sb.append(", canonicalFormatIndicator=").append(getCanonicalFormatIndicator());
 			sb.append(", vlanIdentifier=").append(getVlanIdentifier());

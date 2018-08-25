@@ -83,7 +83,7 @@ public class Ethernet extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("Header{");
+			final StringBuilder sb = new StringBuilder("EthernetHeader{");
 			sb.append("destinationMacAddress=").append(getDestinationMacAddress());
 			sb.append(", sourceMacAddress=").append(getSourceMacAddress());
 			sb.append(", ethernetType=").append(getEthernetType());

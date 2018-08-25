@@ -139,7 +139,7 @@ public class Tcp extends AbstractPacket {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("Header{");
+            final StringBuilder sb = new StringBuilder("HeaderAbstract{");
             sb.append("sourcePort=").append(sourcePort & 0xffff);
             sb.append(", destinationPort=").append(destinationPort & 0xffff);
             sb.append(", sequence=").append(sequence & 0xffffffffL);
