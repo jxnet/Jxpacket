@@ -30,7 +30,7 @@ public abstract class Options extends AbstractPacket {
 		}
 
 		public int getExtensionLength() {
-			return extensionLength;
+			return extensionLength & 0xffffffff;
 		}
 
 		public byte[] getOptions() {

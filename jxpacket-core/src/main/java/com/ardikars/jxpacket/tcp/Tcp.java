@@ -61,40 +61,40 @@ public class Tcp extends AbstractPacket {
             this.options = builder.options;
         }
 
-        public short getSourcePort() {
-            return (short) (this.sourcePort & 0xffff);
+        public int getSourcePort() {
+            return this.sourcePort & 0xffff;
         }
 
-        public short getDestinationPort() {
-            return (short) (this.destinationPort & 0xffff);
+        public int getDestinationPort() {
+            return this.destinationPort & 0xffff;
         }
 
         public int getSequence() {
-            return (int) (this.sequence & 0xffffffffL);
+            return this.sequence & 0xffffffff;
         }
 
         public int getAcknowledge() {
-            return (int) (this.acknowledge & 0xffffffffL);
+            return this.acknowledge & 0xffffffff;
         }
 
-        public byte getDataOffset() {
-            return (byte) (this.dataOffset & 0xf);
+        public int getDataOffset() {
+            return this.dataOffset & 0xf;
         }
 
         public TcpFlags getFlags() {
             return flags;
         }
 
-        public short getWindowSize() {
-            return (short) (this.windowSize & 0xffff);
+        public int getWindowSize() {
+            return this.windowSize & 0xffff;
         }
 
-        public short getChecksum() {
-            return (short) (this.checksum & 0xffff);
+        public int getChecksum() {
+            return this.checksum & 0xffff;
         }
 
-        public short getUrgentPointer() {
-            return (short) (this.urgentPointer & 0xffff);
+        public int getUrgentPointer() {
+            return this.urgentPointer & 0xffff;
         }
 
         public byte[] getOptions() {
@@ -171,27 +171,27 @@ public class Tcp extends AbstractPacket {
 
         private ByteBuf payloadBuffer;
 
-        public Builder sourcePort(short sourcePort) {
+        public Builder sourcePort(int sourcePort) {
             this.sourcePort = (short) (sourcePort & 0xffff);
             return this;
         }
 
-        public Builder destinationPort(short destinationPort) {
+        public Builder destinationPort(int destinationPort) {
             this.destinationPort = (short) (destinationPort & 0xffff);
             return this;
         }
 
         public Builder sequence(int sequence) {
-            this.sequence = (int) (sequence & 0xffffffffL);
+            this.sequence = sequence & 0xffffffff;
             return this;
         }
 
         public Builder acknowledge(int acknowledge) {
-            this.acknowledge = (int) (acknowledge & 0xffffffffL);
+            this.acknowledge = acknowledge & 0xffffffff;
             return this;
         }
 
-        public Builder dataOffset(byte dataOffset) {
+        public Builder dataOffset(int dataOffset) {
             this.dataOffset = (byte) (dataOffset & 0xf);
             return this;
         }
@@ -201,18 +201,18 @@ public class Tcp extends AbstractPacket {
             return this;
         }
 
-        public Builder windowsSize(short windowSize) {
-            this.windowSize = (byte) (windowSize & 0xffff);
+        public Builder windowsSize(int windowSize) {
+            this.windowSize = (short) (windowSize & 0xffff);
             return this;
         }
 
-        public Builder checksum(short checksum) {
-            this.checksum = (byte) (checksum & 0xffff);
+        public Builder checksum(int checksum) {
+            this.checksum = (short) (checksum & 0xffff);
             return this;
         }
 
-        public Builder urgentPointer(short urgentPointer) {
-            this.urgentPointer = (byte) (urgentPointer & 0xffff);
+        public Builder urgentPointer(int urgentPointer) {
+            this.urgentPointer = (short) (urgentPointer & 0xffff);
             return this;
         }
 

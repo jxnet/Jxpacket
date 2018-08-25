@@ -43,6 +43,18 @@ public class Udp extends AbstractPacket {
             this.checksum = builder.checksum;
         }
 
+        public int getSourcePort() {
+            return sourcePort & 0xffff;
+        }
+
+        public int getDestinationPort() {
+            return destinationPort & 0xffff;
+        }
+
+        public int getChecksum() {
+            return checksum & 0xffff;
+        }
+
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return null;
@@ -50,7 +62,7 @@ public class Udp extends AbstractPacket {
 
         @Override
         public int getLength() {
-            return length;
+            return length & 0xffff;
         }
 
         @Override
@@ -85,23 +97,23 @@ public class Udp extends AbstractPacket {
 
         private ByteBuf payloadBuffer;
 
-        public Builder sourcePort(short sourcePort) {
-            this.sourcePort = sourcePort;
+        public Builder sourcePort(int sourcePort) {
+            this.sourcePort = (short) (sourcePort & 0xffff);
             return this;
         }
 
-        public Builder destinationPort(short destinationPort) {
-            this.destinationPort = destinationPort;
+        public Builder destinationPort(int destinationPort) {
+            this.destinationPort = (short) (destinationPort & 0xffff);
             return this;
         }
 
-        public Builder length(short length) {
-            this.length = length;
+        public Builder length(int length) {
+            this.length = (short) (length & 0xffff);
             return this;
         }
 
-        public Builder checksum(short checksum) {
-            this.checksum = checksum;
+        public Builder checksum(int checksum) {
+            this.checksum = (short) (checksum & 0xffff);
             return this;
         }
 
