@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -60,7 +61,7 @@ public class Icmp6DestinationUnreachable extends Icmp.IcmpTypeAndCode {
     public static final Icmp6DestinationUnreachable ERROR_IN_SOURCE_ROUTING_HEADER =
             new Icmp6DestinationUnreachable((byte) 7, "Error in Source Routing HeaderAbstract");
 
-    protected Icmp6DestinationUnreachable(Byte code, String name) {
+    public Icmp6DestinationUnreachable(Byte code, String name) {
         super((byte) 1, code, name);
     }
 
@@ -73,6 +74,17 @@ public class Icmp6DestinationUnreachable extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(NO_ROUTE_TO_DESTINATION);
+        Icmp6.ICMP6_REGISTRY.add(COMMUNICATION_WITH_DESTINATION_ADMINIS_TRATIVELY_PROHIBITED);
+        Icmp6.ICMP6_REGISTRY.add(BEYOND_SCOPE_OF_SOURCE_ADDRESS);
+        Icmp6.ICMP6_REGISTRY.add(ADDRESS_UNREACHABLE);
+        Icmp6.ICMP6_REGISTRY.add(PORT_UNREACHABLE);
+        Icmp6.ICMP6_REGISTRY.add(SOURCE_ADDRESS_FAILED);
+        Icmp6.ICMP6_REGISTRY.add(REJECT_ROUTE_TO_DESTINATION);
+        Icmp6.ICMP6_REGISTRY.add(ERROR_IN_SOURCE_ROUTING_HEADER);
     }
 
 }

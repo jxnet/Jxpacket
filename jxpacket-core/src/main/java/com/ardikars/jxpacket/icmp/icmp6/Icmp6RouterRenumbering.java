@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -34,7 +35,7 @@ public class Icmp6RouterRenumbering extends Icmp.IcmpTypeAndCode {
     public static final Icmp6RouterRenumbering SEQUENCE_NUMBER_RESET =
             new Icmp6RouterRenumbering((byte) 255, "Sequence number reset");
 
-    protected Icmp6RouterRenumbering(Byte code, String name) {
+    public Icmp6RouterRenumbering(Byte code, String name) {
         super((byte) 138, code, name);
     }
 
@@ -47,6 +48,12 @@ public class Icmp6RouterRenumbering extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(ROUTER_RENUMBERING_COMMAND);
+        Icmp6.ICMP6_REGISTRY.add(ROUTER_RENUMBERING_RESULT);
+        Icmp6.ICMP6_REGISTRY.add(SEQUENCE_NUMBER_RESET);
     }
 
 }

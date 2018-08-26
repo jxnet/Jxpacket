@@ -20,7 +20,12 @@ package com.ardikars.jxpacket.icmp;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.AbstractPacket;
 import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.icmp.icmp6.*;
 import io.netty.buffer.ByteBuf;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,8 +33,16 @@ import io.netty.buffer.ByteBuf;
  */
 public class Icmp6 extends AbstractPacket {
 
+    private final Header header;
+    private final Packet payload;
+
+    public Icmp6(Builder builder) {
+        this.header = new Header(builder);
+        this.payload = null;
+    }
+
     @Override
-    public HeaderAbstract getHeader() {
+    public Header getHeader() {
         return null;
     }
 
@@ -38,83 +51,75 @@ public class Icmp6 extends AbstractPacket {
         return null;
     }
 
-    public static class HeaderAbstract extends Icmp.IcmpHeader {
+    public static class Header extends Icmp.IcmpHeader {
+
+        private Header(Builder builder) {
+            super.typeAndCode = builder.typeAndCode;
+            super.checksum = builder.checksum;
+        }
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return null;
         }
 
+    }
+
+    public static class Builder extends Icmp.IcmpPacketBuilder {
+
         @Override
-        public ByteBuf getBuffer() {
-            return null;
+        public Packet build() {
+            return new Icmp6(this);
+        }
+
+        @Override
+        public Packet build(ByteBuf buffer) {
+            byte type = buffer.getByte(0);
+            byte code = buffer.getByte(1);
+            Optional<Icmp.IcmpTypeAndCode> optional = Icmp6.ICMP6_REGISTRY.stream()
+                    .filter(typeAndCode -> typeAndCode.getType() == type && typeAndCode.getCode() == code)
+                    .findFirst();
+            if (optional.isPresent()) {
+                super.typeAndCode = optional.get();
+            } else {
+                super.typeAndCode = new Icmp.IcmpTypeAndCode(type, code, "Unknown");
+            }
+            return new Icmp6(this);
         }
 
     }
 
-    //    public static Icmp6 newInstance(final ByteBuffer buffer) {
-//        Icmp6 icmp = new Icmp6();
-//        icmp.setTypeAndCode(IcmpTypeAndCode.getTypeAndCode(buffer.get(), buffer.get()));
-//        icmp.setChecksum(buffer.getShort());
-//        icmp.nextPacket = buffer.slice();
-//        return icmp;
-//    }
-//
-//    public static Icmp6 newInstance(final byte[] bytes) {
-//        return newInstance(bytes, 0, bytes.length);
-//    }
-//
-//    public static Icmp6 newInstance(final byte[] bytes, final int offset, final int length) {
-//        return newInstance(ByteBuffer.wrap(bytes, offset, length));
-//    }
-//
-//    @Override
-//    public Packet setPacket(final Packet packet) {
-//        if (packet == null) {
-//            return this;
-//        }
-//        switch (packet.getClass().getName()) {
-//            default:
-//                this.nextPacket = packet.buffer();
-//                return this;
-//        }
-//    }
-//
-//    @Override
-//    public Packet getPacket() {
-//        return getTypeAndCode().decode(nextPacket);
-//    }
-//
-//    @Override
-//    public byte[] bytes() {
-//        if (this.nextPacket != null) {
-//            this.nextPacket.rewind();
-//        }
-//        byte[] data = new byte[ICMP_HEADER_LENGTH + ((this.nextPacket == null) ? 0 : this.nextPacket.capacity())];
-//        ByteBuffer buffer = ByteBuffer.wrap(data);
-//        buffer.put(this.getTypeAndCode().getType());
-//        buffer.put(this.getTypeAndCode().getCode());
-//        buffer.putShort(this.getChecksum());
-//        if (this.nextPacket != null) {
-//            buffer.put(this.nextPacket);
-//        }
-//        return data;
-//    }
-//
-//    @Override
-//    public ByteBuffer buffer() {
-//        if (this.nextPacket != null) {
-//            this.nextPacket.rewind();
-//        }
-//        ByteBuffer buffer = ByteBuffer
-//                .allocateDirect(ICMP_HEADER_LENGTH + ((this.nextPacket == null) ? 0 : this.nextPacket.capacity()));
-//        buffer.put(this.getTypeAndCode().getType());
-//        buffer.put(this.getTypeAndCode().getCode());
-//        buffer.putShort(this.getChecksum());
-//        if (this.nextPacket != null) {
-//            buffer.put(this.nextPacket);
-//        }
-//        return buffer;
-//    }
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<>();
+
+    static {
+        try {
+            Class.forName(Icmp6DestinationUnreachable.class.getName());
+            Class.forName(Icmp6EchoReply.class.getName());
+            Class.forName(Icmp6EchoRequest.class.getName());
+            Class.forName(Icmp6HomeAgentAddressDiscoveryReply.class.getName());
+            Class.forName(Icmp6HomeAgentAddressDiscoveryRequest.class.getName());
+            Class.forName(Icmp6InverseNeighborDiscoveryAdvertisement.class.getName());
+            Class.forName(Icmp6InverseNeighborDiscoverySolicitation.class.getName());
+            Class.forName(Icmp6MobilePrefixAdvertisement.class.getName());
+            Class.forName(Icmp6MobilePrefixSolicitation.class.getName());
+            Class.forName(Icmp6MulticastListenerDone.class.getName());
+            Class.forName(Icmp6MulticastListenerQuery.class.getName());
+            Class.forName(Icmp6MulticastListenerReportV1.class.getName());
+            Class.forName(Icmp6MulticastListenerReportV2.class.getName());
+            Class.forName(Icmp6NeighborAdvertisement.class.getName());
+            Class.forName(Icmp6NeighborSolicitation.class.getName());
+            Class.forName(Icmp6NodeInformationQuery.class.getName());
+            Class.forName(Icmp6NodeInformationResponse.class.getName());
+            Class.forName(Icmp6PacketTooBigMessage.class.getName());
+            Class.forName(Icmp6ParameterProblem.class.getName());
+            Class.forName(Icmp6RedirectMessage.class.getName());
+            Class.forName(Icmp6RouterAdvertisement.class.getName());
+            Class.forName(Icmp6RouterRenumbering.class.getName());
+            Class.forName(Icmp6RouterSolicitation.class.getName());
+            Class.forName(Icmp6TimeExceeded.class.getName());
+        } catch (ClassNotFoundException e) {
+            //
+        }
+    }
 
 }

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp6HomeAgentAddressDiscoveryReply extends Icmp.IcmpTypeAndCode {
     public static final Icmp6HomeAgentAddressDiscoveryReply HOME_AGENT_ADDRESS_DISCOVERY_REPLY =
             new Icmp6HomeAgentAddressDiscoveryReply((byte) 0, "Home Agent Address Discovery Reply Message");
 
-    protected Icmp6HomeAgentAddressDiscoveryReply(Byte code, String name) {
+    public Icmp6HomeAgentAddressDiscoveryReply(Byte code, String name) {
         super((byte) 145, code, name);
     }
 
@@ -41,6 +42,10 @@ public class Icmp6HomeAgentAddressDiscoveryReply extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(HOME_AGENT_ADDRESS_DISCOVERY_REPLY);
     }
 
 }

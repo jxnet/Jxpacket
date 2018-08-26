@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp4;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp4;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -34,7 +35,7 @@ public class Icmp4ParameterProblem extends Icmp.IcmpTypeAndCode {
     public static final Icmp4ParameterProblem BAD_LENGTH =
             new Icmp4ParameterProblem((byte) 2, "Bad length");
 
-    protected Icmp4ParameterProblem(Byte code, String name) {
+    public Icmp4ParameterProblem(Byte code, String name) {
         super((byte) 12, code, name);
     }
 
@@ -47,6 +48,12 @@ public class Icmp4ParameterProblem extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp4.ICMP4_REGISTRY.add(POINTER_INDICATES_THE_ERROR);
+        Icmp4.ICMP4_REGISTRY.add(MISSING_REQUIRED_OPTION);
+        Icmp4.ICMP4_REGISTRY.add(BAD_LENGTH);
     }
 
 }

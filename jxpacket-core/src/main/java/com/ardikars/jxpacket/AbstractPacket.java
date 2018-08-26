@@ -2,6 +2,7 @@ package com.ardikars.jxpacket;
 
 import com.ardikars.jxpacket.arp.Arp;
 import com.ardikars.jxpacket.ethernet.Vlan;
+import com.ardikars.jxpacket.icmp.Icmp4;
 import com.ardikars.jxpacket.ip.Ip;
 import com.ardikars.jxpacket.ip.Ip4;
 import com.ardikars.jxpacket.ip.Ip6;
@@ -112,6 +113,7 @@ public abstract class AbstractPacket implements Packet {
 
 			networkRegistry.put(Ip.Type.TCP, new Tcp.Builder());
 			networkRegistry.put(Ip.Type.UDP, new Udp.Builder());
+			networkRegistry.put(Ip.Type.ICMP, new Icmp4.Builder());
 		}
 
 	}

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp6EchoRequest extends Icmp.IcmpTypeAndCode {
     public static final Icmp6EchoRequest ECHO_REQUEST =
             new Icmp6EchoRequest((byte) 0, "Echo request");
 
-    protected Icmp6EchoRequest(Byte code, String name) {
+    public Icmp6EchoRequest(Byte code, String name) {
         super((byte) 128, code, name);
     }
 
@@ -41,6 +42,10 @@ public class Icmp6EchoRequest extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(ECHO_REQUEST);
     }
 
 }

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp6RedirectMessage extends Icmp.IcmpTypeAndCode {
     public static final Icmp6RedirectMessage REDIRECT_MESSAGE =
             new Icmp6RedirectMessage((byte) 0, "Redirect message");
 
-    protected Icmp6RedirectMessage(Byte code, String name) {
+    public Icmp6RedirectMessage(Byte code, String name) {
         super((byte) 137, code, name);
     }
 
@@ -41,6 +42,10 @@ public class Icmp6RedirectMessage extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(REDIRECT_MESSAGE);
     }
 
 }

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -31,7 +32,7 @@ public class Icmp6TimeExceeded extends Icmp.IcmpTypeAndCode {
     public static Icmp6TimeExceeded FRAGMENT_REASSEMBLY_TIME_EXCEEDED =
             new Icmp6TimeExceeded((byte) 1, "Fragment reassembly time exceeded");
 
-    protected Icmp6TimeExceeded(Byte code, String name) {
+    public Icmp6TimeExceeded(Byte code, String name) {
         super((byte) 3, code, name);
     }
 
@@ -44,6 +45,11 @@ public class Icmp6TimeExceeded extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(HOP_LIMIT_EXCEEDED_IN_TRANSIT);
+        Icmp6.ICMP6_REGISTRY.add(FRAGMENT_REASSEMBLY_TIME_EXCEEDED);
     }
 
 }

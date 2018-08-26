@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp4;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp4;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp4RouterSolicitation extends Icmp.IcmpTypeAndCode {
     public static final Icmp4RouterSolicitation ROUTER_DISCOVERY_SELECTION_SOLICITATION =
             new Icmp4RouterSolicitation((byte) 0, "Router discovery/selection/solicitation");
 
-    protected Icmp4RouterSolicitation(Byte code, String name) {
+    public Icmp4RouterSolicitation(Byte code, String name) {
         super((byte) 10, code, name);
     }
 
@@ -41,6 +42,10 @@ public class Icmp4RouterSolicitation extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp4.ICMP4_REGISTRY.add(ROUTER_DISCOVERY_SELECTION_SOLICITATION);
     }
 
 }

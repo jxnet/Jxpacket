@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp4;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp4;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,19 +29,23 @@ public class Icmp4EchoReply extends Icmp.IcmpTypeAndCode {
     public static final Icmp4EchoReply ECHO_REPLY =
             new Icmp4EchoReply((byte) 0, "Echo reply (used to ping)");
 
-    protected Icmp4EchoReply(Byte code, String name) {
+    public Icmp4EchoReply(Byte code, String name) {
         super((byte) 0, code, name);
     }
 
     public static Icmp4EchoReply register(Byte code, String name) {
-        Icmp4EchoReply icmpv4EchoReply =
+        Icmp4EchoReply echoReply =
                 new Icmp4EchoReply(code, name);
-        return icmpv4EchoReply;
+        return echoReply;
     }
 
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp4.ICMP4_REGISTRY.add(ECHO_REPLY);
     }
 
 }

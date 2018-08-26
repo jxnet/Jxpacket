@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -41,7 +42,7 @@ public class Icmp6PacketTooBigMessage extends Icmp.IcmpTypeAndCode {
     public static final Icmp6PacketTooBigMessage PACKET_TOO_BIG_MESSAGE =
             new Icmp6PacketTooBigMessage((byte) 0, "Packet too big message");
 
-    protected Icmp6PacketTooBigMessage(Byte code, String name) {
+    public Icmp6PacketTooBigMessage(Byte code, String name) {
         super((byte) 2, code, name);
     }
 
@@ -54,6 +55,10 @@ public class Icmp6PacketTooBigMessage extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(PACKET_TOO_BIG_MESSAGE);
     }
 
 }

@@ -170,7 +170,7 @@ public class Ip4 extends Ip {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("HeaderAbstract{");
+			final StringBuilder sb = new StringBuilder("Ip4Header{");
 			sb.append("version=").append(super.getVersion());
 			sb.append(", headerLength=").append(getHeaderLength());
 			sb.append(", diffServ=").append(getDiffServ());
@@ -191,7 +191,7 @@ public class Ip4 extends Ip {
 
 	}
 
-	public static final class Builder extends PacketBuilder {
+	public static final class Builder extends IpPaketBuilder {
 
 		private byte headerLength;
 		private byte diffServ;

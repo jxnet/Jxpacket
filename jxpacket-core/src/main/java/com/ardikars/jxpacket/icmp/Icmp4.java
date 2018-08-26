@@ -20,7 +20,12 @@ package com.ardikars.jxpacket.icmp;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.AbstractPacket;
 import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.icmp.icmp4.*;
 import io.netty.buffer.ByteBuf;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,18 +33,30 @@ import io.netty.buffer.ByteBuf;
  */
 public class Icmp4 extends AbstractPacket {
 
+    private final Header header;
+    private final Packet payload;
+
+    private Icmp4(Builder builder) {
+        this.header = new Header(builder);
+        this.payload = null;
+    }
 
     @Override
-    public HeaderAbstract getHeader() {
-        return null;
+    public Icmp4.Header getHeader() {
+        return this.header;
     }
 
     @Override
     public Packet getPayload() {
-        return null;
+        return this.payload;
     }
 
-    public static class HeaderAbstract extends Icmp.IcmpHeader {
+    public static class Header extends Icmp.IcmpHeader {
+
+        private Header(Builder builder) {
+            super.typeAndCode = builder.typeAndCode;
+            super.checksum = builder.checksum;
+        }
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
@@ -47,103 +64,80 @@ public class Icmp4 extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
-            return null;
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("Icmp4Header{");
+            sb.append("typeAndCode=").append(super.typeAndCode);
+            sb.append(", checksum=").append(super.checksum);
+            sb.append('}');
+            return sb.toString();
         }
 
     }
 
+    public static class Builder extends Icmp.IcmpPacketBuilder {
 
-    //    public static Icmp4 newInstance(final ByteBuffer buffer) {
-//        Icmp4 icmp = new Icmp4();
-//        icmp.setTypeAndCode(IcmpTypeAndCode.getTypeAndCode(buffer.get(), buffer.get()));
-//        icmp.setChecksum(buffer.getShort());
-//        icmp.nextPacket = buffer.slice();
-//        return icmp;
-//    }
-//
-//    public static Icmp4 newInstance(final byte[] bytes) {
-//        return newInstance(bytes, 0, bytes.length);
-//    }
-//
-//    public static Icmp4 newInstance(final byte[] bytes, final int offset, final int length) {
-//        return newInstance(ByteBuffer.wrap(bytes, offset, length));
-//    }
-//
-//    @Override
-//    public Packet setPacket(final Packet packet) {
-//        if (packet == null) {
-//            return this;
-//        }
-//        switch (packet.getClass().getName()) {
-//            default:
-//                this.nextPacket = packet.buffer();
-//                return this;
-//        }
-//    }
-//
-//    @Override
-//    public byte[] bytes() {
-//        if (this.nextPacket != null) {
-//            this.nextPacket.rewind();
-//        }
-//        byte[] data = new byte[ICMP_HEADER_LENGTH + ((this.nextPacket == null) ? 0 : this.nextPacket.capacity())];
-//        ByteBuffer buffer = ByteBuffer.wrap(data);
-//        buffer.put(this.getTypeAndCode().getType());
-//        buffer.put(this.getTypeAndCode().getCode());
-//        buffer.putShort(this.getChecksum());
-//        if (this.nextPacket != null) {
-//            buffer.put(this.nextPacket);
-//        }
-//        if (this.getChecksum() == 0) {
-//            buffer.rewind();
-//            int accumulation = 0;
-//            for (int i = 0; i < data.length / 2; ++i) {
-//                accumulation += 0xffff & buffer.getShort();
-//            }
-//            // pad to an even number of shorts
-//            if (data.length % 2 > 0) {
-//                accumulation += (buffer.get() & 0xff) << 8;
-//            }
-//
-//            accumulation = (accumulation >> 16 & 0xffff)
-//                    + (accumulation & 0xffff);
-//            this.setChecksum((short) (~accumulation & 0xffff));
-//            buffer.putShort(2, this.getChecksum());
-//        }
-//        return data;
-//    }
-//
-//    @Override
-//    public ByteBuffer buffer() {
-//        if (this.nextPacket != null) {
-//            this.nextPacket.rewind();
-//        }
-//        ByteBuffer buffer = ByteBuffer
-//                .allocateDirect(ICMP_HEADER_LENGTH + ((this.nextPacket == null) ? 0 : this.nextPacket.capacity()));
-//        buffer.put(this.getTypeAndCode().getType());
-//        buffer.put(this.getTypeAndCode().getCode());
-//        buffer.putShort(this.getChecksum());
-//        if (this.nextPacket != null) {
-//            buffer.put(this.nextPacket);
-//        }
-//        if (this.getChecksum() == 0) {
-//            buffer.rewind();
-//            int accumulation = 0;
-//            for (int i = 0; i < buffer.capacity() / 2; ++i) {
-//                accumulation += 0xffff & buffer.getShort();
-//            }
-//            // pad to an even number of shorts
-//            if (buffer.capacity() % 2 > 0) {
-//                accumulation += (buffer.get() & 0xff) << 8;
-//            }
-//
-//            accumulation = (accumulation >> 16 & 0xffff)
-//                    + (accumulation & 0xffff);
-//            this.setChecksum((short) (~accumulation & 0xffff));
-//            buffer.putShort(2, this.getChecksum());
-//        }
-//        return buffer;
-//    }
+        @Override
+        public Packet build() {
+            return new Icmp4(this);
+        }
+
+        @Override
+        public Packet build(ByteBuf buffer) {
+            byte type = buffer.getByte(0);
+            byte code = buffer.getByte(1);
+            Optional<Icmp.IcmpTypeAndCode> optional = Icmp4.ICMP4_REGISTRY.stream()
+                    .filter(typeAndCode -> typeAndCode.getType() == type && typeAndCode.getCode() == code)
+                    .findFirst();
+            if (optional.isPresent()) {
+                super.typeAndCode = optional.get();
+            } else {
+                super.typeAndCode = new Icmp.IcmpTypeAndCode(type, code, "Unknown");
+            }
+            if (super.checksum == 0) {
+                int index = 0;
+                int accumulation = 0;
+                for (int i = 0; i < buffer.capacity() / 2; ++i) {
+                    accumulation += 0xffff & buffer.getShort(index);
+                    index += 2;
+                }
+                // pad to an even number of shorts
+                if (buffer.capacity() % 2 > 0) {
+                    accumulation += (buffer.getByte(index) & 0xff) << 8;
+                    index++;
+                }
+                accumulation = (accumulation >> 16 & 0xffff)
+                        + (accumulation & 0xffff);
+                short checksum = ((short) (~accumulation & 0xffff));
+                super.checksum = buffer.getShort(2);
+                if (checksum == super.checksum) {
+                    // valid checksum
+                } else {
+                    // invalid checksum
+                }
+                return new Icmp4(this);
+            }
+            return new Icmp4(this);
+        }
+
+    }
+
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP4_REGISTRY = new HashSet<>();
+
+    static {
+        try {
+            Class.forName(Icmp4DestinationUnreachable.class.getName());
+            Class.forName(Icmp4EchoReply.class.getName());
+            Class.forName(Icmp4EchoRequest.class.getName());
+            Class.forName(Icmp4ParameterProblem.class.getName());
+            Class.forName(Icmp4RedirectMessage.class.getName());
+            Class.forName(Icmp4RouterAdvertisement.class.getName());
+            Class.forName(Icmp4RouterSolicitation.class.getName());
+            Class.forName(Icmp4TimeExceeded.class.getName());
+            Class.forName(Icmp4Timestamp.class.getName());
+            Class.forName(Icmp4TimestampReply.class.getName());
+        } catch (ClassNotFoundException e) {
+            //
+        }
+    }
 
 }

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp6MobilePrefixSolicitation extends Icmp.IcmpTypeAndCode {
     public static final Icmp6MobilePrefixSolicitation MOBILE_PREFIX_SOLICITATION =
             new Icmp6MobilePrefixSolicitation((byte) 0, "Mobile Prefix Solicitation");
 
-    protected Icmp6MobilePrefixSolicitation(Byte code, String name) {
+    public Icmp6MobilePrefixSolicitation(Byte code, String name) {
         super((byte) 146, code, name);
     }
 
@@ -41,6 +42,10 @@ public class Icmp6MobilePrefixSolicitation extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(MOBILE_PREFIX_SOLICITATION);
     }
 
 }

@@ -3,6 +3,11 @@ package com.ardikars.jxpacket.icmp;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.AbstractPacket;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+
+import java.nio.ByteBuffer;
+import java.util.Collection;
+import java.util.HashSet;
 
 public abstract class Icmp extends AbstractPacket {
 
@@ -10,8 +15,8 @@ public abstract class Icmp extends AbstractPacket {
 
         public static int ICMP_HEADER_LENGTH = 4;
 
-        private IcmpTypeAndCode typeAndCode;
-        private short checksum;
+        protected IcmpTypeAndCode typeAndCode;
+        protected short checksum;
 
         @Override
         public abstract <T extends NamedNumber> T getPayloadType();
@@ -22,7 +27,32 @@ public abstract class Icmp extends AbstractPacket {
         }
 
         @Override
-        public abstract ByteBuf getBuffer();
+        public ByteBuf getBuffer() {
+            ByteBuf buffer = ByteBufAllocator.DEFAULT.directBuffer(getLength());
+            buffer.setShort(0, typeAndCode.getType());
+            buffer.setShort(1, typeAndCode.getCode());
+            buffer.setShort(2, checksum);
+            return buffer;
+        }
+
+    }
+
+    protected static abstract class IcmpPacketBuilder extends PacketBuilder {
+
+        protected IcmpTypeAndCode typeAndCode;
+        protected short checksum;
+
+        protected ByteBuffer payloadBuffer;
+
+        public IcmpPacketBuilder typeAndCode(IcmpTypeAndCode typeAndCode) {
+            this.typeAndCode = typeAndCode;
+            return this;
+        }
+
+        public IcmpPacketBuilder payloadBuffer(ByteBuffer buffer) {
+            this.payloadBuffer = buffer;
+            return this;
+        }
 
     }
 
@@ -38,6 +68,18 @@ public abstract class Icmp extends AbstractPacket {
             this.name = name;
         }
 
+        public byte getType() {
+            return type;
+        }
+
+        public byte getCode() {
+            return code;
+        }
+
+        public String getName() {
+            return name;
+        }
+
         @Override
         public String toString() {
             final StringBuilder sb = new StringBuilder("IcmpTypeAndCode{");
@@ -47,6 +89,7 @@ public abstract class Icmp extends AbstractPacket {
             sb.append('}');
             return sb.toString();
         }
+
     }
 
 }

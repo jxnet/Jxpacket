@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -34,7 +35,7 @@ public class Icmp6NodeInformationQuery extends Icmp.IcmpTypeAndCode {
     public static final Icmp6NodeInformationQuery DATA_FIELD_CONTAINS_IPV4_ADDRESS =
             new Icmp6NodeInformationQuery((byte) 2, "Data field contains an IPv4 address");
 
-    protected Icmp6NodeInformationQuery(Byte code, String name) {
+    public Icmp6NodeInformationQuery(Byte code, String name) {
         super((byte) 139, code, name);
     }
 
@@ -47,6 +48,12 @@ public class Icmp6NodeInformationQuery extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(DATA_FIELD_CONTAINS_IPV6_ADDRESS);
+        Icmp6.ICMP6_REGISTRY.add(DATA_FIELD_CONTAIONS_NAME);
+        Icmp6.ICMP6_REGISTRY.add(DATA_FIELD_CONTAINS_IPV4_ADDRESS);
     }
 
 }

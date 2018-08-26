@@ -104,7 +104,7 @@ public class Ip6 extends Ip {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("HeaderAbstract{");
+			final StringBuilder sb = new StringBuilder("Ip6Header{");
 			sb.append("version=").append(super.getVersion());
 			sb.append(", trafficClass=").append(getTrafficClass());
 			sb.append(", flowLabel=").append(getFlowLabel());
@@ -119,7 +119,7 @@ public class Ip6 extends Ip {
 
 	}
 
-	public static final class Builder extends PacketBuilder {
+	public static final class Builder extends IpPaketBuilder {
 
 		private byte trafficClass;
 		private int flowLabel;

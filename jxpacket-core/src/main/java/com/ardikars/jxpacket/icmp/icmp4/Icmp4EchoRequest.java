@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp4;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp4;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,19 +29,23 @@ public class Icmp4EchoRequest extends Icmp.IcmpTypeAndCode {
     public static final Icmp4EchoRequest ECHO_REQUEST =
             new Icmp4EchoRequest((byte) 0, "Echo request (used to ping)");
 
-    protected Icmp4EchoRequest(Byte code, String name) {
+    public Icmp4EchoRequest(Byte code, String name) {
         super((byte) 8, code, name);
     }
 
     public static Icmp4EchoRequest register(Byte code, String name) {
-        Icmp4EchoRequest icmPv4EchoRequest =
+        Icmp4EchoRequest echoRequest =
                 new Icmp4EchoRequest(code, name);
-        return icmPv4EchoRequest;
+        return echoRequest;
     }
 
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp4.ICMP4_REGISTRY.add(ECHO_REQUEST);
     }
 
 }

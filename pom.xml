@@ -26,45 +26,4 @@
         <!--<module>jxpacket-benchmark</module>-->
     </modules>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven.checkstyle.version}</version>
-                <configuration>
-                    <logViolationsToConsole>true</logViolationsToConsole>
-                    <failOnViolation>false</failOnViolation>
-                    <failsOnError>true</failsOnError>
-                    <configLocation>.mvn/resources/checkstyle/checkstyle.xml</configLocation>
-                    <propertiesLocation>.mvn/resources/checkstyle/checkstyle.properties</propertiesLocation>
-                    <suppressionsLocation>.mvn/resources/checkstyle/suppression.xml</suppressionsLocation>
-                    <suppressionsFileExpression>suppressionFile</suppressionsFileExpression>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>dependencies</report>
-                            <report>scm</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8</version>
-            </plugin>
-        </plugins>
-    </reporting>
-
 </project>

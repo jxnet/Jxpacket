@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp4;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp4;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -73,7 +74,7 @@ public class Icmp4DestinationUnreachable extends Icmp.IcmpTypeAndCode {
     public static final Icmp4DestinationUnreachable PRECEDENCE_CUTOFF_IN_EFFECT =
             new Icmp4DestinationUnreachable((byte) 15, "Precedence cutoff in effect");
 
-    protected Icmp4DestinationUnreachable(Byte code, String name) {
+    public Icmp4DestinationUnreachable(Byte code, String name) {
         super((byte) 3, code, name);
     }
 
@@ -86,6 +87,25 @@ public class Icmp4DestinationUnreachable extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp4.ICMP4_REGISTRY.add(DESTINATION_NETWORK_UNREACHABLE);
+        Icmp4.ICMP4_REGISTRY.add(DESTINATION_HOST_UNREACHABLE);
+        Icmp4.ICMP4_REGISTRY.add(DESTINATION_PROTOCOL_UNREACHABLE);
+        Icmp4.ICMP4_REGISTRY.add( DESTINATION_PORT_UNREACHABLE);
+        Icmp4.ICMP4_REGISTRY.add(FRAGMENTATION_REQUIRED);
+        Icmp4.ICMP4_REGISTRY.add(SOURCE_ROUTE_FAILED);
+        Icmp4.ICMP4_REGISTRY.add(DESTINATION_NETWORK_UNKNOWN);
+        Icmp4.ICMP4_REGISTRY.add(DESTINATION_HOST_UNKOWN);
+        Icmp4.ICMP4_REGISTRY.add(SOURCE_HOST_ISOLATED);
+        Icmp4.ICMP4_REGISTRY.add(NETWORK_ADMINISTRATIVELY_PROHIBITED);
+        Icmp4.ICMP4_REGISTRY.add(HOST_ADMINISTRATIVELY_PROHIBITED);
+        Icmp4.ICMP4_REGISTRY.add(NETWORK_UNREACHABLE_FOR_TOS);
+        Icmp4.ICMP4_REGISTRY.add(HOST_UNREACHABLE_FOR_TOS);
+        Icmp4.ICMP4_REGISTRY.add(COMMUNICATION_ADMINISTRATIVELY_PROHIBITED);
+        Icmp4.ICMP4_REGISTRY.add(HOST_PRECEDENCE_VIOLATION);
+        Icmp4.ICMP4_REGISTRY.add(PRECEDENCE_CUTOFF_IN_EFFECT);
     }
 
 }

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp6InverseNeighborDiscoveryAdvertisement extends Icmp.IcmpTypeAnd
     public static final Icmp6InverseNeighborDiscoveryAdvertisement INVERSE_NEIGHBOR_DISCOVERY_ADVERTISEMENT =
             new Icmp6InverseNeighborDiscoveryAdvertisement((byte) 0, "Inverse Neighbor Discovery Advertisement Message");
 
-    protected Icmp6InverseNeighborDiscoveryAdvertisement(Byte code, String name) {
+    public Icmp6InverseNeighborDiscoveryAdvertisement(Byte code, String name) {
         super((byte) 142, code, name);
     }
 
@@ -41,6 +42,10 @@ public class Icmp6InverseNeighborDiscoveryAdvertisement extends Icmp.IcmpTypeAnd
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(INVERSE_NEIGHBOR_DISCOVERY_ADVERTISEMENT);
     }
 
 }

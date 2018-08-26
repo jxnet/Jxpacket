@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp6;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp6;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -34,7 +35,7 @@ public class Icmp6ParameterProblem extends Icmp.IcmpTypeAndCode {
     public static final Icmp6ParameterProblem UNRECOGNIZED_IPV6_OPTION_ENCOUNTERED =
             new Icmp6ParameterProblem((byte) 2, "Unrecognized IPv6 option encountered");
 
-    protected Icmp6ParameterProblem(Byte code, String name) {
+    public Icmp6ParameterProblem(Byte code, String name) {
         super((byte) 4, code, name);
     }
 
@@ -47,6 +48,12 @@ public class Icmp6ParameterProblem extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp6.ICMP6_REGISTRY.add(ERRORNEOUS_HEADER_FIELD_ENCOUTERED);
+        Icmp6.ICMP6_REGISTRY.add(UNRECOGNIZED_NEXT_HEADER_TYPE_ENCOUNTERED);
+        Icmp6.ICMP6_REGISTRY.add(UNRECOGNIZED_IPV6_OPTION_ENCOUNTERED);
     }
 
 }

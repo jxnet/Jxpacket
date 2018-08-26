@@ -37,6 +37,10 @@ public abstract class Ip extends AbstractPacket {
 
 	}
 
+	protected static abstract class IpPaketBuilder extends PacketBuilder {
+
+	}
+
 	public static final class Type extends NamedNumber<Byte, Type> {
 
 		public static final Type ICMP = new Type((byte) 1, "Internet Control Message Protocol Version 4");

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.icmp.icmp4;
 
 import com.ardikars.jxpacket.icmp.Icmp;
+import com.ardikars.jxpacket.icmp.Icmp4;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -28,7 +29,7 @@ public class Icmp4RedirectMessage extends Icmp.IcmpTypeAndCode {
     public static final Icmp4RedirectMessage REDIRECT_DATAGRAM_FOR_NETWORK =
             new Icmp4RedirectMessage((byte) 0, "Redirect datagram for the network");
 
-    protected Icmp4RedirectMessage(Byte code, String name) {
+    public Icmp4RedirectMessage(Byte code, String name) {
         super((byte) 5, code, name);
     }
 
@@ -40,6 +41,10 @@ public class Icmp4RedirectMessage extends Icmp.IcmpTypeAndCode {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    static {
+        Icmp4.ICMP4_REGISTRY.add(REDIRECT_DATAGRAM_FOR_NETWORK);
     }
 
 }
