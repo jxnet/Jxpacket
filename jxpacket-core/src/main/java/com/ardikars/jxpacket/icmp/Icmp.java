@@ -6,8 +6,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
 import java.nio.ByteBuffer;
-import java.util.Collection;
-import java.util.HashSet;
 
 public abstract class Icmp extends AbstractPacket {
 
