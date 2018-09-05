@@ -1,6 +1,7 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import com.ardikars.jxpacket.ip.Ip;
@@ -70,7 +71,7 @@ public abstract class Options extends AbstractPacket {
 
 	}
 
-	abstract static class Builder extends AbstractPacket.PacketBuilder {
+	abstract static class Builder implements Packet.Builder {
 
 		protected Ip.Type nextHeader;
 		protected int extensionLength;

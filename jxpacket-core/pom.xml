@@ -14,7 +14,8 @@
     <artifactId>jxpacket-core</artifactId>
 
     <properties>
-        <common.version>1.1.0.Final</common.version>
+        <common.version>1.2.0.RC3</common.version>
+        <jxnet.version>1.4.0.RC6</jxnet.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
@@ -31,9 +32,9 @@
             <version>${common.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-buffer</artifactId>
-            <version>4.1.25.Final</version>
+            <groupId>com.ardikars.jxnet</groupId>
+            <artifactId>jxnet-packet</artifactId>
+            <version>${jxnet.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

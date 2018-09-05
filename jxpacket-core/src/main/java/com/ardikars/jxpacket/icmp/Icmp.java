@@ -1,7 +1,8 @@
 package com.ardikars.jxpacket.icmp;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
@@ -9,7 +10,7 @@ import java.nio.ByteBuffer;
 
 public abstract class Icmp extends AbstractPacket {
 
-    protected static abstract class IcmpHeader extends AbstractPacket.PacketHeader {
+    protected static abstract class IcmpHeader implements Packet.Header {
 
         public static int ICMP_HEADER_LENGTH = 4;
 
@@ -35,7 +36,7 @@ public abstract class Icmp extends AbstractPacket {
 
     }
 
-    protected static abstract class IcmpPacketBuilder extends PacketBuilder {
+    protected static abstract class IcmpPacketBuilder implements Packet.Builder {
 
         protected IcmpTypeAndCode typeAndCode;
         protected short checksum;

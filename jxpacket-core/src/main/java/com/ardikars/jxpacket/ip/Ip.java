@@ -1,7 +1,8 @@
 package com.ardikars.jxpacket.ip;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import com.ardikars.jxpacket.UnknownPacket;
 import com.ardikars.jxpacket.ip.ip6.Authentication;
 import com.ardikars.jxpacket.ip.ip6.DestinationOptions;
@@ -23,7 +24,7 @@ public abstract class Ip extends AbstractPacket {
 		return builder;
 	}
 
-	protected static abstract class IpHeader extends AbstractPacket.PacketHeader {
+	protected static abstract class IpHeader implements Packet.Header {
 
 		protected final byte version;
 
@@ -37,7 +38,7 @@ public abstract class Ip extends AbstractPacket {
 
 	}
 
-	protected static abstract class IpPaketBuilder extends PacketBuilder {
+	protected static abstract class IpPaketBuilder implements Packet.Builder {
 
 	}
 

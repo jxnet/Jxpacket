@@ -1,8 +1,8 @@
 package com.ardikars.jxpacket.ip.ip6;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxpacket.AbstractPacket;
-import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import com.ardikars.jxpacket.ip.Ip;
@@ -107,7 +107,7 @@ public class Routing extends AbstractPacket {
 
 	}
 
-	public static final class Builder extends PacketBuilder {
+	public static final class Builder implements Packet.Builder {
 
 		private Ip.Type nextHeader;
 		private byte extensionLength;

@@ -1,9 +1,9 @@
 package com.ardikars.jxpacket.ethernet;
 
 import com.ardikars.common.net.MacAddress;
-import com.ardikars.jxpacket.AbstractPacket;
-import com.ardikars.jxpacket.Packet;
-import com.ardikars.jxpacket.ProtocolType;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxnet.packet.layer.NetworkLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -14,8 +14,8 @@ public class Ethernet extends AbstractPacket {
 
 	private Ethernet(final Builder builder) {
 		this.header = new Ethernet.Header(builder);
-		this.payload = super.getPayloadBuilder(this.header)
-				.build(builder.payloadBuffer);
+		this.payload = NetworkLayer.valueOf(this.header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	public static final Ethernet newPacket(final ByteBuf buffer) {
@@ -35,13 +35,13 @@ public class Ethernet extends AbstractPacket {
 	/**
 	 * @see <a href="https://en.wikipedia.org/wiki/Ethernet_frame">Ethernet II Structure</a>
 	 */
-	public static class Header extends PacketHeader {
+	public static class Header implements Packet.Header {
 
 		public static final int ETHERNET_HEADER_LENGTH = 14;
 
 		private MacAddress destinationMacAddress;
 		private MacAddress sourceMacAddress;
-		private ProtocolType ethernetType;
+		private NetworkLayer ethernetType;
 
 		private Header(final Builder builder) {
 			this.destinationMacAddress = builder.destinationMacAddress;
@@ -57,13 +57,12 @@ public class Ethernet extends AbstractPacket {
 			return sourceMacAddress;
 		}
 
-		public ProtocolType getEthernetType() {
+		public NetworkLayer getEthernetType() {
 			return ethernetType;
 		}
 
-
 		@Override
-		public ProtocolType getPayloadType() {
+		public NetworkLayer getPayloadType() {
 			return ethernetType;
 		}
 
@@ -93,11 +92,11 @@ public class Ethernet extends AbstractPacket {
 
 	}
 
-	public static class Builder extends PacketBuilder {
+	public static class Builder implements Packet.Builder {
 
 		private MacAddress destinationMacAddress;
 		private MacAddress sourceMacAddress;
-		private ProtocolType ethernetType;
+		private NetworkLayer ethernetType;
 
 		private ByteBuf payloadBuffer;
 
@@ -113,7 +112,7 @@ public class Ethernet extends AbstractPacket {
 			return this;
 		}
 
-		public Builder ethernetType(final ProtocolType ethernetType) {
+		public Builder ethernetType(final NetworkLayer ethernetType) {
 			this.ethernetType = ethernetType;
 			return this;
 		}
@@ -138,7 +137,7 @@ public class Ethernet extends AbstractPacket {
 			hardwareAddressBuffer = new byte[MacAddress.MAC_ADDRESS_LENGTH];
 			buffer.getBytes(6, hardwareAddressBuffer);
 			builder.sourceMacAddress = MacAddress.valueOf(hardwareAddressBuffer);
-			builder.ethernetType = ProtocolType.valueOf(buffer.getShort(12));
+			builder.ethernetType = NetworkLayer.valueOf(buffer.getShort(12));
 			builder.payloadBuffer = buffer.copy(Header.ETHERNET_HEADER_LENGTH, buffer.capacity() - Header.ETHERNET_HEADER_LENGTH);
 			buffer.release();
 			return new Ethernet(builder);

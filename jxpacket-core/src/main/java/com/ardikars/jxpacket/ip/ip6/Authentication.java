@@ -1,7 +1,7 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxpacket.AbstractPacket;
-import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import com.ardikars.jxpacket.ip.Ip;
@@ -31,7 +31,7 @@ public class Authentication extends AbstractPacket {
 	/**
 	 * @see <a href="https://tools.ietf.org/html/rfc4302">Authentication HeaderAbstract</a>
 	 */
-	public static final class Header extends PacketHeader {
+	public static final class Header implements Packet.Header {
 
 		public static final byte FIXED_HEADER_LENGTH = 12; // bytes
 
@@ -107,7 +107,7 @@ public class Authentication extends AbstractPacket {
 		}
 	}
 
-	public static final class Builder extends PacketBuilder {
+	public static final class Builder implements Packet.Builder {
 
 		private Ip.Type nextHeader;
 		private byte payloadLength;

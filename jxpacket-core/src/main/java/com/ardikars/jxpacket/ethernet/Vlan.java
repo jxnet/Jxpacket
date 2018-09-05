@@ -1,9 +1,9 @@
 package com.ardikars.jxpacket.ethernet;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxpacket.AbstractPacket;
-import com.ardikars.jxpacket.Packet;
-import com.ardikars.jxpacket.ProtocolType;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxnet.packet.layer.NetworkLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -17,8 +17,8 @@ public class Vlan extends AbstractPacket {
 
 	private Vlan(final Builder builder) {
 		this.header = new Vlan.Header(builder);
-		this.payload = super.getPayloadBuilder(this.header)
-				.build(builder.payloadBuffer);
+		this.payload = NetworkLayer.valueOf(this.header.getType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	public static Vlan newPacket(final ByteBuf buffer) {
@@ -39,14 +39,14 @@ public class Vlan extends AbstractPacket {
 	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_802.1ad">IEEE 802.1ad</a>
 	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_802.1Q">IEEE 802.1Q</a>
 	 */
-	public static final class Header extends PacketHeader {
+	public static final class Header implements Packet.Header {
 
 		public static final int VLAN_HEADER_LENGTH = 4;
 
 		private PriorityCodePoint priorityCodePoint; // 3 bit
 		private byte canonicalFormatIndicator; // 1 bit
 		private short vlanIdentifier; // 12 bit
-		private ProtocolType type;
+		private NetworkLayer type;
 
 		private Header(final Builder builder) {
 			this.priorityCodePoint = builder.priorityCodePoint;
@@ -67,12 +67,12 @@ public class Vlan extends AbstractPacket {
 			return vlanIdentifier & 0x0fff;
 		}
 
-		public ProtocolType getType() {
+		public NetworkLayer getType() {
 			return type;
 		}
 
 		@Override
-		public ProtocolType getPayloadType() {
+		public NetworkLayer getPayloadType() {
 			return this.type;
 		}
 
@@ -84,7 +84,7 @@ public class Vlan extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			buffer.setShort(0, ProtocolType.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
+//			buffer.setShort(0, DataLinkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
 			buffer.setShort(2, (((priorityCodePoint.getValue() << 13) & 0x07)
 					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff)));
 			return buffer;
@@ -103,12 +103,12 @@ public class Vlan extends AbstractPacket {
 
 	}
 
-	public static final class Builder extends PacketBuilder {
+	public static final class Builder implements Packet.Builder {
 
 		private PriorityCodePoint priorityCodePoint; // 3 bit
 		private byte canonicalFormatIndicator; // 1 bit
 		private short vlanIdentifier; // 12 bit
-		private ProtocolType type;
+		private NetworkLayer type;
 
 		private ByteBuf payloadBuffer;
 
@@ -131,7 +131,7 @@ public class Vlan extends AbstractPacket {
 			return this;
 		}
 
-		public Builder type(final ProtocolType type) {
+		public Builder type(final NetworkLayer type) {
 			this.type = type;
 			return this;
 		}
@@ -154,7 +154,7 @@ public class Vlan extends AbstractPacket {
 			builder.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));
 			builder.canonicalFormatIndicator = (byte) (tci >> 14 & 0x01);
 			builder.vlanIdentifier = (short) (tci & 0x0fff);
-			builder.type = ProtocolType.valueOf(type);
+			builder.type = NetworkLayer.valueOf(type);
 			builder.payloadBuffer = buffer.copy(Header.VLAN_HEADER_LENGTH, buffer.capacity() - Header.VLAN_HEADER_LENGTH);
 			buffer.release();
 			return new Vlan(builder);

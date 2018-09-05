@@ -1,7 +1,12 @@
 package com.ardikars.jxpacket;
 
+import com.ardikars.jxnet.packet.layer.DataLinkLayer;
+import com.ardikars.jxnet.packet.layer.NetworkLayer;
+import com.ardikars.jxnet.packet.layer.TransportLayer;
 import com.ardikars.jxpacket.ethernet.Ethernet;
+import com.ardikars.jxpacket.icmp.Icmp4;
 import com.ardikars.jxpacket.ip.Ip;
+import com.ardikars.jxpacket.ip.Ip4;
 import com.ardikars.jxpacket.ip.Ip6;
 import com.ardikars.jxpacket.ip.ip6.Authentication;
 import io.netty.buffer.ByteBuf;
@@ -21,6 +26,9 @@ public class EthernetTest extends BaseTest {
 
 	@Before
 	public void before() {
+		DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
+		NetworkLayer.register(NetworkLayer.IPV4, new Ip4.Builder());
+		TransportLayer.register(TransportLayer.ICMP, new Icmp4.Builder());
 		buf.setBytes(0, data);
 		ethernet = Ethernet.newPacket(buf);
 	}
@@ -39,12 +47,12 @@ public class EthernetTest extends BaseTest {
 				.forEach(System.out::println);
 	}
 
-	@Test
-	public void filterWithPredicate() {
-		ethernet.get(Ip6.class, packet -> packet.getHeader().getPayloadType() == Ip.Type.IPV6_AH)
-				.stream().map(pkt -> pkt.getHeader())
-				.forEach(System.out::println);
-	}
+//	@Test
+//	public void filterWithPredicate() {
+//		ethernet.get(Ip6.class, packet -> packet.getHeader().getPayloadType() == Ip.Type.IPV6_AH)
+//				.stream().map(pkt -> pkt.getHeader())
+//				.forEach(System.out::println);
+//	}
 
 	@After
 	public void after() {

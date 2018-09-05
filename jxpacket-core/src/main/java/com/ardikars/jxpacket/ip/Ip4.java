@@ -1,7 +1,8 @@
 package com.ardikars.jxpacket.ip;
 
 import com.ardikars.common.net.Inet4Address;
-import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxnet.packet.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -14,8 +15,8 @@ public class Ip4 extends Ip {
 
 	private Ip4(final Builder builder) {
 		this.header = new Ip4.Header(builder);
-		this.payload = super.getPayloadBuilder(this.header)
-				.build(builder.payloadBuffer);
+		this.payload = TransportLayer.valueOf(this.header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override

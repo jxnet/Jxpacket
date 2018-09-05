@@ -1,7 +1,7 @@
 package com.ardikars.jxpacket.ip;
 
 import com.ardikars.common.net.Inet6Address;
-import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -198,7 +198,7 @@ public class Ip6 extends Ip {
 
 	}
 
-	public abstract static class ExtensionHeader extends PacketHeader {
+	public abstract static class ExtensionHeader implements Packet.Header {
 
 	}
 

@@ -1,8 +1,8 @@
 package com.ardikars.jxpacket.udp;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxpacket.AbstractPacket;
-import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -27,7 +27,7 @@ public class Udp extends AbstractPacket {
     }
 
 
-    public static class Header extends PacketHeader {
+    public static class Header implements Packet.Header {
 
         public static final int UDP_HEADER_LENGTH = 8;
 
@@ -88,7 +88,7 @@ public class Udp extends AbstractPacket {
 
     }
 
-    public static class Builder extends PacketBuilder {
+    public static class Builder implements Packet.Builder {
 
         private short sourcePort;
         private short destinationPort;

@@ -1,6 +1,6 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxnet.packet.Packet;
 import com.ardikars.jxpacket.ip.Ip;
 import io.netty.buffer.ByteBuf;
 

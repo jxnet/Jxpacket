@@ -1,9 +1,9 @@
 package com.ardikars.jxpacket.tcp;
 
 import com.ardikars.common.util.Validate;
-import com.ardikars.jxpacket.AbstractPacket;
-import com.ardikars.jxpacket.Packet;
-import com.ardikars.jxpacket.ProtocolType;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxnet.packet.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -16,8 +16,8 @@ public class Tcp extends AbstractPacket {
 
     private Tcp(final Builder builder) {
         this.header = new Tcp.Header(builder);
-        this.payload = super.getPayloadBuilder(this.header)
-                .build(builder.payloadBuffer);
+        this.payload = TransportLayer.valueOf(this.header.getPayloadType().getValue())
+                .newInstance(builder.payloadBuffer);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class Tcp extends AbstractPacket {
     /**
      * @see <a href="https://tools.ietf.org/html/rfc793">TCP</a>
      */
-    public static final class Header extends PacketHeader {
+    public static final class Header implements Packet.Header {
 
         public static int TCP_HEADER_LENGTH = 20;
 
@@ -107,8 +107,8 @@ public class Tcp extends AbstractPacket {
         }
 
         @Override
-        public ProtocolType getPayloadType() {
-            return ProtocolType.UNKNOWN;
+        public TransportLayer getPayloadType() {
+            return TransportLayer.UNKNOWN;
         }
 
         @Override
@@ -156,7 +156,7 @@ public class Tcp extends AbstractPacket {
 
     }
 
-    public static class Builder extends PacketBuilder {
+    public static class Builder implements Packet.Builder {
 
         private short sourcePort;
         private short destinationPort;

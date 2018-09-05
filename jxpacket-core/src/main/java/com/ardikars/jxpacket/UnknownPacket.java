@@ -1,5 +1,8 @@
 package com.ardikars.jxpacket;
 
+import com.ardikars.common.util.NamedNumber;
+import com.ardikars.jxnet.packet.AbstractPacket;
+import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 
 public class UnknownPacket extends AbstractPacket {
@@ -24,7 +27,7 @@ public class UnknownPacket extends AbstractPacket {
 		return null;
 	}
 
-	public static final class Header extends PacketHeader {
+	public static final class Header implements Packet.Header {
 
 		private ByteBuf buffer;
 
@@ -43,12 +46,12 @@ public class UnknownPacket extends AbstractPacket {
 		}
 
 		@Override
-		public ProtocolType getPayloadType() {
-			return ProtocolType.UNKNOWN;
+		public <T extends NamedNumber> T getPayloadType() {
+			return null;
 		}
 	}
 
-	public static final class Builder extends PacketBuilder {
+	public static final class Builder implements Packet.Builder {
 
 		private ByteBuf payloadBuffer;
 
