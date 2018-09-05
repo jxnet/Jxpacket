@@ -84,7 +84,7 @@ public class Vlan extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-//			buffer.setShort(0, DataLinkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
+			buffer.setShort(0, NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
 			buffer.setShort(2, (((priorityCodePoint.getValue() << 13) & 0x07)
 					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff)));
 			return buffer;
