@@ -30,6 +30,7 @@ public final class TcpFlags {
         if (this.cwr) flags += 128;
         if (this.ece) flags += 64;
         if (this.urg) flags += 32;
+        if (this.ack) flags += 16;
         if (this.psh) flags += 8;
         if (this.rst) flags += 4;
         if (this.syn) flags += 2;
