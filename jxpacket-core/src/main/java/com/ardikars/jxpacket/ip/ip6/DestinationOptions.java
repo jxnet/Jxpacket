@@ -1,8 +1,8 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
-import com.ardikars.jxpacket.ip.Ip;
 
 public class DestinationOptions extends Options {
 
@@ -35,7 +35,7 @@ public class DestinationOptions extends Options {
 	public static final class Builder extends Options.Builder {
 
 		public Builder() {
-			super(Ip.Type.IPV6_AH);
+			super(TransportLayer.IPV6_AH);
 		}
 
 		@Override

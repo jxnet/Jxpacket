@@ -1,8 +1,8 @@
 package com.ardikars.jxpacket.ip;
 
 import com.ardikars.common.net.Inet4Address;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxnet.packet.layer.TransportLayer;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -44,7 +44,7 @@ public class Ip4 extends Ip {
 		private byte flags;
 		private short fragmentOffset;
 		private byte ttl;
-		private Type protocol;
+		private TransportLayer protocol;
 		private short checksum;
 		private Inet4Address sourceAddress;
 		private Inet4Address destinationAddress;
@@ -99,7 +99,7 @@ public class Ip4 extends Ip {
 			return ttl & 0xff;
 		}
 
-		public Type getProtocol() {
+		public TransportLayer getProtocol() {
 			return protocol;
 		}
 
@@ -120,7 +120,7 @@ public class Ip4 extends Ip {
 		}
 
 		@Override
-		public Type getPayloadType() {
+		public TransportLayer getPayloadType() {
 			return this.protocol;
 		}
 
@@ -202,7 +202,7 @@ public class Ip4 extends Ip {
 		private byte flags;
 		private short fragmentOffset;
 		private byte ttl;
-		private Type protocol;
+		private TransportLayer protocol;
 		private short checksum;
 		private Inet4Address sourceAddress;
 		private Inet4Address destinationAddress;
@@ -250,7 +250,7 @@ public class Ip4 extends Ip {
 			return this;
 		}
 
-		public Builder protocol(Type protocol) {
+		public Builder protocol(TransportLayer protocol) {
 			this.protocol = protocol;
 			return this;
 		}
@@ -297,7 +297,7 @@ public class Ip4 extends Ip {
 			builder.flags = (byte) (sscratch >> 13 & 0x7);
 			builder.fragmentOffset = (short) (sscratch & 0x1fff);
 			builder.ttl = buffer.getByte(8);
-			builder.protocol = Type.valueOf(buffer.getByte(9));
+			builder.protocol = TransportLayer.valueOf(buffer.getByte(9));
 			builder.checksum = ((short) (buffer.getShort(10) & 0xffff));
 			byte[] ipv4Buffer;
 			ipv4Buffer = new byte[Inet4Address.IPV4_ADDRESS_LENGTH];

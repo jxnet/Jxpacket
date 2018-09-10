@@ -3,10 +3,10 @@ package com.ardikars.jxpacket.arp;
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.net.MacAddress;
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxnet.packet.layer.DataLinkLayer;
-import com.ardikars.jxnet.packet.layer.NetworkLayer;
+import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.DataLinkLayer;
+import com.ardikars.jxpacket.layer.NetworkLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 

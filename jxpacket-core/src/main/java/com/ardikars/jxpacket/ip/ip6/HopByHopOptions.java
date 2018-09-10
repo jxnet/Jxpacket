@@ -1,7 +1,7 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxpacket.ip.Ip;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 
 public class HopByHopOptions extends Options {
@@ -35,7 +35,7 @@ public class HopByHopOptions extends Options {
 	public static final class Builder extends Options.Builder {
 
 		public Builder() {
-			super(Ip.Type.IPV6_HOPOPT);
+			super(TransportLayer.IPV6_HOPOPT);
 		}
 
 		@Override

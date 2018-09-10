@@ -1,10 +1,10 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import com.ardikars.jxpacket.ip.Ip;
 
 import java.util.Arrays;
 
@@ -35,7 +35,7 @@ public class Authentication extends AbstractPacket {
 
 		public static final byte FIXED_HEADER_LENGTH = 12; // bytes
 
-		private Ip.Type nextHeader;
+		private TransportLayer nextHeader;
 		private byte payloadLength;
 		private int securityParameterIndex;
 		private int sequenceNumber;
@@ -49,7 +49,7 @@ public class Authentication extends AbstractPacket {
 			this.integrityCheckValue = builder.integrityCheckValue;
 		}
 
-		public Ip.Type getNextHeader() {
+		public TransportLayer getNextHeader() {
 			return nextHeader;
 		}
 
@@ -70,7 +70,7 @@ public class Authentication extends AbstractPacket {
 		}
 
 		@Override
-		public Ip.Type getPayloadType() {
+		public TransportLayer getPayloadType() {
 			return nextHeader;
 		}
 
@@ -109,13 +109,13 @@ public class Authentication extends AbstractPacket {
 
 	public static final class Builder implements Packet.Builder {
 
-		private Ip.Type nextHeader;
+		private TransportLayer nextHeader;
 		private byte payloadLength;
 		private int securityParameterIndex;
 		private int sequenceNumber;
 		private byte[] integrityCheckValue;
 
-		public Builder nextHeader(final Ip.Type nextHeader) {
+		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
 		}
@@ -148,7 +148,7 @@ public class Authentication extends AbstractPacket {
 		@Override
 		public Packet build(final ByteBuf buffer) {
 			Builder builder = new Builder();
-			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(0));
+			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(0));
 			builder.payloadLength = buffer.getByte(1);
 			builder.securityParameterIndex = buffer.getInt(4);
 			builder.sequenceNumber = buffer.getInt(8);

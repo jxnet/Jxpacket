@@ -1,11 +1,11 @@
 package com.ardikars.jxpacket.ip.ip6;
 
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.ip.Ip6;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import com.ardikars.jxpacket.ip.Ip;
-import com.ardikars.jxpacket.ip.Ip6;
 
 import java.util.Arrays;
 
@@ -16,17 +16,17 @@ public abstract class Options extends AbstractPacket {
 		public static int FIXED_OPTIONS_LENGTH = 6;
 		public static int LENGTH_UNIT = 8;
 
-		protected Ip.Type nextHeader;
+		protected TransportLayer nextHeader;
 		protected int extensionLength;
 		protected byte[] options;
 
-		protected Header(final Builder builder, Ip.Type nextHeader) {
+		protected Header(final Builder builder, TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			this.extensionLength = builder.extensionLength;
 			this.options = builder.options;
 		}
 
-		public Ip.Type getNextHeader() {
+		public TransportLayer getNextHeader() {
 			return nextHeader;
 		}
 
@@ -39,7 +39,7 @@ public abstract class Options extends AbstractPacket {
 		}
 
 		@Override
-		public Ip.Type getPayloadType() {
+		public TransportLayer getPayloadType() {
 			return nextHeader;
 		}
 
@@ -73,11 +73,11 @@ public abstract class Options extends AbstractPacket {
 
 	abstract static class Builder implements Packet.Builder {
 
-		protected Ip.Type nextHeader;
+		protected TransportLayer nextHeader;
 		protected int extensionLength;
 		protected byte[] options;
 
-		public Builder(final Ip.Type nextHeader) {
+		public Builder(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 		}
 

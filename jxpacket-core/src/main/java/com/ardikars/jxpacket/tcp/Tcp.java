@@ -1,9 +1,9 @@
 package com.ardikars.jxpacket.tcp;
 
 import com.ardikars.common.util.Validate;
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxnet.packet.layer.TransportLayer;
+import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 

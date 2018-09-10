@@ -1,7 +1,8 @@
 package com.ardikars.jxpacket.ip;
 
 import com.ardikars.common.net.Inet6Address;
-import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -12,8 +13,8 @@ public class Ip6 extends Ip {
 
 	private Ip6(final Builder builder) {
 		this.header = new Ip6.Header(builder);
-		this.payload =  super.getBuilder(this.header)
-				.build(builder.payloadBuffer);
+		this.payload = TransportLayer.valueOf(this.header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class Ip6 extends Ip {
 		private byte trafficClass;
 		private int flowLabel;
 		private short payloadLength;
-		private Type nextHeader;
+		private TransportLayer nextHeader;
 		private byte hopLimit;
 		private Inet6Address sourceAddress;
 		private Inet6Address destinationAddress;
@@ -64,7 +65,7 @@ public class Ip6 extends Ip {
 			return payloadLength & 0xffff;
 		}
 
-		public Type getNextHeader() {
+		public TransportLayer getNextHeader() {
 			return nextHeader;
 		}
 
@@ -81,7 +82,7 @@ public class Ip6 extends Ip {
 		}
 
 		@Override
-		public Type getPayloadType() {
+		public TransportLayer getPayloadType() {
 			return nextHeader;
 		}
 
@@ -124,7 +125,7 @@ public class Ip6 extends Ip {
 		private byte trafficClass;
 		private int flowLabel;
 		private short payloadLength;
-		private Type nextHeader;
+		private TransportLayer nextHeader;
 		private byte hopLimit;
 		private Inet6Address sourceAddress;
 		private Inet6Address destinationAddress;
@@ -146,7 +147,7 @@ public class Ip6 extends Ip {
 			return this;
 		}
 
-		public Builder nextHeader(final Type nextHeader) {
+		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
 		}
@@ -183,7 +184,7 @@ public class Ip6 extends Ip {
 			builder.trafficClass = (byte) (iscratch >> 20 & 0xff);
 			builder.flowLabel = (iscratch & 0xfffff);
 			builder.payloadLength = buffer.getShort(4);
-			builder.nextHeader = Type.valueOf(buffer.getByte(6));
+			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(6));
 			builder.hopLimit = buffer.getByte(7);
 			byte[] addrBuf = new byte[Inet6Address.IPV6_ADDRESS_LENGTH];
 			buffer.getBytes(8, addrBuf);

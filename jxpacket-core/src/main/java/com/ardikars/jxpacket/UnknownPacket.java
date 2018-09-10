@@ -1,8 +1,6 @@
 package com.ardikars.jxpacket;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
 import io.netty.buffer.ByteBuf;
 
 public class UnknownPacket extends AbstractPacket {

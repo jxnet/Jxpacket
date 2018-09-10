@@ -1,12 +1,12 @@
 package com.ardikars.jxpacket.ip.ip6;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
+import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.ip.Ip6;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import com.ardikars.jxpacket.ip.Ip;
-import com.ardikars.jxpacket.ip.Ip6;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class Routing extends AbstractPacket {
 		public static final int FIXED_ROUTING_HEADER_LENGTH = 4;
 		public static final int FIXED_ROUTING_DATA_LENGTH = 4;
 
-		private Ip.Type nextHeader;
+		private TransportLayer nextHeader;
 		private byte extensionLength;
 		private Type routingType;
 		private byte segmentLeft;
@@ -52,7 +52,7 @@ public class Routing extends AbstractPacket {
 			this.routingData = builder.routingData;
 		}
 
-		public Ip.Type getNextHeader() {
+		public TransportLayer getNextHeader() {
 			return nextHeader;
 		}
 
@@ -73,7 +73,7 @@ public class Routing extends AbstractPacket {
 		}
 
 		@Override
-		public Ip.Type getPayloadType() {
+		public TransportLayer getPayloadType() {
 			return nextHeader;
 		}
 
@@ -109,14 +109,14 @@ public class Routing extends AbstractPacket {
 
 	public static final class Builder implements Packet.Builder {
 
-		private Ip.Type nextHeader;
+		private TransportLayer nextHeader;
 		private byte extensionLength;
 		private Type routingType;
 		private byte segmentLeft;
 
 		private byte[] routingData;
 
-		public Builder nextHeader(final Ip.Type nextHeader) {
+		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
 		}
@@ -150,7 +150,7 @@ public class Routing extends AbstractPacket {
 		public Routing build(final ByteBuf buffer) {
 			int index = 0;
 			Builder builder = new Builder();
-			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(index));
+			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(index));
 			index += 1;
 			builder.extensionLength = buffer.getByte(index);
 			index += 1;

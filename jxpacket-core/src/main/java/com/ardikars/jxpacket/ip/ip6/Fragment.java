@@ -1,9 +1,9 @@
 package com.ardikars.jxpacket.ip.ip6;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxnet.packet.AbstractPacket;
-import com.ardikars.jxnet.packet.Packet;
-import com.ardikars.jxpacket.ip.Ip;
+import com.ardikars.jxpacket.AbstractPacket;
+import com.ardikars.jxpacket.Packet;
+import com.ardikars.jxpacket.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -34,7 +34,7 @@ public class Fragment extends AbstractPacket {
 
 		public static final int FIXED_FRAGMENT_HEADER_LENGTH = 8;
 
-		private Ip.Type nextHeader;
+		private TransportLayer nextHeader;
 		private short fragmentOffset;
 		private FlagType flagType;
 		private int identification;
@@ -46,7 +46,7 @@ public class Fragment extends AbstractPacket {
 			this.identification = builder.identification;
 		}
 
-		public Ip.Type getNextHeader() {
+		public TransportLayer getNextHeader() {
 			return nextHeader;
 		}
 
@@ -63,7 +63,7 @@ public class Fragment extends AbstractPacket {
 		}
 
 		@Override
-		public Ip.Type getPayloadType() {
+		public TransportLayer getPayloadType() {
 			return nextHeader;
 		}
 
@@ -87,12 +87,12 @@ public class Fragment extends AbstractPacket {
 
 	public static final class Builder implements Packet.Builder {
 
-		private Ip.Type nextHeader;
+		private TransportLayer nextHeader;
 		private short fragmentOffset;
 		private FlagType flagType;
 		private int identification;
 
-		public Builder nextHeader(Ip.Type nextHeader) {
+		public Builder nextHeader(TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
 		}
@@ -120,7 +120,7 @@ public class Fragment extends AbstractPacket {
 		@Override
 		public Fragment build(final ByteBuf buffer) {
 			Builder builder = new Builder();
-			builder.nextHeader = Ip.Type.valueOf(buffer.getByte(0));
+			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(0));
 			short sscratch = buffer.getShort(2);
 			builder.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
 			builder.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
