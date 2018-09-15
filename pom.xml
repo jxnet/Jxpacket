@@ -66,6 +66,10 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
+        <repository>
+            <id>bintray</id>
+            <url>https://api.bintray.com/maven/ardikars/maven/com.ardikars.jxpacket/;publish=1</url>
+        </repository>
     </distributionManagement>
 
     <dependencyManagement>
