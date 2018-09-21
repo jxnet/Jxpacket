@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,12 @@ public class Icmp6MulticastListenerReportV2 extends Icmp.IcmpTypeAndCode {
         super((byte) 143, code, name);
     }
 
+    /**
+     * Add new {@link Icmp6MulticastListenerReportV2} to registry.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp6MulticastListenerReportV2}.
+     */
     public static Icmp6MulticastListenerReportV2 register(Byte code, String name) {
         Icmp6MulticastListenerReportV2 multicastListenerReport =
                 new Icmp6MulticastListenerReportV2(code, name);

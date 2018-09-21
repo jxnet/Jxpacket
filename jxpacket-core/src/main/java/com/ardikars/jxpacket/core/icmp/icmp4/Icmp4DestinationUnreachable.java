@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -78,6 +78,12 @@ public class Icmp4DestinationUnreachable extends Icmp.IcmpTypeAndCode {
         super((byte) 3, code, name);
     }
 
+    /**
+     * Add new {@link Icmp4DestinationUnreachable} to registry.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp4DestinationUnreachable}.
+     */
     public static Icmp4DestinationUnreachable register(Byte code, String name) {
         Icmp4DestinationUnreachable destinationUnreachable =
                 new Icmp4DestinationUnreachable(code, name);
@@ -93,7 +99,7 @@ public class Icmp4DestinationUnreachable extends Icmp.IcmpTypeAndCode {
         Icmp4.ICMP4_REGISTRY.add(DESTINATION_NETWORK_UNREACHABLE);
         Icmp4.ICMP4_REGISTRY.add(DESTINATION_HOST_UNREACHABLE);
         Icmp4.ICMP4_REGISTRY.add(DESTINATION_PROTOCOL_UNREACHABLE);
-        Icmp4.ICMP4_REGISTRY.add( DESTINATION_PORT_UNREACHABLE);
+        Icmp4.ICMP4_REGISTRY.add(DESTINATION_PORT_UNREACHABLE);
         Icmp4.ICMP4_REGISTRY.add(FRAGMENTATION_REQUIRED);
         Icmp4.ICMP4_REGISTRY.add(SOURCE_ROUTE_FAILED);
         Icmp4.ICMP4_REGISTRY.add(DESTINATION_NETWORK_UNKNOWN);

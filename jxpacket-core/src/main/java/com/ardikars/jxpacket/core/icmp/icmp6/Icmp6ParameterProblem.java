@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,6 +39,12 @@ public class Icmp6ParameterProblem extends Icmp.IcmpTypeAndCode {
         super((byte) 4, code, name);
     }
 
+    /**
+     * Add new {@link Icmp6ParameterProblem}.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp6ParameterProblem}.
+     */
     public static Icmp6ParameterProblem register(Byte code, String name) {
         Icmp6ParameterProblem parameterProblem =
                 new Icmp6ParameterProblem(code, name);

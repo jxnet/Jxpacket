@@ -2,7 +2,7 @@
 Jxpacket
 =====
 
-Jxpacket is packet crafting libarary for java.
+Jxpacket is network packet crafting libarary for java.
 
 
 ### How to Use
@@ -12,7 +12,7 @@ Jxpacket is packet crafting libarary for java.
 >>>
 >>> ```
 >>> dependencies { 
->>>     compile 'com.ardikars.jxpacket:jxpacket-core:1.0.0'
+>>>     compile 'com.ardikars.jxpacket:jxpacket-core:${jxpacket.version}'
 >>> }
 >>>```
   - ##### Maven project
@@ -23,7 +23,7 @@ Jxpacket is packet crafting libarary for java.
 >>>     <dependency>
 >>>         <groupId>com.ardikars.jxpacket</groupId>
 >>>         <artifactId>jxpacket-core</artifactId>
->>>         <version>1.0.0</version>
+>>>         <version>${jxpacket.version}</version>
 >>>     </dependency>
 >>> </dependencies>
 >>>```
@@ -32,10 +32,10 @@ Build Jxnet from Source
 =============================
 
 ### Build
-   - ```./mvnw clean package```
+   - ```./gradlew clean build```
    
 ### Skip Test
-   - ```./mvnw clean package -DskipTests```
+   - ```./gradlew clean build -x test```
 
 Jxpacket dependencies
 ==================

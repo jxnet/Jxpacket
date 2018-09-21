@@ -1,0 +1,76 @@
+
+/**
+ * Copyright (C) 2017  Ardika Rommy Sanjaya
+ */
+
+ext {
+
+	NAME = 'Jxpacket'
+	GROUP = 'com.ardikars.jxpacket'
+	VERSION = '1.1.0.RC1'
+
+	NDK_HOME = "${System.env.NDK_HOME}"
+	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
+
+	JAVA_VERSION = '1.8'
+	JUNIT_VERSION = '4.12'
+	MOCKITO_VERSION = '2.13.0'
+	GRADLE_VERSION = '4.5'
+	SLF4J_VERSION = '1.7.25'
+	LOGBACK_VERSION = '1.2.3'
+
+	CHECKSTYLE_VERSION = '8.10.1'
+	SPOTBUGS_VERSION = '3.1.5'
+	PMD_VERION = '6.5.0'
+	JACOCO_VERSION = '0.8.2'
+
+	COMMON_VERSION = '1.2.0.Final'
+	NETTY_VERSION = '4.1.29.Final'
+
+	pom_project = {
+
+		name = "${NAME}"
+
+		description = 'Jxpacket is a network packet crafting library for java.'
+
+		url 'https://github.com/jxnet/Jxpacket'
+
+		developers {
+			developer {
+				id 'ardikars'
+				name 'Ardika Rommy Sanjaya'
+				email 'contact@ardikars.com'
+			}
+		}
+
+		licenses {
+			license {
+				name 'GNU Lesser General Public License, Version 3.0'
+				url 'http://www.gnu.org/licenses'
+				distribution 'repo'
+			}
+		}
+
+		scm {
+			url 'https://github.com/jxnet/Jxpacket.git'
+			connection 'scm:git:https://github.com/jxnet/Jxpacket.git'
+			developerConnection 'scm:git:git@github.com/jxnet/Jxpacket.git'
+			tag 'HEAD'
+		}
+
+		organization {
+			name 'ardikars'
+			url 'http://ardikars.com'
+		}
+
+	}
+
+	defaultBlank = { closure ->
+		try {
+			closure()
+		} catch (MissingPropertyException e) {
+			''
+		}
+	}
+
+}

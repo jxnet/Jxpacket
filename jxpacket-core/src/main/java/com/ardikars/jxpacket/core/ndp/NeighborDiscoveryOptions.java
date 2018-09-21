@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.core.ndp;
 
 import com.ardikars.common.util.NamedNumber;
@@ -63,7 +80,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 buffer.setBytes(2, option.getData());
                 int index = 2 + option.getData().length;
                 int paddingLength = (option.getLength() << 3) - (option.getData().length + 2);
-                for (int i=0; i<paddingLength; i++) {
+                for (int i = 0; i < paddingLength; i++) {
                     buffer.setByte(index + i, (byte) 0);
                 }
             }
@@ -167,7 +184,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         @Override
         public Packet build(ByteBuf buffer) {
             while (buffer.isReadable(2)) {
-                OptionType type = OptionType.registry.get(buffer.readByte());
+                final OptionType type = OptionType.registry.get(buffer.readByte());
                 byte lengthField = buffer.readByte();
                 int dataLength = lengthField * 8;
                 if (dataLength < 2) {

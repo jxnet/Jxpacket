@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,6 +36,12 @@ public class Icmp6TimeExceeded extends Icmp.IcmpTypeAndCode {
         super((byte) 3, code, name);
     }
 
+    /**
+     * Add new {@link Icmp6TimeExceeded} type to registry.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp6TimeExceeded}.
+     */
     public static Icmp6TimeExceeded register(Byte code, String name) {
         Icmp6TimeExceeded timeExceeded =
                 new Icmp6TimeExceeded(code, name);

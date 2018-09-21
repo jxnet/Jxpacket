@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -33,6 +33,12 @@ public class Icmp4RouterAdvertisement extends Icmp.IcmpTypeAndCode {
         super((byte) 9, code, name);
     }
 
+    /**
+     * Add new {@link Icmp4RouterAdvertisement} to registry.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp4RouterAdvertisement}.
+     */
     public static Icmp4RouterAdvertisement register(Byte code, String name) {
         Icmp4RouterAdvertisement routerAdvertisement =
                 new Icmp4RouterAdvertisement(code, name);

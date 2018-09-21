@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.core.tcp;
 
 public final class TcpFlags {
@@ -24,17 +41,39 @@ public final class TcpFlags {
         this.fin = builder.fin;
     }
 
+    /**
+     * Get short tcp flags.
+     * @return returns short value.
+     */
     public short getShortValue() {
         short flags = 0;
-        if (this.ns) flags += 256;
-        if (this.cwr) flags += 128;
-        if (this.ece) flags += 64;
-        if (this.urg) flags += 32;
-        if (this.ack) flags += 16;
-        if (this.psh) flags += 8;
-        if (this.rst) flags += 4;
-        if (this.syn) flags += 2;
-        if (this.fin) flags += 1;
+        if (this.ns) {
+            flags += 256;
+        }
+        if (this.cwr) {
+            flags += 128;
+        }
+        if (this.ece) {
+            flags += 64;
+        }
+        if (this.urg) {
+            flags += 32;
+        }
+        if (this.ack) {
+            flags += 16;
+        }
+        if (this.psh) {
+            flags += 8;
+        }
+        if (this.rst) {
+            flags += 4;
+        }
+        if (this.syn) {
+            flags += 2;
+        }
+        if (this.fin) {
+            flags += 1;
+        }
         return flags;
     }
 

@@ -1,0 +1,23 @@
+
+apply plugin: 'co.riiid.gradle'
+
+github {
+    owner = 'jxnet'
+    repo = 'Jxpacket'
+	token = defaultBlank({githubToken})
+    tagName = "${VERSION}"
+    targetCommitish = 'v1'
+    name = "${NAME}-${VERSION}"
+    if (!"${VERSION}".endsWith("Final")) {
+        prerelease = true
+    } else {
+        prerelease = false
+    }
+    body = """# Jxpacket
+Release ${NAME}-${VERSION}.
+"""
+    assets = [
+            "build/distributions/${NAME}-${VERSION}.zip",
+            "LICENSE"
+    ]
+}

@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.common.util.NamedNumber;
@@ -77,8 +94,8 @@ public class Fragment extends AbstractPacket {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
 			buffer.setByte(0, nextHeader.getValue());
 			buffer.setByte(1, (byte) 0); // reserved
-			buffer.setShort(2, (short) ((fragmentOffset & 0x1fff) << 3 |
-							flagType.getValue() & 0x1));
+			buffer.setShort(2, (short) ((fragmentOffset & 0x1fff) << 3
+					| flagType.getValue() & 0x1));
 			buffer.setInt(3, identification);
 			return buffer;
 		}
@@ -146,11 +163,21 @@ public class Fragment extends AbstractPacket {
 		private static final Map<Byte, FlagType> registry
 				= new HashMap<>();
 
+		/**
+		 * Add new flag type to registry.
+		 * @param flagType new fragment type.
+		 * @return returns {@link FlagType}.
+		 */
 		public static FlagType register(final FlagType flagType) {
 			registry.put(flagType.getValue(), flagType);
 			return flagType;
 		}
 
+		/**
+		 * Get flag type from value.
+		 * @param flag value.
+		 * @return returns {@link FlagType}.
+		 */
 		public static FlagType valueOf(final byte flag) {
 			FlagType flagType = registry.get(flag);
 			if (flagType == null) {

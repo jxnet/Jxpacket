@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -36,6 +36,12 @@ public class Icmp4TimeExceeded extends Icmp.IcmpTypeAndCode {
         super((byte) 11, code, name);
     }
 
+    /**
+     * Add new {@link Icmp4TimeExceeded} to registry.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp4TimeExceeded}.
+     */
     public static Icmp4TimeExceeded register(Byte code, String name) {
         Icmp4TimeExceeded timeExceeded =
                 new Icmp4TimeExceeded(code, name);

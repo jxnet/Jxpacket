@@ -1,0 +1,280 @@
+
+/**
+ * Copyright (C) 2017  Ardika Rommy Sanjaya
+ */
+
+buildscript {
+
+    apply from: "${rootDir}/gradle/configure.gradle"
+
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+}
+
+plugins {
+    id "java"
+    id "signing"
+    id "maven"
+    id "jacoco"
+    id "checkstyle"
+    id "pmd"
+    id "org.springframework.boot" version "2.0.4.RELEASE" apply false
+    id "com.jfrog.bintray" version "1.7.3" apply false
+    id "com.github.spotbugs" version "1.6.2" apply false
+    id "com.github.kt3k.coveralls" version "2.8.2" apply false
+    id "co.riiid.gradle" version "0.4.2" apply false
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'signing'
+    apply plugin: 'maven'
+    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'jacoco'
+    apply plugin: 'checkstyle'
+    apply plugin: 'pmd'
+    apply plugin: 'com.github.spotbugs'
+    apply plugin: 'com.github.kt3k.coveralls'
+
+    group = "${GROUP}"
+    version = "${VERSION}"
+
+    sourceCompatibility = "${JAVA_VERSION}"
+    targetCompatibility = "${JAVA_VERSION}"
+
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        implementation ("com.ardikars.common:common-net:${COMMON_VERSION}")
+        implementation ("com.ardikars.common:common-util:$COMMON_VERSION")
+    }
+
+    configurations.archives.artifacts.with { archives ->
+        def jarArtifact
+        archives.each {
+            if (it.file =~ 'jar' && project.name == "${rootProject.name}") {
+                jarArtifact = it
+            }
+        }
+        remove(jarArtifact)
+    }
+
+    evaluationDependsOn(project.path)
+
+    jar {
+        manifest {
+            attributes 'Implementation-Title': 'Jxnet',
+                    'Implementation-Version': version
+        }
+    }
+
+    javadoc {
+        def currentYear = Calendar.getInstance().get Calendar.YEAR
+        options.with {
+            locale 'en_US'
+            encoding 'UTF-8'
+            charSet 'UTF-8'
+            author true
+            windowTitle "${NAME} ${project.version}"
+            header "${NAME} ${project.version}"
+            docTitle "${NAME} ${project.version} API Documentation"
+            footer 'https://github.com/jxnet/Jxpacket'
+            bottom "Copyright &copy; 2017 - ${currentYear} ardikars.com. All rights reserved."
+            showFromProtected()
+            addStringOption 'Xdoclint:all,-reference', '-quiet'
+        }
+    }
+
+    checkstyle {
+        ignoreFailures = false
+        checkstyleTest.enabled = false
+
+        configFile = rootProject.file('gradle/resources/checkstyle/checkstyle.xml')
+        configProperties = [
+                "suppressionFile" : rootProject.file('gradle/resources/checkstyle/suppression.xml'),
+                "headerFile" : rootProject.file('gradle/resources/checkstyle/license.header')
+        ]
+
+        checkstyleMain {
+            source = sourceSets.main.allSource
+        }
+        configurations {
+            checkstyle
+        }
+        checkstyleMain {
+            reports {
+                html {
+                    //destination "${project.buildDir}/reports/checkstyle.html"
+                }
+            }
+        }
+        toolVersion = "${CHECKSTYLE_VERSION}"
+    }
+
+    spotbugs {
+        ignoreFailures = false
+        reportsDir = file("$project.buildDir/reports/findbugs")
+        effort = "max"
+        excludeFilter rootProject.file('gradle/resources/findbugs/findbugs-exclude.xml')
+        spotbugsMain {
+            reports {
+                xml.enabled = false
+                html.enabled = true
+            }
+        }
+        toolVersion "${SPOTBUGS_VERSION}"
+    }
+
+    pmd {
+        ignoreFailures = false
+        sourceSets = [sourceSets.main]
+        reportsDir = file("$project.buildDir/reports/pmd")
+        ruleSetFiles = rootProject.files("./gradle/resources/pmd/pmd.xml")
+        toolVersion "${PMD_VERION}"
+    }
+
+    jacoco {
+        toolVersion = "${JACOCO_VERSION}"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination file("${buildDir}/jacocoHtml")
+        }
+    }
+
+
+    test {
+        testLogging {
+            showStandardStreams = true
+        }
+        jacoco {
+            append = false
+            destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+            classDumpDir = file("$buildDir/jacoco/classpathdumps")
+        }
+    }
+
+    task javadocJar(type: Jar) {
+        classifier = 'javadoc'
+        from javadoc
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from sourceSets.main.allSource
+    }
+
+    tasks.withType(JavaCompile) {
+        //options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+    }
+
+    artifacts {
+        archives jar, sourcesJar, javadocJar
+    }
+
+    install {
+        System.setProperty('maven.repo.local', "${MAVEN_LOCAL_REPOSITORY}")
+        repositories.mavenInstaller {
+            pom.project pom_project
+        }
+    }
+
+    signing {
+        required { gradle.taskGraph.hasTask('uploadArchives') || gradle.taskGraph.hasTask('bintrayUpload') }
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories.mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                authentication(userName: defaultBlank({ sonatypeUser }), password: defaultBlank({ sonatypePass }))
+            }
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: defaultBlank({ sonatypeUser }), password: defaultBlank({ sonatypePass }))
+            }
+            pom.project pom_project
+        }
+    }
+
+    bintray {
+        user = defaultBlank({ bintrayUser })
+        key = defaultBlank({ bintrayPass })
+        configurations = ['archives']
+        dryRun = false
+        publish = true
+        override = true
+        pkg {
+            repo = 'maven'
+            name = 'com.ardikars.jxpacket'
+            desc = 'Jxpacket is a network packet crafting library for java.'
+            licenses = ['GNU Lesser General Public License, Version 3.0']
+            vcsUrl = 'https://github.com/jxnet/Jxpacket.git'
+            version {
+                name = project.version
+                vcsTag = project.version
+                gpg {
+                    sign = true
+                    passphrase = defaultBlank({ signing.password })
+                }
+                mavenCentralSync {
+                    sync = true
+                    user = defaultBlank({ sonatypeUser })
+                    password = defaultBlank({ sonatypePass })
+                    close = '1'
+                }
+            }
+        }
+    }
+
+    clean {
+        file("${rootDir}/${project.name}/obj").deleteDir()
+        file("${rootDir}/${project.name}/out").deleteDir()
+    }
+
+    /**
+     * Upload converage report
+     */
+    tasks.coveralls {
+        dependsOn 'check'
+    }
+
+}
+
+apply plugin: 'java'
+
+if (gradle.startParameter.taskNames.contains('github') ||
+        gradle.startParameter.taskNames.contains('githubRelease')) {
+    apply from: 'gradle/githubRelease.gradle'
+}
+
+task dist(type: Zip) {
+
+    rootProject.allprojects.collect { it.tasks }.flatten()
+
+    archiveName = "${NAME}-${VERSION}.zip"
+
+    subprojects.each { subproject ->
+        from subproject.jar.outputs.files
+        from subproject.javadocJar.outputs.files
+        from subproject.sourcesJar.outputs.files
+    }
+
+}
+
+task wrapper(type: Wrapper) {
+    distributionUrl = "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip"
+}

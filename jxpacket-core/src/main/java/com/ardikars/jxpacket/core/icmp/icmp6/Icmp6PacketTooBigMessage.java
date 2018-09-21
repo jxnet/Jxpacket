@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -46,6 +46,12 @@ public class Icmp6PacketTooBigMessage extends Icmp.IcmpTypeAndCode {
         super((byte) 2, code, name);
     }
 
+    /**
+     * Add new {@link Icmp6PacketTooBigMessage} to registry.
+     * @param code icmp type code.
+     * @param name icmp type name.
+     * @return returns {@link Icmp6PacketTooBigMessage}.
+     */
     public static Icmp6PacketTooBigMessage register(Byte code, String name) {
         Icmp6PacketTooBigMessage packetTooBigMessage =
                 new Icmp6PacketTooBigMessage(code, name);

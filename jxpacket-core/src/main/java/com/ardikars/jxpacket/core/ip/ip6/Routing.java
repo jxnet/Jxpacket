@@ -1,10 +1,28 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
-import com.ardikars.jxpacket.core.ip.Ip6;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
+import com.ardikars.jxpacket.core.ip.Ip6;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -172,22 +190,30 @@ public class Routing extends AbstractPacket {
 				= new Type((byte) -1, "UNKNOWN.");
 
 		public static final Type DEPRECATED_01
-				= new Type((byte) 0, "Due to the fact that with Routing HeaderAbstract type 0 a simple but effective[15] denial-of-service attack could be launched, this header is deprecated since 2007[16] and host and routers are required to ignore these headers.");
+				= new Type((byte) 0,
+				"Due to the fact that with Routing HeaderAbstract type 0 a simple but effective[15]"
+						+ " denial-of-service attack could be launched, this header is deprecated since 2007[16]"
+						+ " and host and routers are required to ignore these headers.");
 
 		public static final Type DEPRECATED_02
-				= new Type((byte) 1, "Used for the Nimrod[17] project funded by DARPA. It is deprecated since 2009.");
+				= new Type((byte) 1,
+				"Used for the Nimrod[17] project funded by DARPA. It is deprecated since 2009.");
 
 		public static final Type ALLOWED_01
-				= new Type((byte) 2, "A limited version of type 0 and is used for Mobile IPv6, where it can hold the Home Address of the Mobile Node.");
+				= new Type((byte) 2,
+				"A limited version of type 0 and is used for Mobile IPv6, where it can hold the Home Address of the Mobile Node.");
 
 		public static final Type ALLOWED_02
-				= new Type((byte) 3, "RPL Source Route HeaderAbstract[18] for Low-Power and Lossy Networks.");
+				= new Type((byte) 3,
+				"RPL Source Route HeaderAbstract[18] for Low-Power and Lossy Networks.");
 
 		public static final Type PRIVATE_USE_01
-				= new Type((byte) 253, "May be used for testing, not for actual implementations. RFC3692-style Experiment 1.[13]");
+				= new Type((byte) 253,
+				"May be used for testing, not for actual implementations. RFC3692-style Experiment 1.[13]");
 
 		public static final Type PRIVATE_USE_02
-				= new Type((byte) 254, "May be used for testing, not for actual implementations. RFC3692-style Experiment 2.[13]");
+				= new Type((byte) 254,
+				"May be used for testing, not for actual implementations. RFC3692-style Experiment 2.[13]");
 
 		private static Map<Byte, Type> registry =
 				new HashMap<>();
@@ -196,6 +222,11 @@ public class Routing extends AbstractPacket {
 			super(value, name);
 		}
 
+		/**
+		 * Get routing type from value.
+		 * @param value value.
+		 * @return returns {@link Type}.
+		 */
 		public static Type valueOf(final byte value) {
 			Type type = registry.get(value);
 			if (type == null) {
@@ -204,6 +235,11 @@ public class Routing extends AbstractPacket {
 			return type;
 		}
 
+		/**
+		 * Add new routing type to registry.
+		 * @param type routing type.
+		 * @return returns {@link Type}.
+		 */
 		public static Type register(final Type type) {
 			registry.put(type.getValue(), type);
 			return type;
