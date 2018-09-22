@@ -56,9 +56,9 @@ public class Ethernet extends AbstractPacket {
 
 		public static final int ETHERNET_HEADER_LENGTH = 14;
 
-		private MacAddress destinationMacAddress;
-		private MacAddress sourceMacAddress;
-		private NetworkLayer ethernetType;
+		private final MacAddress destinationMacAddress;
+		private final MacAddress sourceMacAddress;
+		private final NetworkLayer ethernetType;
 
 		private Header(final Builder builder) {
 			this.destinationMacAddress = builder.destinationMacAddress;
@@ -99,12 +99,11 @@ public class Ethernet extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("EthernetHeader{");
-			sb.append("destinationMacAddress=").append(getDestinationMacAddress());
-			sb.append(", sourceMacAddress=").append(getSourceMacAddress());
-			sb.append(", ethernetType=").append(getEthernetType());
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("EthernetHeader{")
+					.append("destinationMacAddress=").append(getDestinationMacAddress())
+					.append(", sourceMacAddress=").append(getSourceMacAddress())
+					.append(", ethernetType=").append(getEthernetType())
+					.append('}').toString();
 		}
 
 	}
@@ -116,8 +115,6 @@ public class Ethernet extends AbstractPacket {
 		private NetworkLayer ethernetType;
 
 		private ByteBuf payloadBuffer;
-
-		public Builder() { }
 
 		public Builder destinationMacAddress(final MacAddress destinationMacAddress) {
 			this.destinationMacAddress = destinationMacAddress;

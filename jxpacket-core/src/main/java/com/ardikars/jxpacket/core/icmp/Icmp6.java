@@ -56,6 +56,8 @@ import java.util.Optional;
  */
 public class Icmp6 extends AbstractPacket {
 
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<>();
+
     private final Header header;
     private final Packet payload;
 
@@ -66,12 +68,12 @@ public class Icmp6 extends AbstractPacket {
 
     @Override
     public Header getHeader() {
-        return null;
+        return header;
     }
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static class Header extends Icmp.IcmpHeader {
@@ -111,8 +113,6 @@ public class Icmp6 extends AbstractPacket {
         }
 
     }
-
-    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<>();
 
     static {
         try {

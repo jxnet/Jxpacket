@@ -46,9 +46,7 @@ public class Icmp6RouterRenumbering extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6RouterRenumbering}.
      */
     public static Icmp6RouterRenumbering register(Byte code, String name) {
-        Icmp6RouterRenumbering routerRenumbering =
-                new Icmp6RouterRenumbering(code, name);
-        return routerRenumbering;
+        return new Icmp6RouterRenumbering(code, name);
     }
 
     @Override

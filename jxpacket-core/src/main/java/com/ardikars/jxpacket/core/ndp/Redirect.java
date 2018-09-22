@@ -27,7 +27,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class Redirect extends AbstractPacket {
 
     private final Redirect.Header header;
-    private final ByteBuf payload;
+    private final Packet payload;
 
     public Redirect(Builder builder) {
         this.header = new Header(builder);
@@ -41,17 +41,17 @@ public class Redirect extends AbstractPacket {
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static class Header implements Packet.Header {
 
         public static final byte REDIRECT_HEADER_LENGTH = 36;
 
-        private Inet6Address targetAddress;
-        private Inet6Address destinationAddress;
+        private final Inet6Address targetAddress;
+        private final Inet6Address destinationAddress;
 
-        private NeighborDiscoveryOptions options;
+        private final NeighborDiscoveryOptions options;
 
         private Header(Builder builder) {
             this.targetAddress = builder.targetAddress;
@@ -77,6 +77,15 @@ public class Redirect extends AbstractPacket {
             buffer.setBytes(20, destinationAddress.getAddress());
             buffer.setBytes(36, options.getHeader().getBuffer());
             return buffer;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Header{")
+                    .append("targetAddress=").append(targetAddress)
+                    .append(", destinationAddress=").append(destinationAddress)
+                    .append(", options=").append(options)
+                    .append('}').toString();
         }
 
     }

@@ -40,9 +40,7 @@ public class Icmp4TimestampReply extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp4TimestampReply}.
      */
     public static Icmp4TimestampReply register(Byte code, String name) {
-        Icmp4TimestampReply timestampReply =
-                new Icmp4TimestampReply(code, name);
-        return timestampReply;
+        return new Icmp4TimestampReply(code, name);
     }
 
     @Override

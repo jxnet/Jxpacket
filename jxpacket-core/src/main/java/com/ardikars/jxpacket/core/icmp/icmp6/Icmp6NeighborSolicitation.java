@@ -40,9 +40,7 @@ public class Icmp6NeighborSolicitation extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6NeighborSolicitation}.
      */
     public static Icmp6NeighborSolicitation register(Byte code, String name) {
-        Icmp6NeighborSolicitation neighborSolicitation =
-                new Icmp6NeighborSolicitation(code, name);
-        return neighborSolicitation;
+        return new Icmp6NeighborSolicitation(code, name);
     }
 
     @Override

@@ -40,9 +40,7 @@ public class Icmp6MobilePrefixAdvertisement extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6MobilePrefixAdvertisement}.
      */
     public static Icmp6MobilePrefixAdvertisement register(Byte code, String name) {
-        Icmp6MobilePrefixAdvertisement mobilePrefixAdvertisement =
-                new Icmp6MobilePrefixAdvertisement(code, name);
-        return mobilePrefixAdvertisement;
+        return new Icmp6MobilePrefixAdvertisement(code, name);
     }
 
     @Override

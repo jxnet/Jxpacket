@@ -31,12 +31,12 @@ public abstract class Options extends AbstractPacket {
 
 	abstract static class Header extends Ip6.ExtensionHeader {
 
-		public static int FIXED_OPTIONS_LENGTH = 6;
-		public static int LENGTH_UNIT = 8;
+		public static final int FIXED_OPTIONS_LENGTH = 6;
+		public static final int LENGTH_UNIT = 8;
 
-		protected TransportLayer nextHeader;
-		protected int extensionLength;
-		protected byte[] options;
+		protected final TransportLayer nextHeader;
+		protected final int extensionLength;
+		protected final byte[] options;
 
 		protected Header(final Builder builder, TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
@@ -49,7 +49,7 @@ public abstract class Options extends AbstractPacket {
 		}
 
 		public int getExtensionLength() {
-			return extensionLength & 0xffffffff;
+			return extensionLength;
 		}
 
 		public byte[] getOptions() {
@@ -79,12 +79,11 @@ public abstract class Options extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("HeaderAbstract{");
-			sb.append("nextHeader=").append(getNextHeader());
-			sb.append(", extensionLength=").append(getExtensionLength());
-			sb.append(", options=").append(Arrays.toString(getOptions()));
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("Header{")
+					.append("nextHeader=").append(nextHeader)
+					.append(", extensionLength=").append(extensionLength)
+					.append(", options=").append(Arrays.toString(options))
+					.append('}').toString();
 		}
 
 	}
@@ -100,12 +99,13 @@ public abstract class Options extends AbstractPacket {
 		}
 
 		public Builder extensionLength(final int extensionLength) {
-			this.extensionLength = extensionLength & 0xffffffff;
+			this.extensionLength = extensionLength;
 			return this;
 		}
 
 		public Builder options(final byte[] options) {
-			this.options = options;
+			this.options = new byte[options.length];
+			System.arraycopy(options, 0, this.options, 0, this.options.length);
 			return this;
 		}
 

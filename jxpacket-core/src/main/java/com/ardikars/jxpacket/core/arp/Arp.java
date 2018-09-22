@@ -62,15 +62,15 @@ public class Arp extends AbstractPacket {
 
 		public static final int ARP_HEADER_LENGTH = 28;
 
-		private DataLinkLayer hardwareType;
-		private NetworkLayer protocolType;
-		private byte hardwareAddressLength;
-		private byte protocolAddressLength;
-		private OperationCode operationCode;
-		private MacAddress senderHardwareAddress;
-		private Inet4Address senderProtocolAddress;
-		private MacAddress targetHardwareAddress;
-		private Inet4Address targetProtocolAddress;
+		private final DataLinkLayer hardwareType;
+		private final NetworkLayer protocolType;
+		private final byte hardwareAddressLength;
+		private final byte protocolAddressLength;
+		private final OperationCode operationCode;
+		private final MacAddress senderHardwareAddress;
+		private final Inet4Address senderProtocolAddress;
+		private final MacAddress targetHardwareAddress;
+		private final Inet4Address targetProtocolAddress;
 
 		private Header(final Builder builder) {
 			this.hardwareType = builder.hardwareType;
@@ -147,19 +147,19 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("ArpHeader{");
-			sb.append("hardwareType=").append(getHardwareType());
-			sb.append(", protocolType=").append(getPayloadType());
-			sb.append(", hardwareAddressLength=").append(getHardwareAddressLength());
-			sb.append(", protocolAddressLength=").append(getProtocolAddressLength());
-			sb.append(", operationCode=").append(getOperationCode());
-			sb.append(", senderHardwareAddress=").append(getSenderHardwareAddress());
-			sb.append(", senderProtocolAddress=").append(getSenderProtocolAddress());
-			sb.append(", targetHardwareAddress=").append(getTargetHardwareAddress());
-			sb.append(", targetProtocolAddress=").append(getTargetProtocolAddress());
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("ArpHeader{")
+					.append("hardwareType=").append(getHardwareType())
+					.append(", protocolType=").append(getPayloadType())
+					.append(", hardwareAddressLength=").append(getHardwareAddressLength())
+					.append(", protocolAddressLength=").append(getProtocolAddressLength())
+					.append(", operationCode=").append(getOperationCode())
+					.append(", senderHardwareAddress=").append(getSenderHardwareAddress())
+					.append(", senderProtocolAddress=").append(getSenderProtocolAddress())
+					.append(", targetHardwareAddress=").append(getTargetHardwareAddress())
+					.append(", targetProtocolAddress=").append(getTargetProtocolAddress())
+					.append('}').toString();
 		}
+
 	}
 
 	public static final class Builder implements Packet.Builder {
@@ -175,10 +175,6 @@ public class Arp extends AbstractPacket {
 		private Inet4Address targetProtocolAddress;
 
 		private ByteBuf payloadBuffer;
-
-		public Builder() {
-
-		}
 
 		public Builder hardwareType(final DataLinkLayer hardwareType) {
 			this.hardwareType = hardwareType;
@@ -237,13 +233,13 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public Arp build(final ByteBuf buffer) {
-			byte[] byteBuffer;
 			Arp.Builder builder = new Builder();
 			builder.hardwareType = DataLinkLayer.valueOf(buffer.getShort(0));
 			builder.protocolType = NetworkLayer.valueOf(buffer.getShort(2));
 			builder.hardwareAddressLength = buffer.getByte(4);
 			builder.protocolAddressLength = buffer.getByte(5);
 			builder.operationCode = OperationCode.valueOf(buffer.getShort(6));
+			byte[] byteBuffer;
 			int hardwareAddressLength = builder.hardwareAddressLength & 0xff;
 			int protocolAddressLength = builder.protocolAddressLength & 0xff;
 			byteBuffer = new byte[hardwareAddressLength];
@@ -272,17 +268,27 @@ public class Arp extends AbstractPacket {
 
 		public static final OperationCode UNKNOWN = new OperationCode((short) -1, "Unknown");
 
+		private static final Map<Short, OperationCode> registry
+				= new HashMap<Short, OperationCode>();
+
 		public OperationCode(Short value, String name) {
 			super(value, name);
 		}
 
-		private static final Map<Short, OperationCode> registry
-				= new HashMap<Short, OperationCode>();
-
+		/**
+		 * Add new {@link OperationCode} to registry.
+		 * @param operationCode operation code.
+		 * @return returns {@link OperationCode}.
+		 */
 		public static OperationCode register(final OperationCode operationCode) {
 			return registry.put(operationCode.getValue(), operationCode);
 		}
 
+		/**
+		 * Get operation code from value.
+		 * @param value value.
+		 * @return returns {@link OperationCode}.
+		 */
 		public static OperationCode valueOf(final Short value) {
 			if (registry.containsKey(value)) {
 				return registry.get(value);

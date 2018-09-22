@@ -44,7 +44,7 @@ public class Tcp extends AbstractPacket {
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     /**
@@ -52,18 +52,18 @@ public class Tcp extends AbstractPacket {
      */
     public static final class Header implements Packet.Header {
 
-        public static int TCP_HEADER_LENGTH = 20;
+        public static final int TCP_HEADER_LENGTH = 20;
 
-        private short sourcePort;
-        private short destinationPort;
-        private int sequence;
-        private int acknowledge;
-        private byte dataOffset;
-        private TcpFlags flags;
-        private short windowSize;
-        private short checksum;
-        private short urgentPointer;
-        private byte[] options;
+        private final short sourcePort;
+        private final short destinationPort;
+        private final int sequence;
+        private final int acknowledge;
+        private final byte dataOffset;
+        private final TcpFlags flags;
+        private final short windowSize;
+        private final short checksum;
+        private final short urgentPointer;
+        private final byte[] options;
 
         private Header(final Builder builder) {
             this.sourcePort = builder.sourcePort;
@@ -87,11 +87,11 @@ public class Tcp extends AbstractPacket {
         }
 
         public int getSequence() {
-            return this.sequence & 0xffffffff;
+            return this.sequence;
         }
 
         public int getAcknowledge() {
-            return this.acknowledge & 0xffffffff;
+            return this.acknowledge;
         }
 
         public int getDataOffset() {
@@ -160,19 +160,18 @@ public class Tcp extends AbstractPacket {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("HeaderAbstract{");
-            sb.append("sourcePort=").append(sourcePort & 0xffff);
-            sb.append(", destinationPort=").append(destinationPort & 0xffff);
-            sb.append(", sequence=").append(sequence & 0xffffffffL);
-            sb.append(", acknowledge=").append(acknowledge & 0xffffffffL);
-            sb.append(", dataOffset=").append(dataOffset & 0xf);
-            sb.append(", flags=").append(flags);
-            sb.append(", windowSize=").append(windowSize & 0xffff);
-            sb.append(", checksum=").append(checksum & 0xffff);
-            sb.append(", urgentPointer=").append(urgentPointer & 0xffff);
-            sb.append(", options=").append(Arrays.toString(options));
-            sb.append('}');
-            return sb.toString();
+            return new StringBuilder("Header{")
+                    .append("sourcePort=").append(sourcePort)
+                    .append(", destinationPort=").append(destinationPort)
+                    .append(", sequence=").append(sequence)
+                    .append(", acknowledge=").append(acknowledge)
+                    .append(", dataOffset=").append(dataOffset)
+                    .append(", flags=").append(flags)
+                    .append(", windowSize=").append(windowSize)
+                    .append(", checksum=").append(checksum)
+                    .append(", urgentPointer=").append(urgentPointer)
+                    .append(", options=").append(Arrays.toString(options))
+                    .append('}').toString();
         }
 
     }
@@ -203,12 +202,12 @@ public class Tcp extends AbstractPacket {
         }
 
         public Builder sequence(int sequence) {
-            this.sequence = sequence & 0xffffffff;
+            this.sequence = sequence;
             return this;
         }
 
         public Builder acknowledge(int acknowledge) {
-            this.acknowledge = acknowledge & 0xffffffff;
+            this.acknowledge = acknowledge;
             return this;
         }
 

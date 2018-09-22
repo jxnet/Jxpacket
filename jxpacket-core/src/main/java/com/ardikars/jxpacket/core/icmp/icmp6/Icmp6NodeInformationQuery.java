@@ -46,9 +46,7 @@ public class Icmp6NodeInformationQuery extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6NodeInformationQuery}.
      */
     public static Icmp6NodeInformationQuery register(Byte code, String name) {
-        Icmp6NodeInformationQuery nodeInformationQuery =
-                new Icmp6NodeInformationQuery(code, name);
-        return nodeInformationQuery;
+        return new Icmp6NodeInformationQuery(code, name);
     }
 
     @Override

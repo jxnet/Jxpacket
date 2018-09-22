@@ -40,9 +40,7 @@ public class Icmp6MulticastListenerQuery extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6MulticastListenerQuery}.
      */
     public static Icmp6MulticastListenerQuery register(Byte code, String name) {
-        Icmp6MulticastListenerQuery multicastListenerQuery =
-                new Icmp6MulticastListenerQuery(code, name);
-        return multicastListenerQuery;
+        return new Icmp6MulticastListenerQuery(code, name);
     }
 
     @Override

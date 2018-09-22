@@ -34,8 +34,7 @@ public class Icmp4RedirectMessage extends Icmp.IcmpTypeAndCode {
     }
 
     public static Icmp4RedirectMessage register(Byte code, String name) {
-        Icmp4RedirectMessage redirectMessage = new Icmp4RedirectMessage(code, name);
-        return redirectMessage;
+        return new Icmp4RedirectMessage(code, name);
     }
 
     @Override

@@ -26,7 +26,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class RouterSolicitation extends AbstractPacket {
 
     private final RouterSolicitation.Header header;
-    private final ByteBuf payload;
+    private final Packet payload;
 
     public RouterSolicitation(Builder builder) {
         this.header = new Header(builder);
@@ -40,14 +40,14 @@ public class RouterSolicitation extends AbstractPacket {
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static class Header implements Packet.Header {
 
-        public static int ROUTER_SOLICITATION_HEADER_LENGTH = 4;
+        public static final int ROUTER_SOLICITATION_HEADER_LENGTH = 4;
 
-        private NeighborDiscoveryOptions options;
+        private final NeighborDiscoveryOptions options;
 
         public Header(Builder builder) {
             this.options = builder.options;
@@ -69,6 +69,13 @@ public class RouterSolicitation extends AbstractPacket {
             buffer.setInt(0, 0);
             buffer.setBytes(4, options.getHeader().getBuffer());
             return buffer;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Header{")
+                    .append("options=").append(options)
+                    .append('}').toString();
         }
 
     }

@@ -53,19 +53,19 @@ public class Ip4 extends Ip {
 
 		public static final int IPV4_HEADER_LENGTH = 20;
 
-		private byte headerLength;
-		private byte diffServ;
-		private byte expCon;
-		private short totalLength;
-		private short identification;
-		private byte flags;
-		private short fragmentOffset;
-		private byte ttl;
-		private TransportLayer protocol;
-		private short checksum;
-		private Inet4Address sourceAddress;
-		private Inet4Address destinationAddress;
-		private byte[] options;
+		private final byte headerLength;
+		private final byte diffServ;
+		private final byte expCon;
+		private final short totalLength;
+		private final short identification;
+		private final byte flags;
+		private final short fragmentOffset;
+		private final byte ttl;
+		private final TransportLayer protocol;
+		private final short checksum;
+		private final Inet4Address sourceAddress;
+		private final Inet4Address destinationAddress;
+		private final byte[] options;
 
 		protected Header(final Builder builder) {
 			super((byte) 0x04);
@@ -132,7 +132,13 @@ public class Ip4 extends Ip {
 			return destinationAddress;
 		}
 
+		/**
+		 * Get options.
+		 * @return returns options.
+		 */
 		public byte[] getOptions() {
+			byte[] options = new byte[this.options.length];
+			System.arraycopy(this.options, 0, options, 0, options.length);
 			return options;
 		}
 
@@ -158,13 +164,13 @@ public class Ip4 extends Ip {
 			index += 2;
 			buffer.setShort(index, identification);
 			index += 2;
-			buffer.setShort(index, ((flags & 0x7) << 13 | fragmentOffset & 0x1fff));
+			buffer.setShort(index, (flags & 0x7) << 13 | fragmentOffset & 0x1fff);
 			index += 2;
 			buffer.setByte(index, ttl);
 			index += 1;
 			buffer.setByte(index, protocol.getValue());
 			index += 1;
-			buffer.setShort(index, (checksum & 0xffff));
+			buffer.setShort(index, checksum & 0xffff);
 			index += 2;
 			buffer.setBytes(index, sourceAddress.toBytes());
 			index += Inet4Address.IPV4_ADDRESS_LENGTH;
@@ -173,6 +179,7 @@ public class Ip4 extends Ip {
 			if (options != null && headerLength > 5) {
 				buffer.setBytes(index, options);
 			}
+			short checksum = this.checksum;
 			if (checksum == 0) {
 				int accumulation = 0;
 				for (int i = 0; i < headerLength * 2; ++i) {
@@ -180,31 +187,30 @@ public class Ip4 extends Ip {
 				}
 				accumulation = (accumulation >> 16 & 0xffff)
 						+ (accumulation & 0xffff);
-				this.checksum = ((short) (~accumulation & 0xffff));
-				buffer.setShort(10, (checksum & 0xffff));
+				checksum = (short) (~accumulation & 0xffff);
+				buffer.setShort(10, checksum & 0xffff);
 			}
 			return buffer;
 		}
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("Ip4Header{");
-			sb.append("version=").append(super.getVersion());
-			sb.append(", headerLength=").append(getHeaderLength());
-			sb.append(", diffServ=").append(getDiffServ());
-			sb.append(", expCon=").append(getExpCon());
-			sb.append(", totalLength=").append(getTotalLength());
-			sb.append(", identification=").append(getIdentification());
-			sb.append(", flags=").append(getFlags());
-			sb.append(", fragmentOffset=").append(getFragmentOffset());
-			sb.append(", ttl=").append(getTtl());
-			sb.append(", protocol=").append(getProtocol());
-			sb.append(", checksum=").append(getChecksum());
-			sb.append(", sourceAddress=").append(getSourceAddress());
-			sb.append(", destinationAddress=").append(getDestinationAddress());
-			sb.append(", options=").append(Arrays.toString(getOptions()));
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("Ip4Header{")
+					.append("version=").append(super.getVersion())
+					.append(", headerLength=").append(getHeaderLength())
+					.append(", diffServ=").append(getDiffServ())
+					.append(", expCon=").append(getExpCon())
+					.append(", totalLength=").append(getTotalLength())
+					.append(", identification=").append(getIdentification())
+					.append(", flags=").append(getFlags())
+					.append(", fragmentOffset=").append(getFragmentOffset())
+					.append(", ttl=").append(getTtl())
+					.append(", protocol=").append(getProtocol())
+					.append(", checksum=").append(getChecksum())
+					.append(", sourceAddress=").append(getSourceAddress())
+					.append(", destinationAddress=").append(getDestinationAddress())
+					.append(", options=").append(Arrays.toString(getOptions()))
+					.append('}').toString();
 		}
 
 	}
@@ -287,8 +293,14 @@ public class Ip4 extends Ip {
 			return this;
 		}
 
+		/**
+		 * Add options.
+		 * @param options options.
+		 * @return returns this {@link Builder} object.
+		 */
 		public Builder options(final byte[] options) {
-			this.options = options;
+			this.options = new byte[options.length];
+			System.arraycopy(options, 0, this.options, 0, this.options.length);
 			return this;
 		}
 
@@ -315,7 +327,7 @@ public class Ip4 extends Ip {
 			builder.fragmentOffset = (short) (sscratch & 0x1fff);
 			builder.ttl = buffer.getByte(8);
 			builder.protocol = TransportLayer.valueOf(buffer.getByte(9));
-			builder.checksum = ((short) (buffer.getShort(10) & 0xffff));
+			builder.checksum = (short) (buffer.getShort(10) & 0xffff);
 			byte[] ipv4Buffer;
 			ipv4Buffer = new byte[Inet4Address.IPV4_ADDRESS_LENGTH];
 			buffer.getBytes(12, ipv4Buffer);

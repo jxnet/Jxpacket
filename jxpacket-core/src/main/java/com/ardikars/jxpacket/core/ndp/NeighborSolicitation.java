@@ -27,7 +27,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class NeighborSolicitation extends AbstractPacket {
 
     private final NeighborSolicitation.Header header;
-    private final ByteBuf payload;
+    private final Packet payload;
 
     public NeighborSolicitation(Builder builder) {
         this.header = new Header(builder);
@@ -41,16 +41,16 @@ public class NeighborSolicitation extends AbstractPacket {
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static class Header implements Packet.Header {
 
         public static final int NEIGHBOR_SOLICITATION_HEADER_LENGTH = 16;
 
-        private Inet6Address targetAddress;
+        private final Inet6Address targetAddress;
 
-        private NeighborDiscoveryOptions options;
+        private final NeighborDiscoveryOptions options;
 
         private Header(Builder builder) {
             this.targetAddress = builder.targetAddress;
@@ -73,6 +73,14 @@ public class NeighborSolicitation extends AbstractPacket {
             buffer.setBytes(0, targetAddress.getAddress());
             buffer.setBytes(16, options.getHeader().getBuffer());
             return buffer;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Header{")
+                    .append("targetAddress=").append(targetAddress)
+                    .append(", options=").append(options)
+                    .append('}').toString();
         }
 
     }

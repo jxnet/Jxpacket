@@ -17,17 +17,21 @@
 
 package com.ardikars.jxpacket.core.tcp;
 
-public final class TcpFlags {
+import java.io.Serializable;
 
-    private boolean ns;
-    private boolean cwr;
-    private boolean ece;
-    private boolean urg;
-    private boolean ack;
-    private boolean psh;
-    private boolean rst;
-    private boolean syn;
-    private boolean fin;
+public final class TcpFlags implements Serializable  {
+
+    private static final long serialVersionUID = -4085108976335127778L;
+
+    private final boolean ns;
+    private final boolean cwr;
+    private final boolean ece;
+    private final boolean urg;
+    private final boolean ack;
+    private final boolean psh;
+    private final boolean rst;
+    private final boolean syn;
+    private final boolean fin;
 
     private TcpFlags(final Builder builder) {
         this.ns = builder.ns;
@@ -75,6 +79,21 @@ public final class TcpFlags {
             flags += 1;
         }
         return flags;
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("TcpFlags{")
+                .append("ns=").append(ns)
+                .append(", cwr=").append(cwr)
+                .append(", ece=").append(ece)
+                .append(", urg=").append(urg)
+                .append(", ack=").append(ack)
+                .append(", psh=").append(psh)
+                .append(", rst=").append(rst)
+                .append(", syn=").append(syn)
+                .append(", fin=").append(fin)
+                .append('}').toString();
     }
 
     public static final class Builder implements com.ardikars.common.util.Builder<TcpFlags, Short> {

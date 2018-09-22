@@ -40,9 +40,7 @@ public class Icmp6MulticastListenerReportV2 extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6MulticastListenerReportV2}.
      */
     public static Icmp6MulticastListenerReportV2 register(Byte code, String name) {
-        Icmp6MulticastListenerReportV2 multicastListenerReport =
-                new Icmp6MulticastListenerReportV2(code, name);
-        return multicastListenerReport;
+        return new Icmp6MulticastListenerReportV2(code, name);
     }
 
     @Override

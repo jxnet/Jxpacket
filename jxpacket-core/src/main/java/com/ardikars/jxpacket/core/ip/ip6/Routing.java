@@ -55,12 +55,12 @@ public class Routing extends AbstractPacket {
 		public static final int FIXED_ROUTING_HEADER_LENGTH = 4;
 		public static final int FIXED_ROUTING_DATA_LENGTH = 4;
 
-		private TransportLayer nextHeader;
-		private byte extensionLength;
-		private Type routingType;
-		private byte segmentLeft;
+		private final TransportLayer nextHeader;
+		private final byte extensionLength;
+		private final Type routingType;
+		private final byte segmentLeft;
 
-		private byte[] routingData;
+		private final byte[] routingData;
 
 		private Header(final Builder builder) {
 			this.nextHeader = builder.nextHeader;
@@ -86,7 +86,13 @@ public class Routing extends AbstractPacket {
 			return segmentLeft & 0xff;
 		}
 
+		/**
+		 * Get routing data.
+		 * @return returns routing data.
+		 */
 		public byte[] getRoutingData() {
+			byte[] routingData = new byte[this.routingData.length];
+			System.arraycopy(this.routingData, 0, routingData, 0, routingData.length);
 			return routingData;
 		}
 
@@ -113,14 +119,13 @@ public class Routing extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("HeaderAbstract{");
-			sb.append("nextHeader=").append(getNextHeader());
-			sb.append(", extensionLength=").append(getExtensionLength());
-			sb.append(", routingType=").append(getRoutingType());
-			sb.append(", segmentLeft=").append(getSegmentLeft());
-			sb.append(", routingData=").append(Arrays.toString(getRoutingData()));
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("Header{")
+					.append("nextHeader=").append(nextHeader)
+					.append(", extensionLength=").append(extensionLength)
+					.append(", routingType=").append(routingType)
+					.append(", segmentLeft=").append(segmentLeft)
+					.append(", routingData=").append(Arrays.toString(routingData))
+					.append('}').toString();
 		}
 
 	}
@@ -154,8 +159,14 @@ public class Routing extends AbstractPacket {
 			return this;
 		}
 
+		/**
+		 * Add routing data.
+		 * @param routingData routing data.
+		 * @return returns this {@link Builder} object.
+		 */
 		public Builder routingData(final byte[] routingData) {
-			this.routingData = routingData;
+			this.routingData = new byte[routingData.length];
+			System.arraycopy(routingData, 0, this.routingData, 0, this.routingData.length);
 			return this;
 		}
 

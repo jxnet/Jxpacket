@@ -40,9 +40,7 @@ public class Icmp6NeighborAdvertisement extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6NeighborAdvertisement}.
      */
     public static Icmp6NeighborAdvertisement register(Byte code, String name) {
-        Icmp6NeighborAdvertisement neighborAdvertisement =
-                new Icmp6NeighborAdvertisement(code, name);
-        return neighborAdvertisement;
+        return new Icmp6NeighborAdvertisement(code, name);
     }
 
     @Override

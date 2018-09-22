@@ -46,7 +46,7 @@ public class UnknownPacket extends AbstractPacket {
 
 	public static final class Header implements Packet.Header {
 
-		private ByteBuf buffer;
+		final private ByteBuf buffer;
 
 		public Header(final Builder builder) {
 			this.buffer = builder.payloadBuffer;
@@ -71,8 +71,6 @@ public class UnknownPacket extends AbstractPacket {
 	public static final class Builder implements Packet.Builder {
 
 		private ByteBuf payloadBuffer;
-
-		public Builder() { }
 
 		public Builder payloadBuffer(final ByteBuf buffer) {
 			this.payloadBuffer = buffer;

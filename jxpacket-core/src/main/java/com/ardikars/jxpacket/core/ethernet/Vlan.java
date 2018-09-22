@@ -60,10 +60,10 @@ public class Vlan extends AbstractPacket {
 
 		public static final int VLAN_HEADER_LENGTH = 4;
 
-		private PriorityCodePoint priorityCodePoint; // 3 bit
-		private byte canonicalFormatIndicator; // 1 bit
-		private short vlanIdentifier; // 12 bit
-		private NetworkLayer type;
+		private final PriorityCodePoint priorityCodePoint; // 3 bit
+		private final byte canonicalFormatIndicator; // 1 bit
+		private final short vlanIdentifier; // 12 bit
+		private final NetworkLayer type;
 
 		private Header(final Builder builder) {
 			this.priorityCodePoint = builder.priorityCodePoint;
@@ -102,20 +102,19 @@ public class Vlan extends AbstractPacket {
 		public ByteBuf getBuffer() {
 			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
 			buffer.setShort(0, NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
-			buffer.setShort(2, (((priorityCodePoint.getValue() << 13) & 0x07)
-					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff)));
+			buffer.setShort(2, ((priorityCodePoint.getValue() << 13) & 0x07)
+					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff));
 			return buffer;
 		}
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("VlanHeader{");
-			sb.append("priorityCodePoint=").append(getPriorityCodePoint());
-			sb.append(", canonicalFormatIndicator=").append(getCanonicalFormatIndicator());
-			sb.append(", vlanIdentifier=").append(getVlanIdentifier());
-			sb.append(", type=").append(getType());
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("VlanHeader{")
+					.append("priorityCodePoint=").append(getPriorityCodePoint())
+					.append(", canonicalFormatIndicator=").append(getCanonicalFormatIndicator())
+					.append(", vlanIdentifier=").append(getVlanIdentifier())
+					.append(", type=").append(getType())
+					.append('}').toString();
 		}
 
 	}
@@ -128,10 +127,6 @@ public class Vlan extends AbstractPacket {
 		private NetworkLayer type;
 
 		private ByteBuf payloadBuffer;
-
-		public Builder() {
-
-		}
 
 		public Builder priorityCodePoint(final PriorityCodePoint priorityCodePoint) {
 			this.priorityCodePoint = priorityCodePoint;

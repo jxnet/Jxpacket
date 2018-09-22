@@ -27,7 +27,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class NeighborAdvertisement extends AbstractPacket {
 
     private final NeighborAdvertisement.Header header;
-    private final ByteBuf payload;
+    private final Packet payload;
 
     public NeighborAdvertisement(Builder builder) {
         this.header = new Header(builder);
@@ -41,19 +41,19 @@ public class NeighborAdvertisement extends AbstractPacket {
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static final class Header implements Packet.Header {
 
-        public static int HEADER_LENGTH = 20;
+        public static final int HEADER_LENGTH = 20;
 
-        private boolean routerFlag;
-        private boolean solicitedFlag;
-        private boolean overrideFlag;
-        private Inet6Address targetAddress;
+        private final boolean routerFlag;
+        private final boolean solicitedFlag;
+        private final boolean overrideFlag;
+        private final Inet6Address targetAddress;
 
-        private NeighborDiscoveryOptions options;
+        private final NeighborDiscoveryOptions options;
 
         private Header(Builder builder) {
             this.routerFlag = builder.routerFlag;
@@ -82,6 +82,17 @@ public class NeighborAdvertisement extends AbstractPacket {
             buffer.setBytes(4, this.targetAddress.getAddress());
             buffer.setBytes(20, options.getHeader().getBuffer());
             return buffer;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Header{")
+                    .append("routerFlag=").append(routerFlag)
+                    .append(", solicitedFlag=").append(solicitedFlag)
+                    .append(", overrideFlag=").append(overrideFlag)
+                    .append(", targetAddress=").append(targetAddress)
+                    .append(", options=").append(options)
+                    .append('}').toString();
         }
 
     }

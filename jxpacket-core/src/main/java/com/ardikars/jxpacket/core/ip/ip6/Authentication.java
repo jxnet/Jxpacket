@@ -52,11 +52,11 @@ public class Authentication extends AbstractPacket {
 
 		public static final byte FIXED_HEADER_LENGTH = 12; // bytes
 
-		private TransportLayer nextHeader;
-		private byte payloadLength;
-		private int securityParameterIndex;
-		private int sequenceNumber;
-		private byte[] integrityCheckValue;
+		private final TransportLayer nextHeader;
+		private final byte payloadLength;
+		private final int securityParameterIndex;
+		private final int sequenceNumber;
+		private final byte[] integrityCheckValue;
 
 		private Header(final Builder builder) {
 			this.nextHeader = builder.nextHeader;
@@ -75,14 +75,20 @@ public class Authentication extends AbstractPacket {
 		}
 
 		public int getSecurityParameterIndex() {
-			return securityParameterIndex & 0xffffffff;
+			return securityParameterIndex;
 		}
 
 		public int getSequenceNumber() {
-			return sequenceNumber & 0xffffffff;
+			return sequenceNumber;
 		}
 
+		/**
+		 * Get integrity check value.
+		 * @return returns check integrity check value.
+		 */
 		public byte[] getIntegrityCheckValue() {
+			byte[] integrityCheckValue = new byte[this.integrityCheckValue.length];
+			System.arraycopy(this.integrityCheckValue, 0, integrityCheckValue, 0, this.integrityCheckValue.length);
 			return integrityCheckValue;
 		}
 
@@ -113,15 +119,15 @@ public class Authentication extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("HeaderAbstract{");
-			sb.append("nextHeader=").append(getNextHeader());
-			sb.append(", payloadLength=").append(getPayloadLength());
-			sb.append(", securityParameterIndex=").append(getSecurityParameterIndex());
-			sb.append(", sequenceNumber=").append(getSequenceNumber());
-			sb.append(", integrityCheckValue=").append(Arrays.toString(getIntegrityCheckValue()));
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("HeaderAbstract{")
+					.append("nextHeader=").append(getNextHeader())
+					.append(", payloadLength=").append(getPayloadLength())
+					.append(", securityParameterIndex=").append(getSecurityParameterIndex())
+					.append(", sequenceNumber=").append(getSequenceNumber())
+					.append(", integrityCheckValue=").append(Arrays.toString(getIntegrityCheckValue()))
+					.append('}').toString();
 		}
+
 	}
 
 	public static final class Builder implements Packet.Builder {
@@ -143,17 +149,23 @@ public class Authentication extends AbstractPacket {
 		}
 
 		public Builder securityParameterIndex(final int securityParameterIndex) {
-			this.securityParameterIndex = securityParameterIndex & 0xffffffff;
+			this.securityParameterIndex = securityParameterIndex;
 			return this;
 		}
 
 		public Builder sequenceNumber(final int sequenceNumber) {
-			this.sequenceNumber = sequenceNumber & 0xffffffff;
+			this.sequenceNumber = sequenceNumber;
 			return this;
 		}
 
+		/**
+		 * Add integrity check value.
+		 * @param integrityCheckValue integrity check value.
+		 * @return returns this {@link Builder} object.
+		 */
 		public Builder integrityCheckValue(final byte[] integrityCheckValue) {
-			this.integrityCheckValue = integrityCheckValue;
+			this.integrityCheckValue = new byte[integrityCheckValue.length];
+			System.arraycopy(integrityCheckValue, 0, this.integrityCheckValue, 0, this.integrityCheckValue.length);
 			return this;
 		}
 
@@ -169,7 +181,7 @@ public class Authentication extends AbstractPacket {
 			builder.payloadLength = buffer.getByte(1);
 			builder.securityParameterIndex = buffer.getInt(4);
 			builder.sequenceNumber = buffer.getInt(8);
-			builder.integrityCheckValue = new byte[((builder.payloadLength + 2) * 8) - 12];
+			builder.integrityCheckValue = new byte[(builder.payloadLength + 2) * 8 - 12];
 			if (builder.integrityCheckValue != null) {
 				buffer.getBytes(12, builder.integrityCheckValue);
 			}

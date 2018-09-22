@@ -43,9 +43,7 @@ public class Icmp4TimeExceeded extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp4TimeExceeded}.
      */
     public static Icmp4TimeExceeded register(Byte code, String name) {
-        Icmp4TimeExceeded timeExceeded =
-                new Icmp4TimeExceeded(code, name);
-        return timeExceeded;
+        return new Icmp4TimeExceeded(code, name);
     }
 
     @Override

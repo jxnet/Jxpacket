@@ -40,9 +40,7 @@ public class Icmp6RedirectMessage extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6RedirectMessage}.
      */
     public static Icmp6RedirectMessage register(Byte code, String name) {
-        Icmp6RedirectMessage redirectMessage =
-                new Icmp6RedirectMessage(code, name);
-        return redirectMessage;
+        return new Icmp6RedirectMessage(code, name);
     }
 
     @Override

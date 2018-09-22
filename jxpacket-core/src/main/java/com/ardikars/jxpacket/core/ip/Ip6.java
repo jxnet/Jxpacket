@@ -51,13 +51,13 @@ public class Ip6 extends Ip {
 
 		public static final int IPV6_HEADER_LENGTH = 40;
 
-		private byte trafficClass;
-		private int flowLabel;
-		private short payloadLength;
-		private TransportLayer nextHeader;
-		private byte hopLimit;
-		private Inet6Address sourceAddress;
-		private Inet6Address destinationAddress;
+		private final byte trafficClass;
+		private final int flowLabel;
+		private final short payloadLength;
+		private final TransportLayer nextHeader;
+		private final byte hopLimit;
+		private final Inet6Address sourceAddress;
+		private final Inet6Address destinationAddress;
 
 		protected Header(final Builder builder) {
 			super((byte) 0x06);
@@ -122,17 +122,16 @@ public class Ip6 extends Ip {
 
 		@Override
 		public String toString() {
-			final StringBuilder sb = new StringBuilder("Ip6Header{");
-			sb.append("version=").append(super.getVersion());
-			sb.append(", trafficClass=").append(getTrafficClass());
-			sb.append(", flowLabel=").append(getFlowLabel());
-			sb.append(", payloadLength=").append(getPayloadLength());
-			sb.append(", nextHeader=").append(getNextHeader());
-			sb.append(", hopLimit=").append(getHopLimit());
-			sb.append(", sourceAddress=").append(getSourceAddress());
-			sb.append(", destinationAddress=").append(getDestinationAddress());
-			sb.append('}');
-			return sb.toString();
+			return new StringBuilder("Ip6Header{")
+					.append("version=").append(super.getVersion())
+					.append(", trafficClass=").append(getTrafficClass())
+					.append(", flowLabel=").append(getFlowLabel())
+					.append(", payloadLength=").append(getPayloadLength())
+					.append(", nextHeader=").append(getNextHeader())
+					.append(", hopLimit=").append(getHopLimit())
+					.append(", sourceAddress=").append(getSourceAddress())
+					.append(", destinationAddress=").append(getDestinationAddress())
+					.append('}').toString();
 		}
 
 	}
@@ -155,7 +154,7 @@ public class Ip6 extends Ip {
 		}
 
 		public Builder flowLabel(final int flowLabel) {
-			this.flowLabel = (flowLabel & 0xfffff);
+			this.flowLabel = flowLabel & 0xfffff;
 			return this;
 		}
 
@@ -199,7 +198,7 @@ public class Ip6 extends Ip {
 			int iscratch = buffer.getInt(0);
 			Builder builder = new Builder();
 			builder.trafficClass = (byte) (iscratch >> 20 & 0xff);
-			builder.flowLabel = (iscratch & 0xfffff);
+			builder.flowLabel = iscratch & 0xfffff;
 			builder.payloadLength = buffer.getShort(4);
 			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(6));
 			builder.hopLimit = buffer.getByte(7);

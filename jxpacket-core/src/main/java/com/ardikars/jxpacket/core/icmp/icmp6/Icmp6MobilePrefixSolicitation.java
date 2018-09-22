@@ -40,9 +40,7 @@ public class Icmp6MobilePrefixSolicitation extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6MobilePrefixSolicitation}.
      */
     public static Icmp6MobilePrefixSolicitation register(Byte code, String name) {
-        Icmp6MobilePrefixSolicitation mobilePrefixSolicitation =
-                new Icmp6MobilePrefixSolicitation(code, name);
-        return mobilePrefixSolicitation;
+        return new Icmp6MobilePrefixSolicitation(code, name);
     }
 
     @Override

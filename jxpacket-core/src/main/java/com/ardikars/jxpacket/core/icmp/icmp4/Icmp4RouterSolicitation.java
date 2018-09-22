@@ -40,9 +40,7 @@ public class Icmp4RouterSolicitation extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp4RouterSolicitation}.
      */
     public static Icmp4RouterSolicitation register(Byte code, String name) {
-        Icmp4RouterSolicitation routerSolicitation =
-                new Icmp4RouterSolicitation(code, name);
-        return routerSolicitation;
+        return new Icmp4RouterSolicitation(code, name);
     }
 
     @Override

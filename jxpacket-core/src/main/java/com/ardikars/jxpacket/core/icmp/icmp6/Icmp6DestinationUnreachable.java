@@ -72,9 +72,7 @@ public class Icmp6DestinationUnreachable extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6DestinationUnreachable}.
      */
     public static Icmp6DestinationUnreachable register(Byte code, String name) {
-        Icmp6DestinationUnreachable destinationUnreachable =
-                new Icmp6DestinationUnreachable(code, name);
-        return destinationUnreachable;
+        return new Icmp6DestinationUnreachable(code, name);
     }
 
     @Override

@@ -48,10 +48,10 @@ public class Udp extends AbstractPacket {
 
         public static final int UDP_HEADER_LENGTH = 8;
 
-        private short sourcePort;
-        private short destinationPort;
-        private short length;
-        private short checksum;
+        private final short sourcePort;
+        private final short destinationPort;
+        private final short length;
+        private final short checksum;
 
         private Header(final Builder builder) {
             this.sourcePort = builder.sourcePort;
@@ -94,13 +94,12 @@ public class Udp extends AbstractPacket {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("HeaderAbstract{");
-            sb.append("sourcePort=").append(sourcePort & 0xffff);
-            sb.append(", destinationPort=").append(destinationPort & 0xffff);
-            sb.append(", length=").append(length & 0xffff);
-            sb.append(", checksum=").append(checksum & 0xffff);
-            sb.append('}');
-            return sb.toString();
+            return new StringBuilder("Header{")
+                    .append("sourcePort=").append(sourcePort)
+                    .append(", destinationPort=").append(destinationPort)
+                    .append(", length=").append(length)
+                    .append(", checksum=").append(checksum)
+                    .append('}').toString();
         }
 
     }
@@ -112,7 +111,7 @@ public class Udp extends AbstractPacket {
         private short length;
         private short checksum;
 
-        private ByteBuf payloadBuffer;
+        //private ByteBuf payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
             this.sourcePort = (short) (sourcePort & 0xffff);
@@ -134,10 +133,10 @@ public class Udp extends AbstractPacket {
             return this;
         }
 
-        public Builder payloadBuffer(ByteBuf payloadBuffer) {
+        /*public Builder payloadBuffer(ByteBuf payloadBuffer) {
             this.payloadBuffer = payloadBuffer;
             return this;
-        }
+        }*/
 
         @Override
         public Packet build() {
@@ -150,7 +149,7 @@ public class Udp extends AbstractPacket {
             this.destinationPort = buffer.getShort(2);
             this.length = buffer.getShort(4);
             this.checksum = buffer.getShort(6);
-            this.payloadBuffer = buffer.copy(8, buffer.capacity() - 8);
+            //this.payloadBuffer = buffer.copy(8, buffer.capacity() - 8);
             return new Udp(this);
         }
 

@@ -51,10 +51,10 @@ public class Fragment extends AbstractPacket {
 
 		public static final int FIXED_FRAGMENT_HEADER_LENGTH = 8;
 
-		private TransportLayer nextHeader;
-		private short fragmentOffset;
-		private FlagType flagType;
-		private int identification;
+		private final TransportLayer nextHeader;
+		private final short fragmentOffset;
+		private final FlagType flagType;
+		private final int identification;
 
 		private Header(final Builder builder) {
 			this.nextHeader = builder.nextHeader;
@@ -76,7 +76,7 @@ public class Fragment extends AbstractPacket {
 		}
 
 		public int getIdentification() {
-			return identification & 0xffffffff;
+			return identification;
 		}
 
 		@Override
@@ -98,6 +98,16 @@ public class Fragment extends AbstractPacket {
 					| flagType.getValue() & 0x1));
 			buffer.setInt(3, identification);
 			return buffer;
+		}
+
+		@Override
+		public String toString() {
+			return new StringBuilder("Header{")
+					.append("nextHeader=").append(nextHeader)
+					.append(", fragmentOffset=").append(fragmentOffset)
+					.append(", flagType=").append(flagType)
+					.append(", identification=").append(identification)
+					.append('}').toString();
 		}
 
 	}
@@ -125,7 +135,7 @@ public class Fragment extends AbstractPacket {
 		}
 
 		public Builder identification(int identification) {
-			this.identification = identification & 0xffffffff;
+			this.identification = identification;
 			return this;
 		}
 
@@ -136,12 +146,11 @@ public class Fragment extends AbstractPacket {
 
 		@Override
 		public Fragment build(final ByteBuf buffer) {
-			Builder builder = new Builder();
-			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(0));
+			this.nextHeader = TransportLayer.valueOf(buffer.getByte(0));
 			short sscratch = buffer.getShort(2);
-			builder.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
-			builder.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
-			builder.identification = buffer.getInt(4);
+			this.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
+			this.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
+			this.identification = buffer.getInt(4);
 			buffer.release();
 			return new Fragment(this);
 		}
@@ -156,12 +165,12 @@ public class Fragment extends AbstractPacket {
 
 		public static final FlagType UNKNOWN = new FlagType((byte) -1, "UNKNOWN.");
 
+		private static final Map<Byte, FlagType> registry
+				= new HashMap<>();
+
 		protected FlagType(Byte value, String name) {
 			super(value, name);
 		}
-
-		private static final Map<Byte, FlagType> registry
-				= new HashMap<>();
 
 		/**
 		 * Add new flag type to registry.

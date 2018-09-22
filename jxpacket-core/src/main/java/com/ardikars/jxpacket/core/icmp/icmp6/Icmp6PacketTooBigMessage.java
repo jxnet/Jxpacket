@@ -53,9 +53,7 @@ public class Icmp6PacketTooBigMessage extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6PacketTooBigMessage}.
      */
     public static Icmp6PacketTooBigMessage register(Byte code, String name) {
-        Icmp6PacketTooBigMessage packetTooBigMessage =
-                new Icmp6PacketTooBigMessage(code, name);
-        return packetTooBigMessage;
+        return new Icmp6PacketTooBigMessage(code, name);
     }
 
     @Override

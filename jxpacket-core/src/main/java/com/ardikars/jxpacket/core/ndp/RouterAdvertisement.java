@@ -26,7 +26,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 public class RouterAdvertisement extends AbstractPacket {
 
     private final RouterAdvertisement.Header header;
-    private final ByteBuf payload;
+    private final Packet payload;
 
     public RouterAdvertisement(Builder builder) {
         this.header = new Header(builder);
@@ -35,26 +35,26 @@ public class RouterAdvertisement extends AbstractPacket {
 
     @Override
     public Header getHeader() {
-        return null;
+        return header;
     }
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static class Header implements Packet.Header {
 
         public static final int ROUTER_ADVERTISEMENT_HEADER_LENGTH = 12;
 
-        private byte currentHopLimit;
-        private boolean manageFlag;
-        private boolean otherFlag;
-        private short routerLifetime;
-        private int reachableTime;
-        private int retransmitTimer;
+        private final byte currentHopLimit;
+        private final boolean manageFlag;
+        private final boolean otherFlag;
+        private final short routerLifetime;
+        private final int reachableTime;
+        private final int retransmitTimer;
 
-        private NeighborDiscoveryOptions options;
+        private final NeighborDiscoveryOptions options;
 
         private Header(Builder builder) {
             this.currentHopLimit = builder.currentHopLimit;
@@ -63,6 +63,7 @@ public class RouterAdvertisement extends AbstractPacket {
             this.routerLifetime = builder.routerLifetime;
             this.reachableTime = builder.reachableTime;
             this.retransmitTimer = builder.retransmitTimer;
+            this.options = builder.options;
         }
 
         @Override
@@ -85,6 +86,19 @@ public class RouterAdvertisement extends AbstractPacket {
             buffer.setInt(8, retransmitTimer);
             buffer.setBytes(12, options.getHeader().getBuffer());
             return buffer;
+        }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Header{")
+                    .append("currentHopLimit=").append(currentHopLimit)
+                    .append(", manageFlag=").append(manageFlag)
+                    .append(", otherFlag=").append(otherFlag)
+                    .append(", routerLifetime=").append(routerLifetime)
+                    .append(", reachableTime=").append(reachableTime)
+                    .append(", retransmitTimer=").append(retransmitTimer)
+                    .append(", options=").append(options)
+                    .append('}').toString();
         }
 
     }
@@ -121,12 +135,12 @@ public class RouterAdvertisement extends AbstractPacket {
         }
 
         public Builder reachableTime(int reachableTime) {
-            this.reachableTime = reachableTime & 0xffffffff;
+            this.reachableTime = reachableTime;
             return this;
         }
 
         public Builder retransmitTimer(int retransmitTimer) {
-            this.retransmitTimer = retransmitTimer & 0xffffffff;
+            this.retransmitTimer = retransmitTimer;
             return this;
         }
 

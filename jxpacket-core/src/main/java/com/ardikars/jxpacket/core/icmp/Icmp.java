@@ -22,13 +22,11 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
-import java.nio.ByteBuffer;
-
 public abstract class Icmp extends AbstractPacket {
 
     protected static abstract class IcmpHeader implements Header {
 
-        public static int ICMP_HEADER_LENGTH = 4;
+        public static final int ICMP_HEADER_LENGTH = 4;
 
         protected IcmpTypeAndCode typeAndCode;
         protected short checksum;
@@ -57,25 +55,25 @@ public abstract class Icmp extends AbstractPacket {
         protected IcmpTypeAndCode typeAndCode;
         protected short checksum;
 
-        protected ByteBuffer payloadBuffer;
+        //protected ByteBuffer payloadBuffer;
 
         public IcmpPacketBuilder typeAndCode(IcmpTypeAndCode typeAndCode) {
             this.typeAndCode = typeAndCode;
             return this;
         }
 
-        public IcmpPacketBuilder payloadBuffer(ByteBuffer buffer) {
+        /*public IcmpPacketBuilder payloadBuffer(ByteBuffer buffer) {
             this.payloadBuffer = buffer;
             return this;
-        }
+        }*/
 
     }
 
     public static class IcmpTypeAndCode {
 
-        private byte type;
-        private byte code;
-        private String name;
+        private final byte type;
+        private final byte code;
+        private final String name;
 
         /**
          * Create new instance for {@link IcmpTypeAndCode}.
@@ -103,12 +101,11 @@ public abstract class Icmp extends AbstractPacket {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("IcmpTypeAndCode{");
-            sb.append("type=").append(type);
-            sb.append(", code=").append(code);
-            sb.append(", name='").append(name).append('\'');
-            sb.append('}');
-            return sb.toString();
+            return new StringBuilder("IcmpTypeAndCode{")
+                    .append("type=").append(type)
+                    .append(", code=").append(code)
+                    .append(", name='").append(name).append('\'')
+                    .append('}').toString();
         }
 
     }

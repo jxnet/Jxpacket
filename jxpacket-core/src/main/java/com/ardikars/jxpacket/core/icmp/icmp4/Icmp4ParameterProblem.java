@@ -46,9 +46,7 @@ public class Icmp4ParameterProblem extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp4ParameterProblem}.
      */
     public static Icmp4ParameterProblem register(Byte code, String name) {
-        Icmp4ParameterProblem parameterProblem =
-                new Icmp4ParameterProblem(code, name);
-        return parameterProblem;
+        return new Icmp4ParameterProblem(code, name);
     }
 
     @Override

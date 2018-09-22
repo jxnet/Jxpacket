@@ -46,9 +46,7 @@ public class Icmp6NodeInformationResponse extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6NodeInformationResponse}.
      */
     public static Icmp6NodeInformationResponse register(Byte code, String name) {
-        Icmp6NodeInformationResponse informationResponse =
-                new Icmp6NodeInformationResponse(code, name);
-        return informationResponse;
+        return new Icmp6NodeInformationResponse(code, name);
     }
 
     @Override

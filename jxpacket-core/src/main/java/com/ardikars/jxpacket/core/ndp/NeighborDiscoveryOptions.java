@@ -23,6 +23,7 @@ import com.ardikars.jxpacket.common.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import java.util.Map;
 public class NeighborDiscoveryOptions extends AbstractPacket {
 
     private final NeighborDiscoveryOptions.Header header;
-    private final ByteBuf payload;
+    private final Packet payload;
 
     public NeighborDiscoveryOptions(Builder builder) {
         this.header = new Header(builder);
@@ -46,12 +47,12 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     @Override
     public Packet getPayload() {
-        return null;
+        return payload;
     }
 
     public static class Header implements Packet.Header {
 
-        private List<Option> options;
+        private final List<Option> options;
 
         private Header(Builder builder) {
             this.options = builder.options;
@@ -66,7 +67,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         public int getLength() {
             int length = 0;
             for (Option option : this.options) {
-                length += (option.getLength() << 3);
+                length += option.getLength() << 3;
             }
             return length;
         }
@@ -99,27 +100,27 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     public static class OptionType extends NamedNumber<Byte, OptionType> {
 
-        public static OptionType SOURCE_LINK_LAYER_ADDRESS =
+        public static final OptionType SOURCE_LINK_LAYER_ADDRESS =
                 new OptionType((byte) 1, "Source link layer addresss");
 
-        public static OptionType TARGET_LINK_LAYER_ADDRESS =
+        public static final OptionType TARGET_LINK_LAYER_ADDRESS =
                 new OptionType((byte) 2, "Target link layer addresss");
 
-        public static OptionType PREFIX_INFORMATION =
+        public static final OptionType PREFIX_INFORMATION =
                 new OptionType((byte) 3, "Prefix information");
 
-        public static OptionType REDIRECT_HEADER =
+        public static final OptionType REDIRECT_HEADER =
                 new OptionType((byte) 4, "Redirect header");
 
-        public static OptionType MTU =
+        public static final OptionType MTU =
                 new OptionType((byte) 5, "MTU");
+
+        private static Map<Byte, OptionType> registry =
+                new HashMap<>();
 
         protected OptionType(Byte value, String name) {
             super(value, name);
         }
-
-        private static Map<Byte, OptionType> registry =
-                new HashMap<>();
 
         static {
             registry.put(SOURCE_LINK_LAYER_ADDRESS.getValue(), SOURCE_LINK_LAYER_ADDRESS);
@@ -131,16 +132,32 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     }
 
-    public static final class Option {
+    public static final class Option implements Serializable  {
+
+        private static final long serialVersionUID = -7839083814311096470L;
 
         private OptionType type;
         private byte length;
         private byte[] data;
 
-        private Option(OptionType type, byte[] data) {
-            this.type = type;
-            this.data = data;
-            this.length = (byte) ((this.data.length + 2 + 7) >> 3);
+        private Option() {
+
+        }
+
+        /**
+         * Create new instance on {@link Option} class.
+         * @param type type.
+         * @param data data.
+         * @return returns {@link Option} object.
+         */
+        public static Option newInstance(OptionType type, byte[] data) {
+            byte[] newData = new byte[data.length];
+            System.arraycopy(data, 0, newData, 0, newData.length);
+            Option option = new Option();
+            option.type = type;
+            option.data = newData;
+            option.length = (byte) ((option.data.length + 2 + 7) >> 3);
+            return option;
         }
 
         public OptionType getType() {
@@ -151,8 +168,14 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
             return this.length;
         }
 
+        /**
+         * Get option.
+         * @return returns option.
+         */
         public byte[] getData() {
-            return this.data;
+            byte[] data = new byte[this.data.length];
+            System.arraycopy(this.data, 0, data, 0, data.length);
+            return data;
         }
 
         @Override
@@ -196,7 +219,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 }
                 byte[] data = new byte[dataLength];
                 buffer.readBytes(data, 0, dataLength);
-                options.add(new Option(type, data));
+                options.add(Option.newInstance(type, data));
             }
             return new NeighborDiscoveryOptions(this);
         }

@@ -42,6 +42,8 @@ import java.util.Optional;
  */
 public class Icmp4 extends AbstractPacket {
 
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP4_REGISTRY = new HashSet<>();
+
     private final Header header;
     private final Packet payload;
 
@@ -74,11 +76,10 @@ public class Icmp4 extends AbstractPacket {
 
         @Override
         public String toString() {
-            final StringBuilder sb = new StringBuilder("Icmp4Header{");
-            sb.append("typeAndCode=").append(super.typeAndCode);
-            sb.append(", checksum=").append(super.checksum);
-            sb.append('}');
-            return sb.toString();
+            return new StringBuilder("Icmp4Header{")
+                    .append("typeAndCode=").append(super.typeAndCode)
+                    .append(", checksum=").append(super.checksum)
+                    .append('}').toString();
         }
 
     }
@@ -116,12 +117,14 @@ public class Icmp4 extends AbstractPacket {
                 }
                 accumulation = (accumulation >> 16 & 0xffff)
                         + (accumulation & 0xffff);
-                short checksum = ((short) (~accumulation & 0xffff));
+                short checksum = (short) (~accumulation & 0xffff);
                 super.checksum = buffer.getShort(2);
                 if (checksum == super.checksum) {
                     // valid checksum
+                    this.checksum = checksum;
                 } else {
                     // invalid checksum
+                    this.checksum = 0;
                 }
                 return new Icmp4(this);
             }
@@ -129,8 +132,6 @@ public class Icmp4 extends AbstractPacket {
         }
 
     }
-
-    public static final Collection<Icmp.IcmpTypeAndCode> ICMP4_REGISTRY = new HashSet<>();
 
     static {
         try {

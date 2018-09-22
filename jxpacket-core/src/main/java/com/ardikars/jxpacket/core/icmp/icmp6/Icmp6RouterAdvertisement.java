@@ -40,9 +40,7 @@ public class Icmp6RouterAdvertisement extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp6RouterAdvertisement}.
      */
     public static Icmp6RouterAdvertisement register(Byte code, String name) {
-        Icmp6RouterAdvertisement routerAdvertisement =
-                new Icmp6RouterAdvertisement(code, name);
-        return routerAdvertisement;
+        return new Icmp6RouterAdvertisement(code, name);
     }
 
     @Override

@@ -40,9 +40,7 @@ public class Icmp4EchoRequest extends Icmp.IcmpTypeAndCode {
      * @return returns {@link Icmp4EchoRequest}.
      */
     public static Icmp4EchoRequest register(Byte code, String name) {
-        Icmp4EchoRequest echoRequest =
-                new Icmp4EchoRequest(code, name);
-        return echoRequest;
+        return new Icmp4EchoRequest(code, name);
     }
 
     @Override

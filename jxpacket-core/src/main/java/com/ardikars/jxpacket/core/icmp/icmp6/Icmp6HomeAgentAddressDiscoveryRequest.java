@@ -40,9 +40,7 @@ public class Icmp6HomeAgentAddressDiscoveryRequest extends Icmp.IcmpTypeAndCode 
      * @return returns {@link Icmp6HomeAgentAddressDiscoveryRequest}.
      */
     public static Icmp6HomeAgentAddressDiscoveryRequest register(Byte code, String name) {
-        Icmp6HomeAgentAddressDiscoveryRequest homeAgentAddressDiscoveryRequest =
-                new Icmp6HomeAgentAddressDiscoveryRequest(code, name);
-        return homeAgentAddressDiscoveryRequest;
+        return new Icmp6HomeAgentAddressDiscoveryRequest(code, name);
     }
 
     @Override

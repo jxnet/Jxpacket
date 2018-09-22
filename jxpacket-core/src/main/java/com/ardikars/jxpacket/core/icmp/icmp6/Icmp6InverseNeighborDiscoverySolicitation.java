@@ -40,9 +40,7 @@ public class Icmp6InverseNeighborDiscoverySolicitation extends Icmp.IcmpTypeAndC
      * @return returns {@link Icmp6InverseNeighborDiscoverySolicitation}.
      */
     public static Icmp6InverseNeighborDiscoverySolicitation register(Byte code, String name) {
-        Icmp6InverseNeighborDiscoverySolicitation inverseNeighborDiscoverySolicitation =
-                new Icmp6InverseNeighborDiscoverySolicitation(code, name);
-        return inverseNeighborDiscoverySolicitation;
+        return new Icmp6InverseNeighborDiscoverySolicitation(code, name);
     }
 
     @Override
