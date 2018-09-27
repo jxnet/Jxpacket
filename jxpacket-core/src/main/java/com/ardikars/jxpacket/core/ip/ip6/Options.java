@@ -80,9 +80,9 @@ public abstract class Options extends AbstractPacket {
 		@Override
 		public String toString() {
 			return new StringBuilder("Header{")
-					.append("nextHeader=").append(nextHeader)
-					.append(", extensionLength=").append(extensionLength)
-					.append(", options=").append(Arrays.toString(options))
+					.append("nextHeader=").append(getOptions())
+					.append(", extensionLength=").append(getExtensionLength())
+					.append(", options=").append(Arrays.toString(getOptions()))
 					.append('}').toString();
 		}
 

@@ -103,10 +103,10 @@ public class Fragment extends AbstractPacket {
 		@Override
 		public String toString() {
 			return new StringBuilder("Header{")
-					.append("nextHeader=").append(nextHeader)
-					.append(", fragmentOffset=").append(fragmentOffset)
-					.append(", flagType=").append(flagType)
-					.append(", identification=").append(identification)
+					.append("nextHeader=").append(getNextHeader())
+					.append(", fragmentOffset=").append(getFragmentOffset())
+					.append(", flagType=").append(getFlagType())
+					.append(", identification=").append(getIdentification())
 					.append('}').toString();
 		}
 

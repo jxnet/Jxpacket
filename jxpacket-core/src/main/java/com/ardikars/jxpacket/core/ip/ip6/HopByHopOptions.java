@@ -47,6 +47,11 @@ public class HopByHopOptions extends Options {
 			super(builder, builder.nextHeader);
 		}
 
+		@Override
+		public String toString() {
+			return super.toString();
+		}
+
 	}
 
 	public static final class Builder extends Options.Builder {

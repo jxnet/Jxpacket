@@ -161,16 +161,16 @@ public class Tcp extends AbstractPacket {
         @Override
         public String toString() {
             return new StringBuilder("Header{")
-                    .append("sourcePort=").append(sourcePort)
-                    .append(", destinationPort=").append(destinationPort)
-                    .append(", sequence=").append(sequence)
-                    .append(", acknowledge=").append(acknowledge)
-                    .append(", dataOffset=").append(dataOffset)
-                    .append(", flags=").append(flags)
-                    .append(", windowSize=").append(windowSize)
-                    .append(", checksum=").append(checksum)
-                    .append(", urgentPointer=").append(urgentPointer)
-                    .append(", options=").append(Arrays.toString(options))
+                    .append("sourcePort=").append(getSourcePort())
+                    .append(", destinationPort=").append(getDestinationPort())
+                    .append(", sequence=").append(getSequence())
+                    .append(", acknowledge=").append(getAcknowledge())
+                    .append(", dataOffset=").append(getDataOffset())
+                    .append(", flags=").append(getFlags())
+                    .append(", windowSize=").append(getWindowSize())
+                    .append(", checksum=").append(getChecksum())
+                    .append(", urgentPointer=").append(getUrgentPointer())
+                    .append(", options=").append(Arrays.toString(getOptions()))
                     .append('}').toString();
         }
 

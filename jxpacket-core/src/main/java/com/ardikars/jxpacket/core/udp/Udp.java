@@ -95,10 +95,10 @@ public class Udp extends AbstractPacket {
         @Override
         public String toString() {
             return new StringBuilder("Header{")
-                    .append("sourcePort=").append(sourcePort)
-                    .append(", destinationPort=").append(destinationPort)
-                    .append(", length=").append(length)
-                    .append(", checksum=").append(checksum)
+                    .append("sourcePort=").append(getSourcePort())
+                    .append(", destinationPort=").append(getDestinationPort())
+                    .append(", length=").append(getLength())
+                    .append(", checksum=").append(getChecksum())
                     .append('}').toString();
         }
 

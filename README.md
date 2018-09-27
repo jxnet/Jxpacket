@@ -12,6 +12,7 @@ Jxpacket is network packet crafting libarary for java.
 >>>
 >>> ```
 >>> dependencies { 
+>>>     compile 'com.ardikars.jxpacket:jxpacket-common:${jxpacket.version}'
 >>>     compile 'com.ardikars.jxpacket:jxpacket-core:${jxpacket.version}'
 >>> }
 >>>```
@@ -20,6 +21,11 @@ Jxpacket is network packet crafting libarary for java.
 >>>
 >>> ```
 >>> <dependencies>
+>>>     <dependency>
+>>>         <groupId>com.ardikars.jxpacket</groupId>
+>>>         <artifactId>jxpacket-common</artifactId>
+>>>         <version>${jxpacket.version}</version>
+>>>     </dependency>
 >>>     <dependency>
 >>>         <groupId>com.ardikars.jxpacket</groupId>
 >>>         <artifactId>jxpacket-core</artifactId>

@@ -120,11 +120,11 @@ public class Routing extends AbstractPacket {
 		@Override
 		public String toString() {
 			return new StringBuilder("Header{")
-					.append("nextHeader=").append(nextHeader)
-					.append(", extensionLength=").append(extensionLength)
-					.append(", routingType=").append(routingType)
-					.append(", segmentLeft=").append(segmentLeft)
-					.append(", routingData=").append(Arrays.toString(routingData))
+					.append("nextHeader=").append(getNextHeader())
+					.append(", extensionLength=").append(getExtensionLength())
+					.append(", routingType=").append(getRoutingType())
+					.append(", segmentLeft=").append(getSegmentLeft())
+					.append(", routingData=").append(Arrays.toString(getRoutingData()))
 					.append('}').toString();
 		}
 

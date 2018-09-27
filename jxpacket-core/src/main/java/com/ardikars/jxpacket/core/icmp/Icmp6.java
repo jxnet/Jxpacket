@@ -88,6 +88,14 @@ public class Icmp6 extends AbstractPacket {
             return null;
         }
 
+        @Override
+        public String toString() {
+            return new StringBuilder("Icmp4Header{")
+                    .append("typeAndCode=").append(super.typeAndCode)
+                    .append(", checksum=").append(super.checksum)
+                    .append('}').toString();
+        }
+
     }
 
     public static class Builder extends Icmp.IcmpPacketBuilder {

@@ -341,6 +341,8 @@ public class Ip4 extends Ip {
 				builder.options = new byte[optionsLength];
 				buffer.getBytes(20, builder.options);
 				size += optionsLength;
+			} else {
+				builder.options = new byte[0];
 			}
 			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			buffer.release();
