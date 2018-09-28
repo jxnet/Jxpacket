@@ -1,10 +1,11 @@
 package com.ardikars.jxpacket.core;
 
-import com.ardikars.jxpacket.common.UnknownPacket;
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
-import com.ardikars.jxpacket.core.arp.Arp;
+import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
+import com.ardikars.jxpacket.core.ip.Ip6;
+import com.ardikars.jxpacket.core.tcp.Tcp;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 import org.junit.After;
@@ -13,9 +14,9 @@ import org.junit.Test;
 
 import java.util.stream.StreamSupport;
 
-public class ArpTest extends BaseTest {
+public class Ip6TcpTest extends BaseTest {
 
-    private byte[] data = StringUtil.decodeHexDump(ETHERNET_II_ARP);
+    private byte[] data = StringUtil.decodeHexDump(IPV6_TCP_SYN);
 
     private Ethernet ethernet;
     private ByteBuf buf = allocator.directBuffer(1500);
@@ -23,7 +24,8 @@ public class ArpTest extends BaseTest {
     @Before
     public void before() {
         DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
-        NetworkLayer.register(NetworkLayer.ARP, new Arp.Builder());
+        NetworkLayer.register(NetworkLayer.IPV6, new Ip6.Builder());
+        TransportLayer.register(TransportLayer.TCP, new Tcp.Builder());
         buf.setBytes(0, data);
         ethernet = Ethernet.newPacket(buf);
     }
@@ -37,14 +39,15 @@ public class ArpTest extends BaseTest {
 
     @Test
     public void filter() {
-        ethernet.get(UnknownPacket.class)
+        ethernet.get(Tcp.class)
                 .stream().map(pkt -> pkt.getHeader())
                 .forEach(System.out::println);
     }
 
     @After
     public void after() {
-		//buf.release(); // buffer already release to the pool
+//        buf.release(); // buffer already release to the pool
     }
+
 
 }

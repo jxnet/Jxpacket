@@ -20,6 +20,7 @@ package com.ardikars.jxpacket.core.tcp;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.layer.ApplicationLayer;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -33,7 +34,7 @@ public class Tcp extends AbstractPacket {
 
     private Tcp(final Builder builder) {
         this.header = new Tcp.Header(builder);
-        this.payload = TransportLayer.valueOf(this.header.getPayloadType().getValue())
+        this.payload = ApplicationLayer.valueOf(this.header.getPayloadType().getValue())
                 .newInstance(builder.payloadBuffer);
     }
 
@@ -128,8 +129,8 @@ public class Tcp extends AbstractPacket {
         }
 
         @Override
-        public TransportLayer getPayloadType() {
-            return TransportLayer.UNKNOWN;
+        public ApplicationLayer getPayloadType() {
+            return ApplicationLayer.valueOf(destinationPort);
         }
 
         @Override

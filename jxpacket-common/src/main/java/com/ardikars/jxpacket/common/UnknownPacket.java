@@ -15,12 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.core;
+package com.ardikars.jxpacket.common;
 
 import com.ardikars.common.util.NamedNumber;
-import com.ardikars.jxpacket.common.AbstractPacket;
-import com.ardikars.jxpacket.common.Packet;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 
 public class UnknownPacket extends AbstractPacket {
 
@@ -66,6 +65,15 @@ public class UnknownPacket extends AbstractPacket {
 		public <T extends NamedNumber> T getPayloadType() {
 			return null;
 		}
+
+		@Override
+		public String toString() {
+			return new StringBuilder("Header{")
+					.append("buffer=").append(buffer)
+//					.append("hexDump=").append(ByteBufUtil.hexDump(buffer))
+					.append('}').toString();
+		}
+
 	}
 
 	public static final class Builder implements Packet.Builder {

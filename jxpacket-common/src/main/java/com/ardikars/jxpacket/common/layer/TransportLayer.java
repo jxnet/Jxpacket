@@ -19,6 +19,7 @@ package com.ardikars.jxpacket.common.layer;
 
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
@@ -64,7 +65,10 @@ public final class TransportLayer extends NamedNumber<Byte, TransportLayer> impl
     public Packet newInstance(ByteBuf buffer) {
         Packet.Builder packetBuilder = builder.get(this.getValue());
         if (packetBuilder == null) {
-            return null;
+            if (buffer == null || buffer.capacity() <= 0) {
+                return null;
+            }
+            return new UnknownPacket.Builder().build(buffer);
         }
         return packetBuilder.build(buffer);
     }

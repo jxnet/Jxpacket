@@ -17,9 +17,10 @@
 
 package com.ardikars.jxpacket.core.udp;
 
-import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.layer.ApplicationLayer;
+import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -30,7 +31,8 @@ public class Udp extends AbstractPacket {
 
     private Udp(final Builder builder) {
         this.header = new Header(builder);
-        this.payload = null;
+        this.payload = ApplicationLayer.valueOf(this.header.getPayloadType().getValue())
+                .newInstance(builder.payloadBuffer);
     }
 
     @Override
@@ -73,8 +75,8 @@ public class Udp extends AbstractPacket {
         }
 
         @Override
-        public <T extends NamedNumber> T getPayloadType() {
-            return null;
+        public ApplicationLayer getPayloadType() {
+            return ApplicationLayer.valueOf(destinationPort);
         }
 
         @Override
@@ -111,7 +113,7 @@ public class Udp extends AbstractPacket {
         private short length;
         private short checksum;
 
-        //private ByteBuf payloadBuffer;
+        private ByteBuf payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
             this.sourcePort = (short) (sourcePort & 0xffff);
@@ -133,10 +135,10 @@ public class Udp extends AbstractPacket {
             return this;
         }
 
-        /*public Builder payloadBuffer(ByteBuf payloadBuffer) {
+        public Builder payloadBuffer(ByteBuf payloadBuffer) {
             this.payloadBuffer = payloadBuffer;
             return this;
-        }*/
+        }
 
         @Override
         public Packet build() {
@@ -149,7 +151,7 @@ public class Udp extends AbstractPacket {
             this.destinationPort = buffer.getShort(2);
             this.length = buffer.getShort(4);
             this.checksum = buffer.getShort(6);
-            //this.payloadBuffer = buffer.copy(8, buffer.capacity() - 8);
+            this.payloadBuffer = buffer.copy(8, buffer.capacity() - 8);
             return new Udp(this);
         }
 
