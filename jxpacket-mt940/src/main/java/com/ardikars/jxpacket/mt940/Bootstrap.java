@@ -102,8 +102,8 @@ public class Bootstrap {
                         data.add(ClosingAvailableBalance.Builder.builder()
                                 .creditOrDebitMark(closingBalance.substring(0, 1))
                                 .statementDate(closingBalance.substring(1, 7))
-                                .currency(closingBalance.substring(7, 9))
-                                .amount(closingBalance.substring(9, closingBalance.length() - 1))
+                                .currency(closingBalance.substring(7, 10))
+                                .amount(closingBalance.substring(10, closingBalance.length() - 1))
                                 .build()
                         );
                     }

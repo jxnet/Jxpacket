@@ -70,7 +70,8 @@ public class Mt940Utils {
 
     public static BigDecimal parseAmount(String amount) {
         Validate.notIllegalArgument(amount != null, new IllegalArgumentException("Amount should be not null."));
-        ValidateNumber.notNumeric(amount, new IllegalArgumentException("Amount can't contains non numeric character."));
+        ValidateNumber.notNumericWithCommaSeparator(amount);
+        amount = amount.replace(",", ".");
         try {
             BigDecimal value = new BigDecimal(amount);
             ValidateNumber.notGreaterThenOrEqualZero(value, new IllegalArgumentException("Amount should be greater then or equal to zero."));
@@ -89,6 +90,36 @@ public class Mt940Utils {
         try {
             BigInteger value = new BigInteger(statementNumber);
             ValidateNumber.notGreaterThenOrEqualZero(value, new IllegalArgumentException("Statement number should be greater then or equal to zero."));
+            return value;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    public static BigInteger parseTransactionNumber(String transactionNumber) {
+        Validate.notIllegalArgument(transactionNumber != null,
+                new IllegalArgumentException("Transaction number should be not null."));
+        Validate.notIllegalArgument(transactionNumber.length() <= 16,
+                new IllegalArgumentException("Transaction number length should be less then or equal to 16."));
+        ValidateNumber.notNumeric(transactionNumber, new IllegalArgumentException("Transaction number can't contains non numeric characters."));
+        try {
+            BigInteger value = new BigInteger(transactionNumber);
+            ValidateNumber.notGreaterThenOrEqualZero(value, new IllegalArgumentException("Transaction number should be greater then or equal to zero."));
+            return value;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    public static BigInteger parseBankReference(String bankReference) {
+        Validate.notIllegalArgument(bankReference != null,
+                new IllegalArgumentException("Bank reference should be not null."));
+        Validate.notIllegalArgument(bankReference.length() <= 16,
+                new IllegalArgumentException("Bank reference length should be less then or equal to 16."));
+        ValidateNumber.notNumeric(bankReference, new IllegalArgumentException("Bank reference can't contains non numeric characters."));
+        try {
+            BigInteger value = new BigInteger(bankReference);
+            ValidateNumber.notGreaterThenOrEqualZero(value, new IllegalArgumentException("Bank reference should be greater then or equal to zero."));
             return value;
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -124,14 +155,24 @@ public class Mt940Utils {
     public static String parseField(String tag, String string) throws IllegalArgumentException {
         if (string.contains(tag)) {
             int tagLength = tag.length() + 1;
-            if (tag.equals(OpeningBalance.TAG) || tag.equals(ClosingBalance.TAG)) {
-                tagLength += 1;
-            }
             char[] chars = string.toCharArray();
             int fi = string.indexOf(tag) + tagLength;
+            if (tag.equals(OpeningBalance.TAG) || tag.equals(ClosingBalance.TAG)) {
+                String subTag = string.substring(fi - tagLength, fi);
+                if (subTag.equals(OpeningBalance.TAG + "F")
+                        || subTag.equals(OpeningBalance.TAG + "M")
+                        || subTag.equals(ClosingBalance.TAG + "F")
+                        || subTag.equals(ClosingBalance.TAG + "M")) {
+                    fi += 1;
+                }
+            }
             int li = 0;
             for (int index = fi; index < chars.length; index++) {
                 if (chars[index + 1] == ':') {
+                    li = index + 1;
+                    break;
+                }
+                if (chars[index + 1] == '}') {
                     li = index + 1;
                     break;
                 }

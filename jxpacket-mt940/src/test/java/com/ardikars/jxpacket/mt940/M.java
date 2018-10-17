@@ -10,7 +10,7 @@ public class M {
 
     public static void main(String[] args) {
 
-        String payload = getPayload("/Users/macintosh/Downloads/BUKOPIN.txt");
+        String payload = getPayload("/Users/macintosh/Downloads/DKI.txt");
 
         Bootstrap.Builder.builder().buffer(payload).build().getData().forEach(System.out::println);
     }
