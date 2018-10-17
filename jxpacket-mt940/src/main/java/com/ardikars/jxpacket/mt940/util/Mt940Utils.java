@@ -12,9 +12,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author jxpacket 2018/10/16
@@ -65,7 +63,15 @@ public class Mt940Utils {
     }
 
     public static TransactionCode parseTransactionCode(String transactionCode) throws IllegalArgumentException {
-        return null;
+        Validate.notIllegalArgument(transactionCode != null,
+                new IllegalArgumentException("Transaction code should be not null."));
+        Validate.notIllegalArgument(!transactionCode.isEmpty(),
+                new IllegalArgumentException("Transaction code should be not empty."));
+        TransactionCode parsedTransactionCode = TransactionCode.valueOf(transactionCode);
+        if (parsedTransactionCode == null || parsedTransactionCode == TransactionCode.UNKNOWN) {
+            throw new IllegalArgumentException("Invalid transaction code.");
+        }
+        return parsedTransactionCode;
     }
 
     public static BigDecimal parseAmount(String amount) {
@@ -152,7 +158,16 @@ public class Mt940Utils {
         return list;
     }
 
-    public static String parseField(String tag, String string) throws IllegalArgumentException {
+    public static List<String> parseSupplementaryDetails(String supplementaryDetails) {
+        Validate.notIllegalArgument(supplementaryDetails != null,
+                new IllegalArgumentException("Supplementary details should be not null."));
+        Validate.notIllegalArgument(!supplementaryDetails.isEmpty(),
+                new IllegalArgumentException("Supplementary details should be not empty."));
+        List<String> list = Arrays.asList(supplementaryDetails.split("\n"));
+        return list;
+    }
+
+    private static String parseField(String tag, String string) throws IllegalArgumentException {
         if (string.contains(tag)) {
             int tagLength = tag.length() + 1;
             char[] chars = string.toCharArray();
@@ -180,8 +195,19 @@ public class Mt940Utils {
             return string.substring(fi, li);
         } else {
             return null;
-            //throw new IllegalArgumentException("Tag " + tag + " not found.");
         }
+    }
+
+    public static List<String> parseFields(String tag, String string) {
+        List<String> list = new ArrayList<>();
+        String[] strings = string.split(tag);
+        for (int i = 1; i < strings.length; i++) {
+            String parsed =parseField(tag, tag + "" + strings[i]);
+            if (parsed != null) {
+                list.add(parsed);
+            }
+        }
+        return list;
     }
 
 }

@@ -1,6 +1,10 @@
 package com.ardikars.jxpacket.mt940;
 
+import com.ardikars.jxpacket.mt940.domain.Standart;
+import com.ardikars.jxpacket.mt940.swift.standard2.StatementLine;
+
 import java.io.*;
+import java.util.List;
 
 /**
  * @author jxpacket 2018/10/16
@@ -10,9 +14,15 @@ public class M {
 
     public static void main(String[] args) {
 
-        String payload = getPayload("/Users/macintosh/Downloads/DKI.txt");
+        String payload = getPayload("/Users/macintosh/Downloads/BUKOPIN.txt");
 
-        Bootstrap.Builder.builder().buffer(payload).build().getData().forEach(System.out::println);
+        Bootstrap bootstrap = Bootstrap.Builder.builder()
+                .buffer(payload)
+                .standart(Standart.SWIFT_2)
+                .build();
+
+        List<StatementLine> statementLines = bootstrap.getField(StatementLine.class);
+        statementLines.forEach(System.out::println);
     }
 
     public static String getPayload(String path) {

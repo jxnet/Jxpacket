@@ -1,6 +1,7 @@
 package com.ardikars.jxpacket.mt940;
 
 import com.ardikars.common.util.Validate;
+import com.ardikars.jxpacket.mt940.domain.Standart;
 import com.ardikars.jxpacket.mt940.swift.Field;
 import com.ardikars.jxpacket.mt940.swift.standard1.*;
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -25,15 +27,15 @@ public class Bootstrap {
         this.data = data.stream();
     }
 
-    public <T> Optional<T> getField(Class<T> clazz) {
-       return (Optional<T>) data.filter(field -> clazz.isAssignableFrom(field.getClass()))
-                .findFirst();
+    public <T extends Field> List<T> getField(Class<T> clazz) {
+        return (List<T>) data.filter(field -> clazz.isAssignableFrom(field.getClass()))
+                .collect(Collectors.toList());
     }
 
     public static class Builder {
 
         @lombok.Builder
-        private static Bootstrap newInstance(String buffer) {
+        private static Bootstrap newInstance(String buffer, Standart standart) {
             Validate.notIllegalArgument(buffer != null || !buffer.isEmpty(),
                     new IllegalArgumentException("Buffer should be not null or empty."));
             List<Field> data = new ArrayList<>();
@@ -56,30 +58,26 @@ public class Bootstrap {
                 } else if (str.startsWith("{2:")) {
 
                 } else if (str.startsWith("{4:")) {
-                    String transactionReference = Mt940Utils.parseField(TransactionReferenceNumber.TAG, str);
-                    if (transactionReference != null) {
+                    Mt940Utils.parseFields(TransactionReferenceNumber.TAG, str).forEach(transactionReference -> {
                         data.add(TransactionReferenceNumber.Builder.builder()
                                 .statementDate(transactionReference.substring(0, 6))
                                 .referenceNumber(transactionReference.substring(8, transactionReference.length() - 1))
                                 .build()
                         );
-                    }
-                    String accountIdentification = Mt940Utils.parseField(AccountIdentification.TAG, str);
-                    if (accountIdentification != null) {
+                    });
+                    Mt940Utils.parseFields(AccountIdentification.TAG, str).forEach(accountIdentification -> {
                         data.add(AccountIdentification.Builder.builder()
                                 .accountIdentification(accountIdentification)
                                 .build()
                         );
-                    }
-                    String statementNumber = Mt940Utils.parseField(StatementNumber.TAG, str);
-                    if (statementNumber != null) {
+                    });
+                    Mt940Utils.parseFields(StatementNumber.TAG, str).forEach(statementNumber -> {
                         data.add(StatementNumber.Builder.builder()
                                 .statementNumber(statementNumber)
                                 .build()
                         );
-                    }
-                    String openingBalance = Mt940Utils.parseField(OpeningBalance.TAG, str);
-                    if (openingBalance != null) {
+                    });
+                    Mt940Utils.parseFields(OpeningBalance.TAG, str).forEach(openingBalance -> {
                         data.add(OpeningBalance.Builder.builder()
                                 .creditOrDebitMark(openingBalance.substring(0, 1))
                                 .statementDate(openingBalance.substring(1, 7))
@@ -87,18 +85,48 @@ public class Bootstrap {
                                 .amount(openingBalance.substring(10, openingBalance.length() - 1))
                                 .build()
                         );
-                    }
-
-                    // statement line
-                    String informationToAccountOwner = Mt940Utils.parseField(InformationToAccountOwner.TAG, str);
-                    if (informationToAccountOwner != null) {
+                    });
+                    Mt940Utils.parseFields(StatementLine.TAG, str).forEach(statementLine -> {
+                        int li = 0;
+                        char[] amount = statementLine.substring(7).toCharArray();
+                        for (int i = 0; i < amount.length; i++) {
+                            if (!Character.isDigit(amount[i]) && amount[i] != ',') {
+                                li = i;
+                                break;
+                            }
+                        }
+                        li += 7;
+                        switch (standart) {
+                            case SWIFT_1:
+                                data.add(com.ardikars.jxpacket.mt940.swift.standard1.StatementLine.Builder.builder()
+                                        .valueDate(statementLine.substring(0, 6))
+                                        .creditOrDebit(statementLine.substring(6, 7))
+                                        .amount(statementLine.substring(7, li))
+                                        .transactionCode(statementLine.substring(li, li + 4))
+                                        .transactionNumber(statementLine.substring(li + 4))
+                                        .bankReference(statementLine.substring(li + 4))
+                                        .supplementaryDetails(statementLine.substring(li + 4))
+                                        .build()
+                                );
+                                break;
+                            case SWIFT_2:
+                                data.add(com.ardikars.jxpacket.mt940.swift.standard2.StatementLine.Builder.builder()
+                                        .valueDate(statementLine.substring(0, 6))
+                                        .creditOrDebit(statementLine.substring(6, 7))
+                                        .amount(statementLine.substring(7, li))
+                                        .transactionNumber("0")
+                                        .build()
+                                );
+                                break;
+                        }
+                    });
+                    Mt940Utils.parseFields(InformationToAccountOwner.TAG, str).forEach(informationToAccountOwner -> {
                         data.add(InformationToAccountOwner.Builder.builder()
                                 .informationToAccountOwner(informationToAccountOwner)
                                 .build()
                         );
-                    }
-                    String closingBalance = Mt940Utils.parseField(ClosingBalance.TAG, str);
-                    if (closingBalance != null) {
+                    });
+                    Mt940Utils.parseFields(ClosingBalance.TAG, str).forEach(closingBalance -> {
                         data.add(ClosingAvailableBalance.Builder.builder()
                                 .creditOrDebitMark(closingBalance.substring(0, 1))
                                 .statementDate(closingBalance.substring(1, 7))
@@ -106,9 +134,8 @@ public class Bootstrap {
                                 .amount(closingBalance.substring(10, closingBalance.length() - 1))
                                 .build()
                         );
-                    }
-                    String closingAvaliableBalance = Mt940Utils.parseField(ClosingAvailableBalance.TAG, str);
-                    if (closingAvaliableBalance != null) {
+                    });
+                    Mt940Utils.parseFields(ClosingAvailableBalance.TAG, str).forEach(closingAvaliableBalance -> {
                         data.add(ClosingAvailableBalance.Builder.builder()
                                 .creditOrDebitMark(closingAvaliableBalance.substring(0, 1))
                                 .statementDate(closingAvaliableBalance.substring(1, 6))
@@ -116,7 +143,7 @@ public class Bootstrap {
                                 .amount(closingAvaliableBalance.substring(9, closingAvaliableBalance.length() - 1))
                                 .build()
                         );
-                    }
+                    });
                 }
             }
             return new Bootstrap(data);

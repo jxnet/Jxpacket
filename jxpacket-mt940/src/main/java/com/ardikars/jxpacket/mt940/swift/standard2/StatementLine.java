@@ -1,4 +1,4 @@
-package com.ardikars.jxpacket.mt940.swift.standard1;
+package com.ardikars.jxpacket.mt940.swift.standard2;
 
 import com.ardikars.jxpacket.mt940.domain.CreditOrDebit;
 import com.ardikars.jxpacket.mt940.domain.TransactionCode;
@@ -28,31 +28,25 @@ public class StatementLine implements Field {
     private final BigDecimal amount;
     private final TransactionCode transactionCode;
     private final BigInteger transactionNumber;
-    private final BigInteger bankReference;
-    private final Collection<String> supplementaryDetails;
 
-    public StatementLine(Date valueDate, CreditOrDebit creditOrDebit, BigDecimal amount, TransactionCode transactionCode, BigInteger transactionNumber, BigInteger bankReference, Collection<String> supplementaryDetails) {
+    private StatementLine(Date valueDate, CreditOrDebit creditOrDebit, BigDecimal amount, TransactionCode transactionCode, BigInteger transactionNumber) {
         this.valueDate = valueDate;
         this.creditOrDebit = creditOrDebit;
         this.amount = amount;
         this.transactionCode = transactionCode;
         this.transactionNumber = transactionNumber;
-        this.bankReference = bankReference;
-        this.supplementaryDetails = supplementaryDetails;
     }
 
     public static class Builder {
 
         @lombok.Builder
-        private static StatementLine newInstance(String valueDate, String creditOrDebit, String amount, String transactionCode, String transactionNumber, String bankReference, String supplementaryDetails) {
+        private static StatementLine newInstance(String valueDate, String creditOrDebit, String amount, String transactionNumber) {
             Date parsedValueDate = Mt940Utils.parseStatementDate(valueDate);
             CreditOrDebit parsedCreditOrDebit = Mt940Utils.parseCreditOrDebit(creditOrDebit);
             BigDecimal parsedAmount = Mt940Utils.parseAmount(amount);
-            TransactionCode parsedTransactionCode = Mt940Utils.parseTransactionCode(transactionCode);
+            TransactionCode parsedTransactionCode = new TransactionCode("NTRF", "NTRF");
             BigInteger parsedTransactionNumber = Mt940Utils.parseTransactionNumber(transactionNumber);
-            BigInteger parsedBankReference = Mt940Utils.parseBankReference(bankReference);
-            List<String> parsedSupplementaryDetails = Mt940Utils.parseSupplementaryDetails(supplementaryDetails);
-            return new StatementLine(parsedValueDate, parsedCreditOrDebit, parsedAmount, parsedTransactionCode, parsedTransactionNumber, parsedBankReference, parsedSupplementaryDetails);
+            return new StatementLine(parsedValueDate, parsedCreditOrDebit, parsedAmount, parsedTransactionCode, parsedTransactionNumber);
         }
 
     }

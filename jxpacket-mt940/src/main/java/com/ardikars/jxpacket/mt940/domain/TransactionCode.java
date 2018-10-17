@@ -1,6 +1,7 @@
 package com.ardikars.jxpacket.mt940.domain;
 
 import com.ardikars.common.util.NamedObject;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class TransactionCode extends NamedObject<String, TransactionCode> {
     public static final TransactionCode UNKNOWN = new TransactionCode("-1", "UNKONWN");
 
     public static final TransactionCode LBX = new TransactionCode("LBX", "Lock box");
+    public static final TransactionCode NTRF = new TransactionCode("NTRF", "NTRF");
 
     private static final Map<String, TransactionCode> REGISTRY =
             new HashMap<>();
@@ -48,6 +50,7 @@ public class TransactionCode extends NamedObject<String, TransactionCode> {
 
     static {
         REGISTRY.put(LBX.getValue(), LBX);
+        REGISTRY.put(NTRF.getValue(), NTRF);
     }
 
 }
