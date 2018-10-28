@@ -15,14 +15,14 @@ import java.util.Date;
  */
 @Getter
 @ToString
-public class OpeningBalance implements com.ardikars.jxpacket.mt940.swift.OpeningBalance {
+public class OpeningBalance implements com.ardikars.jxpacket.mt940.OpeningBalance {
 
     public static final String TAG = ":60";
 
     /**
      * C/D
      */
-    private final CreditOrDebit creditOrDebitMark;
+    private final CreditOrDebit creditOrDebit;
 
     /**
      * Fixed length : 6 digit.
@@ -42,8 +42,8 @@ public class OpeningBalance implements com.ardikars.jxpacket.mt940.swift.Opening
      */
     private final BigDecimal amount;
 
-    private OpeningBalance(CreditOrDebit creditOrDebitMark, Date statementDate, Currency currency, BigDecimal amount) {
-        this.creditOrDebitMark = creditOrDebitMark;
+    private OpeningBalance(CreditOrDebit creditOrDebit, Date statementDate, Currency currency, BigDecimal amount) {
+        this.creditOrDebit = creditOrDebit;
         this.statementDate = statementDate;
         this.currency = currency;
         this.amount = amount;

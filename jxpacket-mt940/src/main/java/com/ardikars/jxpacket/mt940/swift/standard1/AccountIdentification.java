@@ -10,7 +10,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-public class AccountIdentification implements com.ardikars.jxpacket.mt940.swift.AccountIdentification {
+public class AccountIdentification implements com.ardikars.jxpacket.mt940.AccountIdentification {
 
     public static final String TAG = ":25";
 

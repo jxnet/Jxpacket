@@ -2,13 +2,13 @@ package com.ardikars.jxpacket.mt940.swift.standard1;
 
 import com.ardikars.jxpacket.mt940.domain.CreditOrDebit;
 import com.ardikars.jxpacket.mt940.domain.TransactionCode;
-import com.ardikars.jxpacket.mt940.swift.Field;
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Getter
 @ToString
-public class StatementLine implements Field {
+public class StatementLine implements com.ardikars.jxpacket.mt940.StatementLine {
 
     public static final String TAG = ":61";
 
@@ -49,9 +49,22 @@ public class StatementLine implements Field {
             CreditOrDebit parsedCreditOrDebit = Mt940Utils.parseCreditOrDebit(creditOrDebit);
             BigDecimal parsedAmount = Mt940Utils.parseAmount(amount);
             TransactionCode parsedTransactionCode = Mt940Utils.parseTransactionCode(transactionCode);
-            BigInteger parsedTransactionNumber = Mt940Utils.parseTransactionNumber(transactionNumber);
-            BigInteger parsedBankReference = Mt940Utils.parseBankReference(bankReference);
-            List<String> parsedSupplementaryDetails = Mt940Utils.parseSupplementaryDetails(supplementaryDetails);
+
+            /**
+             * Non standart
+             */
+            BigInteger parsedTransactionNumber = BigInteger.ZERO;
+            BigInteger parsedBankReference = BigInteger.ZERO;
+            List<String> parsedSupplementaryDetails = new ArrayList<>();
+            if (transactionNumber != null && !transactionNumber.isEmpty()) {
+                parsedTransactionNumber = Mt940Utils.parseTransactionNumber(transactionNumber);
+            }
+            if (bankReference != null && !bankReference.isEmpty()) {
+                parsedBankReference = Mt940Utils.parseBankReference(bankReference);
+            }
+            if (supplementaryDetails != null && !supplementaryDetails.isEmpty()) {
+                parsedSupplementaryDetails = Mt940Utils.parseSupplementaryDetails(supplementaryDetails);
+            }
             return new StatementLine(parsedValueDate, parsedCreditOrDebit, parsedAmount, parsedTransactionCode, parsedTransactionNumber, parsedBankReference, parsedSupplementaryDetails);
         }
 

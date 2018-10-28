@@ -2,6 +2,7 @@ package com.ardikars.jxpacket.mt940.util;
 
 import com.ardikars.common.util.Validate;
 import com.ardikars.common.util.ValidateNumber;
+import com.ardikars.jxpacket.mt940.Bank;
 import com.ardikars.jxpacket.mt940.domain.CreditOrDebit;
 import com.ardikars.jxpacket.mt940.domain.Currency;
 import com.ardikars.jxpacket.mt940.domain.TransactionCode;
@@ -12,7 +13,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author jxpacket 2018/10/16
@@ -21,6 +25,8 @@ import java.util.*;
 public class Mt940Utils {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+    private static final DateFormat DATE_FORMAT_TX = new SimpleDateFormat("MMdd");
+    private static final DateFormat DATE_FORMAT_DB = new SimpleDateFormat("dd/MM/yyyy");
 
     public static Date parseStatementDate(String statementDate) throws IllegalArgumentException {
         Validate.notIllegalArgument(statementDate != null, new IllegalArgumentException("Statement date should be not null."));
@@ -29,6 +35,18 @@ public class Mt940Utils {
         Validate.notIllegalArgument(statementDate.length() == 6, new IllegalArgumentException("Invalid statement date."));
         try {
             return DATE_FORMAT.parse("20" + statementDate);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    public static Date parseTransactionDate(String transactionDate) {
+        Validate.notIllegalArgument(transactionDate != null, new IllegalArgumentException("Transaction date should be not null."));
+        Validate.notIllegalArgument(!transactionDate.isEmpty(), new IllegalArgumentException("Transaction date should be not empty."));
+        ValidateNumber.notNumeric(transactionDate, new IllegalArgumentException("Transaction date can't containts non numeric character."));
+        Validate.notIllegalArgument(transactionDate.length() == 4, new IllegalArgumentException("Invalid statement date."));
+        try {
+            return DATE_FORMAT_TX.parse( transactionDate);
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -202,12 +220,20 @@ public class Mt940Utils {
         List<String> list = new ArrayList<>();
         String[] strings = string.split(tag);
         for (int i = 1; i < strings.length; i++) {
-            String parsed =parseField(tag, tag + "" + strings[i]);
+            if (strings[i] == null || strings[i].isEmpty()) {
+                continue;
+            }
+            String parsed = parseField(tag, tag + "" + strings[i]);
+            parsed = parsed.replaceAll("\n", "");
             if (parsed != null) {
                 list.add(parsed);
             }
         }
         return list;
+    }
+
+    public static String parseDateToString(Date date) {
+        return DATE_FORMAT_DB.format(date);
     }
 
 }

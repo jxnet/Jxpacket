@@ -1,6 +1,5 @@
 package com.ardikars.jxpacket.mt940.swift.standard2;
 
-import com.ardikars.jxpacket.mt940.swift.Field;
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,7 +12,7 @@ import java.util.List;
  */
 @Getter
 @ToString
-public class InformationToAccountOwner implements Field {
+public class InformationToAccountOwner implements com.ardikars.jxpacket.mt940.InformationToAccountOwner {
 
     public static final String TAG = ":86";
 

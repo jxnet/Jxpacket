@@ -2,7 +2,6 @@ package com.ardikars.jxpacket.mt940.swift.standard1;
 
 import com.ardikars.jxpacket.mt940.domain.CreditOrDebit;
 import com.ardikars.jxpacket.mt940.domain.Currency;
-import com.ardikars.jxpacket.mt940.swift.Field;
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
 import lombok.Getter;
 import lombok.ToString;
@@ -16,7 +15,7 @@ import java.util.Date;
  */
 @Getter
 @ToString
-public class ClosingAvailableBalance implements Field {
+public class ClosingAvailableBalance implements com.ardikars.jxpacket.mt940.ClosingAvailableBalance {
 
     public static final String TAG = ":64";
 

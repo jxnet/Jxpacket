@@ -15,7 +15,7 @@ import java.math.BigInteger;
  */
 @Getter
 @ToString
-public class StatementNumber implements com.ardikars.jxpacket.mt940.swift.StatementNumber {
+public class StatementNumber implements com.ardikars.jxpacket.mt940.StatementNumber {
 
     public static final String TAG = ":28C";
 

@@ -1,6 +1,5 @@
 package com.ardikars.jxpacket.mt940.swift.standard1;
 
-import com.ardikars.jxpacket.mt940.swift.Field;
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,7 +13,7 @@ import java.util.Date;
  */
 @Getter
 @ToString
-public class TransactionReferenceNumber implements Field {
+public class TransactionReferenceNumber implements com.ardikars.jxpacket.mt940.TransactionReferenceNumber {
 
     public static final String TAG = ":20";
 

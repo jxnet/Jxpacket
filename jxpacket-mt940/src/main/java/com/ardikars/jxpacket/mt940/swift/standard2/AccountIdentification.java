@@ -1,5 +1,6 @@
 package com.ardikars.jxpacket.mt940.swift.standard2;
 
+
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,7 +11,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-public class AccountIdentification implements com.ardikars.jxpacket.mt940.swift.AccountIdentification {
+public class AccountIdentification implements com.ardikars.jxpacket.mt940.AccountIdentification {
 
     public static final String TAG = ":25";
 

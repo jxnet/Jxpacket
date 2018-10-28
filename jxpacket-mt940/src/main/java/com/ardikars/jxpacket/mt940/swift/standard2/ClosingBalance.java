@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Getter
 @ToString
-public class ClosingBalance {
+public class ClosingBalance implements com.ardikars.jxpacket.mt940.ClosingBalance {
 
     public static final String TAG = ":62";
 

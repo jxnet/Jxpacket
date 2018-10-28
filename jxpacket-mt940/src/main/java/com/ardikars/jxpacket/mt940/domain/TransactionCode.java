@@ -1,7 +1,6 @@
 package com.ardikars.jxpacket.mt940.domain;
 
 import com.ardikars.common.util.NamedObject;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.HashMap;
 import java.util.Map;
