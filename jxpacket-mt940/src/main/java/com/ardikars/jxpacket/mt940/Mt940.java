@@ -1,13 +1,31 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.mt940;
 
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.mt940.domain.Standard;
 import com.ardikars.jxpacket.mt940.util.Mt940Utils;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.Getter;
 
 /**
  * @author jxpacket 2018/10/16
@@ -61,26 +79,30 @@ public class Mt940 {
                                     .build()
                             );
                         } else if (str.startsWith("{4:")) {
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.TransactionReferenceNumber.TAG, str).forEach(transactionReference -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.TransactionReferenceNumber.TAG, str)
+                                    .forEach(transactionReference -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.TransactionReferenceNumber.Builder.builder()
                                         .statementDate(transactionReference.substring(0, 6))
                                         .referenceNumber(transactionReference.substring(6))
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.AccountIdentification.TAG, str).forEach(accountIdentification -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.AccountIdentification.TAG, str)
+                                    .forEach(accountIdentification -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.AccountIdentification.Builder.builder()
                                         .accountIdentification(accountIdentification)
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.StatementNumber.TAG, str).forEach(statementNumber -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.StatementNumber.TAG, str)
+                                    .forEach(statementNumber -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.StatementNumber.Builder.builder()
                                         .statementNumber(statementNumber)
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.OpeningBalance.TAG, str).forEach(openingBalance -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.OpeningBalance.TAG, str)
+                                    .forEach(openingBalance -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.OpeningBalance.Builder.builder()
                                         .creditOrDebitMark(openingBalance.substring(0, 1))
                                         .statementDate(openingBalance.substring(1, 7))
@@ -89,7 +111,8 @@ public class Mt940 {
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.StatementLine.TAG, str).forEach(statementLine -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.StatementLine.TAG, str)
+                                    .forEach(statementLine -> {
                                 int li = 0;
                                 char[] amount = statementLine.substring(7).toCharArray();
                                 for (int i = 0; i < amount.length; i++) {
@@ -110,13 +133,15 @@ public class Mt940 {
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.InformationToAccountOwner.TAG, str).forEach(informationToAccountOwner -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.InformationToAccountOwner.TAG, str)
+                                    .forEach(informationToAccountOwner -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.InformationToAccountOwner.Builder.builder()
                                         .informationToAccountOwner(informationToAccountOwner)
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.ClosingBalance.TAG, str).forEach(closingBalance -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.ClosingBalance.TAG, str)
+                                    .forEach(closingBalance -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.ClosingBalance.Builder.builder()
                                         .creditOrDebitMark(closingBalance.substring(0, 1))
                                         .statementDate(closingBalance.substring(1, 7))
@@ -125,7 +150,8 @@ public class Mt940 {
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.ClosingAvailableBalance.TAG, str).forEach(closingAvaliableBalance -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard1.ClosingAvailableBalance.TAG, str)
+                                    .forEach(closingAvaliableBalance -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard1.ClosingAvailableBalance.Builder.builder()
                                         .creditOrDebitMark(closingAvaliableBalance.substring(0, 1))
                                         .statementDate(closingAvaliableBalance.substring(1, 6))
@@ -150,26 +176,30 @@ public class Mt940 {
                                     .build()
                             );
                         } else if (str.startsWith("{4:")) {
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.TransactionReferenceNumber.TAG, str).forEach(transactionReference -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.TransactionReferenceNumber.TAG, str)
+                                    .forEach(transactionReference -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.TransactionReferenceNumber.Builder.builder()
                                         .statementDate(transactionReference.substring(0, 6))
                                         .referenceNumber(transactionReference.substring(8, transactionReference.length() - 1))
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.AccountIdentification.TAG, str).forEach(accountIdentification -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.AccountIdentification.TAG, str)
+                                    .forEach(accountIdentification -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.AccountIdentification.Builder.builder()
                                         .accountIdentification(accountIdentification)
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.StatementNumber.TAG, str).forEach(statementNumber -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.StatementNumber.TAG, str)
+                                    .forEach(statementNumber -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.StatementNumber.Builder.builder()
                                         .statementNumber(statementNumber)
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.OpeningBalance.TAG, str).forEach(openingBalance -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.OpeningBalance.TAG, str)
+                                    .forEach(openingBalance -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.OpeningBalance.Builder.builder()
                                         .creditOrDebitMark(openingBalance.substring(0, 1))
                                         .statementDate(openingBalance.substring(1, 7))
@@ -178,7 +208,8 @@ public class Mt940 {
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.StatementLine.TAG, str).forEach(statementLine -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.StatementLine.TAG, str)
+                                    .forEach(statementLine -> {
                                 int li = 0;
                                 char[] amount = statementLine.substring(7).toCharArray();
                                 for (int i = 0; i < amount.length; i++) {
@@ -197,13 +228,15 @@ public class Mt940 {
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.InformationToAccountOwner.TAG, str).forEach(informationToAccountOwner -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.InformationToAccountOwner.TAG, str)
+                                    .forEach(informationToAccountOwner -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.InformationToAccountOwner.Builder.builder()
                                         .informationToAccountOwner(informationToAccountOwner)
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.ClosingBalance.TAG, str).forEach(closingBalance -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.ClosingBalance.TAG, str)
+                                    .forEach(closingBalance -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.ClosingBalance.Builder.builder()
                                         .creditOrDebitMark(closingBalance.substring(0, 1))
                                         .statementDate(closingBalance.substring(1, 7))
@@ -212,7 +245,8 @@ public class Mt940 {
                                         .build()
                                 );
                             });
-                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.ClosingAvailableBalance.TAG, str).forEach(closingAvaliableBalance -> {
+                            Mt940Utils.parseFields(com.ardikars.jxpacket.mt940.swift.standard2.ClosingAvailableBalance.TAG, str)
+                                    .forEach(closingAvaliableBalance -> {
                                 data.add(com.ardikars.jxpacket.mt940.swift.standard2.ClosingAvailableBalance.Builder.builder()
                                         .creditOrDebitMark(closingAvaliableBalance.substring(0, 1))
                                         .statementDate(closingAvaliableBalance.substring(1, 6))
@@ -224,6 +258,9 @@ public class Mt940 {
                         }
                     }
                     break;
+                    default:
+                        data.clear();
+                        break;
             }
 
             return new Mt940(data);

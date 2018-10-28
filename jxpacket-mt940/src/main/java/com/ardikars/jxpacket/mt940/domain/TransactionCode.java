@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.mt940.domain;
 
 import com.ardikars.common.util.NamedObject;
@@ -26,6 +43,10 @@ public class TransactionCode extends NamedObject<String, TransactionCode> {
         super(value, name);
     }
 
+    /**
+     * Add new transaction code to registry.
+     * @param transactionCode transaction code.
+     */
     public static void register(TransactionCode transactionCode) {
         if (LOCK.writeLock().tryLock()) {
             try {
@@ -36,6 +57,11 @@ public class TransactionCode extends NamedObject<String, TransactionCode> {
         }
     }
 
+    /**
+     * Parse transaction code to {@link TransactionCode} object.
+     * @param transactionCode transaction code.
+     * @return returns {@link TransactionCode}.
+     */
     public static TransactionCode valueOf(String transactionCode) {
         if (LOCK.readLock().tryLock()) {
             TransactionCode result = REGISTRY.get(transactionCode);

@@ -10,6 +10,12 @@
 /jxpacket-common/target
 /jxpacket-common/build
 /jxpacket-common/out
+/jxpacket-mt940/target
+/jxpacket-mt940/build
+/jxpacket-mt940/out
+/jxpacket-iso8583/target
+/jxpacket-iso8583/build
+/jxpacket-iso8583/out
 *.log
 *~
 *.txt
