@@ -12,7 +12,8 @@ Jxpacket is network packet crafting libarary for java.
 >>>
 >>> ```
 >>> dependencies { 
->>>     compile 'com.ardikars.jxpacket:jxpacket-common:${jxpacket.version}'
+>>>     compile 'com.ardikars.common:common-net:${common.version}'
+>>>     compile 'com.ardikars.jxnet:jxnet-spring-boot-starter:${jxnet.version}'
 >>>     compile 'com.ardikars.jxpacket:jxpacket-core:${jxpacket.version}'
 >>> }
 >>>```
@@ -22,9 +23,14 @@ Jxpacket is network packet crafting libarary for java.
 >>> ```
 >>> <dependencies>
 >>>     <dependency>
->>>         <groupId>com.ardikars.jxpacket</groupId>
->>>         <artifactId>jxpacket-common</artifactId>
->>>         <version>${jxpacket.version}</version>
+>>>         <groupId>com.ardikars.common</groupId>
+>>>         <artifactId>common-net</artifactId>
+>>>         <version>${common.version}</version>
+>>>     </dependency>
+>>>     <dependency>
+>>>         <groupId>com.ardikars.jxnet</groupId>
+>>>         <artifactId>jxnet-spring-boot-starter</artifactId>
+>>>         <version>${jxnet.version}</version>
 >>>     </dependency>
 >>>     <dependency>
 >>>         <groupId>com.ardikars.jxpacket</groupId>
