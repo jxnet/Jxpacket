@@ -21,7 +21,6 @@ import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
-import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -175,6 +174,13 @@ public class Tcp extends AbstractPacket {
                     .append('}').toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("Tcp{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class Builder implements Packet.Builder {

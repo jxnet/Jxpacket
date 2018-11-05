@@ -53,6 +53,10 @@ public class RouterSolicitation extends AbstractPacket {
             this.options = builder.options;
         }
 
+        public NeighborDiscoveryOptions getOptions() {
+            return options;
+        }
+
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return null;
@@ -74,10 +78,17 @@ public class RouterSolicitation extends AbstractPacket {
         @Override
         public String toString() {
             return new StringBuilder("Header{")
-                    .append("options=").append(options)
+                    .append("options=").append(getOptions())
                     .append('}').toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("RouterSolicitation{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class Builder implements Packet.Builder {

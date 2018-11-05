@@ -20,7 +20,6 @@ package com.ardikars.jxpacket.core.udp;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
-import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -104,6 +103,13 @@ public class Udp extends AbstractPacket {
                     .append('}').toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("Udp{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class Builder implements Packet.Builder {

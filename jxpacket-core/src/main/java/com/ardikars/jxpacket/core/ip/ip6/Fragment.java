@@ -112,6 +112,13 @@ public class Fragment extends AbstractPacket {
 
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder("Fragment{")
+				.append("header=").append(header)
+				.append('}').toString();
+	}
+
 	public static final class Builder implements Packet.Builder {
 
 		private TransportLayer nextHeader;

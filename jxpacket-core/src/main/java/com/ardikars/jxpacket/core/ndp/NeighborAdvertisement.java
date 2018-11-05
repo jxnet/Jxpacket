@@ -63,6 +63,26 @@ public class NeighborAdvertisement extends AbstractPacket {
             this.options = builder.options;
         }
 
+        public boolean isRouterFlag() {
+            return routerFlag;
+        }
+
+        public boolean isSolicitedFlag() {
+            return solicitedFlag;
+        }
+
+        public boolean isOverrideFlag() {
+            return overrideFlag;
+        }
+
+        public Inet6Address getTargetAddress() {
+            return targetAddress;
+        }
+
+        public NeighborDiscoveryOptions getOptions() {
+            return options;
+        }
+
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return null;
@@ -87,14 +107,21 @@ public class NeighborAdvertisement extends AbstractPacket {
         @Override
         public String toString() {
             return new StringBuilder("Header{")
-                    .append("routerFlag=").append(routerFlag)
-                    .append(", solicitedFlag=").append(solicitedFlag)
-                    .append(", overrideFlag=").append(overrideFlag)
-                    .append(", targetAddress=").append(targetAddress)
-                    .append(", options=").append(options)
+                    .append("routerFlag=").append(isOverrideFlag())
+                    .append(", solicitedFlag=").append(isSolicitedFlag())
+                    .append(", overrideFlag=").append(isOverrideFlag())
+                    .append(", targetAddress=").append(getTargetAddress())
+                    .append(", options=").append(getOptions())
                     .append('}').toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("NeighborAdvertisement{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class Builder implements Packet.Builder {

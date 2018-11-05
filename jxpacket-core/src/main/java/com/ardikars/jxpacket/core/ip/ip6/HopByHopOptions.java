@@ -54,6 +54,13 @@ public class HopByHopOptions extends Options {
 
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder("HopByHopOptions{")
+				.append("header=").append(header)
+				.append('}').toString();
+	}
+
 	public static final class Builder extends Options.Builder {
 
 		public Builder() {

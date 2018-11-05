@@ -45,6 +45,42 @@ public final class TcpFlags implements Serializable  {
         this.fin = builder.fin;
     }
 
+    public boolean isNs() {
+        return ns;
+    }
+
+    public boolean isCwr() {
+        return cwr;
+    }
+
+    public boolean isEce() {
+        return ece;
+    }
+
+    public boolean isUrg() {
+        return urg;
+    }
+
+    public boolean isAck() {
+        return ack;
+    }
+
+    public boolean isPsh() {
+        return psh;
+    }
+
+    public boolean isRst() {
+        return rst;
+    }
+
+    public boolean isSyn() {
+        return syn;
+    }
+
+    public boolean isFin() {
+        return fin;
+    }
+
     /**
      * Get short tcp flags.
      * @return returns short value.
@@ -84,15 +120,15 @@ public final class TcpFlags implements Serializable  {
     @Override
     public String toString() {
         return new StringBuilder("TcpFlags{")
-                .append("ns=").append(ns)
-                .append(", cwr=").append(cwr)
-                .append(", ece=").append(ece)
-                .append(", urg=").append(urg)
-                .append(", ack=").append(ack)
-                .append(", psh=").append(psh)
-                .append(", rst=").append(rst)
-                .append(", syn=").append(syn)
-                .append(", fin=").append(fin)
+                .append("ns=").append(isNs())
+                .append(", cwr=").append(isCwr())
+                .append(", ece=").append(isEce())
+                .append(", urg=").append(isUrg())
+                .append(", ack=").append(isAck())
+                .append(", psh=").append(isPsh())
+                .append(", rst=").append(isRst())
+                .append(", syn=").append(isSyn())
+                .append(", fin=").append(isFin())
                 .append('}').toString();
     }
 

@@ -58,6 +58,10 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
             this.options = builder.options;
         }
 
+        public List<Option> getOptions() {
+            return options;
+        }
+
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return null;
@@ -91,11 +95,18 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         @Override
         public String toString() {
             return new StringBuilder("Header{")
-                    .append("options=").append(options)
+                    .append("options=").append(getOptions())
                     .append('}')
                     .toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("NeighborDiscoveryOptions{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class OptionType extends NamedNumber<Byte, OptionType> {

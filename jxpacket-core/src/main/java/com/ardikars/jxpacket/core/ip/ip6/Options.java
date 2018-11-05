@@ -53,6 +53,11 @@ public abstract class Options extends AbstractPacket {
 		}
 
 		public byte[] getOptions() {
+			if (options != null) {
+				byte[] data = new byte[options.length];
+				System.arraycopy(options, 0, data, 0, data.length);
+				return data;
+			}
 			return options;
 		}
 
@@ -80,7 +85,7 @@ public abstract class Options extends AbstractPacket {
 		@Override
 		public String toString() {
 			return new StringBuilder("Header{")
-					.append("nextHeader=").append(getOptions())
+					.append("nextHeader=").append(Arrays.toString(getOptions()))
 					.append(", extensionLength=").append(getExtensionLength())
 					.append(", options=").append(Arrays.toString(getOptions()))
 					.append('}').toString();

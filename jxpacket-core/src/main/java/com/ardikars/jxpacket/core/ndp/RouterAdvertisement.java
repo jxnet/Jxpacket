@@ -66,6 +66,34 @@ public class RouterAdvertisement extends AbstractPacket {
             this.options = builder.options;
         }
 
+        public int getCurrentHopLimit() {
+            return currentHopLimit & 0xff;
+        }
+
+        public boolean isManageFlag() {
+            return manageFlag;
+        }
+
+        public boolean isOtherFlag() {
+            return otherFlag;
+        }
+
+        public int getRouterLifetime() {
+            return routerLifetime & 0xffff;
+        }
+
+        public int getReachableTime() {
+            return reachableTime;
+        }
+
+        public int getRetransmitTimer() {
+            return retransmitTimer;
+        }
+
+        public NeighborDiscoveryOptions getOptions() {
+            return options;
+        }
+
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return null;
@@ -91,16 +119,23 @@ public class RouterAdvertisement extends AbstractPacket {
         @Override
         public String toString() {
             return new StringBuilder("Header{")
-                    .append("currentHopLimit=").append(currentHopLimit)
-                    .append(", manageFlag=").append(manageFlag)
-                    .append(", otherFlag=").append(otherFlag)
-                    .append(", routerLifetime=").append(routerLifetime)
-                    .append(", reachableTime=").append(reachableTime)
-                    .append(", retransmitTimer=").append(retransmitTimer)
-                    .append(", options=").append(options)
+                    .append("currentHopLimit=").append(getCurrentHopLimit())
+                    .append(", manageFlag=").append(isManageFlag())
+                    .append(", otherFlag=").append(isOtherFlag())
+                    .append(", routerLifetime=").append(getRouterLifetime())
+                    .append(", reachableTime=").append(getReachableTime())
+                    .append(", retransmitTimer=").append(getRetransmitTimer())
+                    .append(", options=").append(getOptions())
                     .append('}').toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("RouterAdvertisement{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class Builder implements Packet.Builder {

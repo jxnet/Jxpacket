@@ -99,13 +99,20 @@ public class Ethernet extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("EthernetHeader{")
+			return new StringBuilder("Header{")
 					.append("destinationMacAddress=").append(getDestinationMacAddress())
 					.append(", sourceMacAddress=").append(getSourceMacAddress())
 					.append(", ethernetType=").append(getEthernetType())
 					.append('}').toString();
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Ethernet{")
+				.append("header=").append(header)
+				.append('}').toString();
 	}
 
 	public static class Builder implements Packet.Builder {

@@ -10,6 +10,9 @@
 /jxpacket-common/target
 /jxpacket-common/build
 /jxpacket-common/out
+/jxpacket-example/target
+/jxpacket-example/build
+/jxpacket-example/out
 /jxpacket-mt940/target
 /jxpacket-mt940/build
 /jxpacket-mt940/out

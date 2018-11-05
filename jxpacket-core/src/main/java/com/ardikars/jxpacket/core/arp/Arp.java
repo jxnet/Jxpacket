@@ -147,7 +147,7 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("ArpHeader{")
+			return new StringBuilder("Header{")
 					.append("hardwareType=").append(getHardwareType())
 					.append(", protocolType=").append(getPayloadType())
 					.append(", hardwareAddressLength=").append(getHardwareAddressLength())
@@ -160,6 +160,13 @@ public class Arp extends AbstractPacket {
 					.append('}').toString();
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Arp{")
+				.append("header=").append(header)
+				.append('}').toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

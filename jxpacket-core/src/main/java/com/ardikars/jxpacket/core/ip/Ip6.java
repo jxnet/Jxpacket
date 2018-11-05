@@ -122,7 +122,7 @@ public class Ip6 extends Ip {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Ip6Header{")
+			return new StringBuilder("Header{")
 					.append("version=").append(super.getVersion())
 					.append(", trafficClass=").append(getTrafficClass())
 					.append(", flowLabel=").append(getFlowLabel())
@@ -134,6 +134,13 @@ public class Ip6 extends Ip {
 					.append('}').toString();
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Ip6{")
+				.append("header=").append(header)
+				.append('}').toString();
 	}
 
 	public static final class Builder extends IpPaketBuilder {

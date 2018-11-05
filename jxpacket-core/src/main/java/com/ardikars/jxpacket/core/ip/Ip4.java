@@ -195,7 +195,7 @@ public class Ip4 extends Ip {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Ip4Header{")
+			return new StringBuilder("Header{")
 					.append("version=").append(super.getVersion())
 					.append(", headerLength=").append(getHeaderLength())
 					.append(", diffServ=").append(getDiffServ())
@@ -213,6 +213,13 @@ public class Ip4 extends Ip {
 					.append('}').toString();
 		}
 
+	}
+
+	@Override
+	public String toString() {
+		return new StringBuilder("Ip4{")
+				.append("header=").append(header)
+				.append('}').toString();
 	}
 
 	public static final class Builder extends IpPaketBuilder {

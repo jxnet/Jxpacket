@@ -19,7 +19,6 @@ package com.ardikars.jxpacket.common;
 
 import com.ardikars.common.util.NamedNumber;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 public class UnknownPacket extends AbstractPacket {
 
@@ -70,7 +69,6 @@ public class UnknownPacket extends AbstractPacket {
 		public String toString() {
 			return new StringBuilder("Header{")
 					.append("buffer=").append(buffer)
-//					.append("hexDump=").append(ByteBufUtil.hexDump(buffer))
 					.append('}').toString();
 		}
 

@@ -130,6 +130,13 @@ public class Routing extends AbstractPacket {
 
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder("Routing{")
+				.append("header=").append(header)
+				.append('}').toString();
+	}
+
 	public static final class Builder implements Packet.Builder {
 
 		private TransportLayer nextHeader;

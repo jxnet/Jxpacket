@@ -76,12 +76,19 @@ public class Icmp4 extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Icmp4Header{")
+            return new StringBuilder("Header{")
                     .append("typeAndCode=").append(super.typeAndCode)
                     .append(", checksum=").append(super.checksum)
                     .append('}').toString();
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return new StringBuilder("Icmp4{")
+                .append("header=").append(header)
+                .append('}').toString();
     }
 
     public static class Builder extends Icmp.IcmpPacketBuilder {
