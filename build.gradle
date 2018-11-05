@@ -30,6 +30,11 @@ plugins {
     id "co.riiid.gradle" version "0.4.2" apply false
 }
 
+apply plugin: 'java'
+
+group = "${GROUP}"
+version = "${VERSION}"
+
 subprojects {
 
     apply plugin: 'java'
@@ -42,8 +47,8 @@ subprojects {
     apply plugin: 'com.github.spotbugs'
     apply plugin: 'com.github.kt3k.coveralls'
 
-    group = "${GROUP}"
-    version = "${VERSION}"
+    group = rootProject.group
+    version = rootProject.version
 
     sourceCompatibility = "${JAVA_VERSION}"
     targetCompatibility = "${JAVA_VERSION}"
@@ -253,8 +258,6 @@ subprojects {
     }
 
 }
-
-apply plugin: 'java'
 
 if (gradle.startParameter.taskNames.contains('github') ||
         gradle.startParameter.taskNames.contains('githubRelease')) {

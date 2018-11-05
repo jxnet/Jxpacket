@@ -3,4 +3,5 @@ include 'jxpacket-core'
 include 'jxpacket-common'
 //include 'jxpacket-iso8583'
 include 'jxpacket-mt940'
+include 'jxpacket-example'
 

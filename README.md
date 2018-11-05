@@ -44,10 +44,44 @@ Build Jxnet from Source
    - ```./gradlew clean build -x test```
 
 Jxpacket dependencies
-==================
+=====================
   - com.ardikars.common:common-util
   - com.ardikars.common:common-net
   - io.netty:netty-buffer
+  
+Example
+=======
+```java
+
+@SpringBootApplication
+public class ExampleApplication implements CommandLineRunner {
+
+    @Autowired
+    private Context context;
+
+    public static void main(String[] args) {
+        register();
+        SpringApplication.run(ExampleApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        context.pcapLoop(1000, (user, h, bytes) -> {
+            ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(bytes.capacity());
+            buffer.setBytes(0, bytes);
+            Packet packet = Ethernet.newPacket(buffer);
+            packet.forEach(pkt -> System.out.println(pkt.getHeader()));
+        }, "");
+    }
+
+    private static void register() {
+        NetworkLayer.register(NetworkLayer.IPV4, new Ip4.Builder());
+        TransportLayer.register(TransportLayer.TCP, new Tcp.Builder());
+    }
+
+}
+
+```
 
 License
 =======
