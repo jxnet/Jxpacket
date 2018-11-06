@@ -55,7 +55,7 @@ public class ExampleApplication implements CommandLineRunner {
             ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(bytes.capacity());
             buffer.setBytes(0, bytes);
             Packet packet = Ethernet.newPacket(buffer);
-            packet.forEach(pkt -> LOGGER.info(packet.toString()));
+            packet.forEach(pkt -> LOGGER.info(pkt.toString()));
         }, "");
     }
 
