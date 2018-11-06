@@ -19,6 +19,12 @@
 /jxpacket-iso8583/target
 /jxpacket-iso8583/build
 /jxpacket-iso8583/out
+/jxpacket-jxnet/target
+/jxpacket-jxnet/build
+/jxpacket-jxnet/out
+/jxpacket-pcap4j/target
+/jxpacket-pcap4j/build
+/jxpacket-pcap4j/out
 *.log
 *~
 *.txt

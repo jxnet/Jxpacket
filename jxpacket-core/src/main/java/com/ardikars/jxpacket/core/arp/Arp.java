@@ -262,7 +262,7 @@ public class Arp extends AbstractPacket {
 			buffer.getBytes(24, byteBuffer);
 			builder.targetProtocolAddress = Inet4Address.valueOf(byteBuffer);
 			builder.payloadBuffer = buffer.copy(Header.ARP_HEADER_LENGTH, buffer.capacity() - Header.ARP_HEADER_LENGTH);
-			buffer.release();
+			release(buffer);
 			return new Arp(builder);
 		}
 	}

@@ -158,6 +158,7 @@ public class Udp extends AbstractPacket {
             this.length = buffer.getShort(4);
             this.checksum = buffer.getShort(6);
             this.payloadBuffer = buffer.copy(8, buffer.capacity() - 8);
+            release(buffer);
             return new Udp(this);
         }
 

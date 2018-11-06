@@ -192,7 +192,7 @@ public class Authentication extends AbstractPacket {
 			if (builder.integrityCheckValue != null) {
 				buffer.getBytes(12, builder.integrityCheckValue);
 			}
-			buffer.release();
+			release(buffer);
 			return new Authentication(builder);
 		}
 

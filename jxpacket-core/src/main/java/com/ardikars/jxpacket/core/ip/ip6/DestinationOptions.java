@@ -79,7 +79,7 @@ public class DestinationOptions extends Options {
 			builder.options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
 					+ Options.Header.LENGTH_UNIT * builder.extensionLength];
 			buffer.getBytes(5, options);
-			buffer.release();
+			release(buffer);
 			return new DestinationOptions(this);
 		}
 

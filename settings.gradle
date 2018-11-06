@@ -4,4 +4,6 @@ include 'jxpacket-common'
 //include 'jxpacket-iso8583'
 //include 'jxpacket-mt940'
 include 'jxpacket-example'
+//include 'jxpacket-jxnet'
+//include 'jxpacket-pcap4j'
 

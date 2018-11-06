@@ -64,6 +64,18 @@ public interface Packet extends Iterable<Packet>, Serializable {
      */
     interface Builder extends com.ardikars.common.util.Builder<Packet, ByteBuf> {
 
+        default void release(ByteBuf buffer) {
+            int refCnt = buffer.refCnt();
+            if (refCnt > 0) {
+                try {
+                    buffer.release();
+                } catch (Throwable throwable) {
+                    // do nothing
+                }
+                refCnt--;
+            }
+        }
+
     }
 
     /**

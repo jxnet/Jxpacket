@@ -160,7 +160,7 @@ public class Ethernet extends AbstractPacket {
 			builder.sourceMacAddress = MacAddress.valueOf(hardwareAddressBuffer);
 			builder.ethernetType = NetworkLayer.valueOf(buffer.getShort(12));
 			builder.payloadBuffer = buffer.copy(Header.ETHERNET_HEADER_LENGTH, buffer.capacity() - Header.ETHERNET_HEADER_LENGTH);
-			buffer.release();
+			release(buffer);
 			return new Ethernet(builder);
 		}
 

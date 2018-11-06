@@ -1,0 +1,7 @@
+
+dependencies {
+    compile group: 'org.pcap4j', name: 'pcap4j-core', version: '1.7.3'
+    implementation project(':jxpacket-common')
+    implementation project(':jxpacket-core')
+    implementation ("io.netty:netty-buffer:${NETTY_VERSION}")
+}

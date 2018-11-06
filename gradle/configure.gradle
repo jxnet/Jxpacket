@@ -25,7 +25,7 @@ ext {
 	JACOCO_VERSION = '0.8.2'
 
 	COMMON_VERSION = '1.2.0.Final'
-	NETTY_VERSION = '4.1.29.Final'
+	NETTY_VERSION = '4.1.31.Final'
 
 	pom_project = {
 

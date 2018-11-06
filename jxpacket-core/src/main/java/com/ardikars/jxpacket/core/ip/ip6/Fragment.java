@@ -158,7 +158,7 @@ public class Fragment extends AbstractPacket {
 			this.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
 			this.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
 			this.identification = buffer.getInt(4);
-			buffer.release();
+			release(buffer);
 			return new Fragment(this);
 		}
 

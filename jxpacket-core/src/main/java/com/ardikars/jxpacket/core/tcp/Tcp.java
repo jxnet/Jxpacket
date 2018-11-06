@@ -281,6 +281,7 @@ public class Tcp extends AbstractPacket {
                 this.payloadBuffer = buffer.copy(length, buffer.capacity() - length);
             }
             this.payloadBuffer = buffer.copy(20, buffer.capacity() - 20);
+            release(buffer);
             return new Tcp(this);
         }
 

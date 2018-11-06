@@ -216,7 +216,7 @@ public class Ip6 extends Ip {
 			buffer.getBytes(24, addrBuf);
 			builder.destinationAddress = Inet6Address.valueOf(addrBuf);
 			builder.payloadBuffer = buffer.copy(Header.IPV6_HEADER_LENGTH, buffer.capacity() - Header.IPV6_HEADER_LENGTH);
-			buffer.release();
+			release(buffer);
 			return new Ip6(builder);
 		}
 

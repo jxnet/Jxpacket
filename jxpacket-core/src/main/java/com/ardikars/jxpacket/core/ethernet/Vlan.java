@@ -175,7 +175,7 @@ public class Vlan extends AbstractPacket {
 			builder.vlanIdentifier = (short) (tci & 0x0fff);
 			builder.type = NetworkLayer.valueOf(type);
 			builder.payloadBuffer = buffer.copy(Header.VLAN_HEADER_LENGTH, buffer.capacity() - Header.VLAN_HEADER_LENGTH);
-			buffer.release();
+			release(buffer);
 			return new Vlan(builder);
 		}
 

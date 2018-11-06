@@ -20,6 +20,11 @@ package com.ardikars.jxpacket.common;
 import com.ardikars.common.util.NamedNumber;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * Unknown packet.
+ * @author Ardika Rommy Sanjaya
+ * @since 1.5.0
+ */
 public class UnknownPacket extends AbstractPacket {
 
 	private final UnknownPacket.Header header;
@@ -74,6 +79,13 @@ public class UnknownPacket extends AbstractPacket {
 
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder("UnknownPacket{")
+				.append("header=").append(header)
+				.append('}').toString();
+	}
+
 	public static final class Builder implements Packet.Builder {
 
 		private ByteBuf payloadBuffer;
@@ -92,7 +104,7 @@ public class UnknownPacket extends AbstractPacket {
 		public UnknownPacket build(ByteBuf buffer) {
 			Builder builder = new Builder()
 					.payloadBuffer(buffer);
-			buffer.release();
+			release(buffer);
 			return new UnknownPacket(builder);
 		}
 
