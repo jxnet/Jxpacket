@@ -7,10 +7,9 @@ ext {
 
 	NAME = 'Jxpacket'
 	GROUP = 'com.ardikars.jxpacket'
-	VERSION = '1.1.0.RC6'
+	VERSION = '1.1.0.RC7'
 	DESCRIPTION = 'Jxpacket is a network packet crafting library for java.'
 
-	NDK_HOME = "${System.env.NDK_HOME}"
 	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
 
 	JAVA_VERSION = '1.8'
