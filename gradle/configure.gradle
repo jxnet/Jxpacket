@@ -8,6 +8,7 @@ ext {
 	NAME = 'Jxpacket'
 	GROUP = 'com.ardikars.jxpacket'
 	VERSION = '1.1.0.RC6'
+	DESCRIPTION = 'Jxpacket is a network packet crafting library for java.'
 
 	NDK_HOME = "${System.env.NDK_HOME}"
 	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
@@ -33,7 +34,7 @@ ext {
 
 		name = "${NAME}"
 
-		description = 'Jxpacket is a network packet crafting library for java.'
+		description = "${DESCRIPTION}"
 
 		url 'https://github.com/jxnet/Jxpacket'
 
@@ -65,6 +66,64 @@ ext {
 			url 'http://ardikars.com'
 		}
 
+	}
+
+	bom_dependencies = {
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-common"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-core"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-iso8583"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-jxnet"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-jxnet-spring-boot-autoconfigure"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-mt940"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-pcap4j"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-spring-boot-autoconfigure"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-spring-boot-starter"
+			version "${VERSION}"
+		}
+		
 	}
 
 	defaultBlank = { closure ->

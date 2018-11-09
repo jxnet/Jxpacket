@@ -4,6 +4,7 @@
 /target
 /build
 /out
+gradle.properties
 /jxpacket-core/target
 /jxpacket-core/build
 /jxpacket-core/out
