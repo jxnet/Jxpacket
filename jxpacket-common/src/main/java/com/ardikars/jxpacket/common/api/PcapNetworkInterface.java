@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.common.api;
 
 import com.ardikars.common.net.Inet4Address;
@@ -12,21 +29,6 @@ import java.util.List;
  */
 public class PcapNetworkInterface {
 
-    /**
-     * Interface is loopback.
-     */
-    private static final int PCAP_IF_LOOPBACK = 0x00000001;
-
-    /**
-     * Interface is up.
-     */
-    private static final int PCAP_IF_UP = 0x00000002;
-
-    /**
-     * Interface is running.
-     */
-    private static final int PCAP_IF_RUNNING = 0x00000004;
-
     private final String name;
     private final String description;
     private final List<Address> hardwareAddreses;
@@ -35,6 +37,10 @@ public class PcapNetworkInterface {
     private final boolean up;
     private final boolean running;
 
+    /**
+     * Pcap network interface.
+     * @param builder builder.
+     */
     public PcapNetworkInterface(Builder builder) {
         this.name = builder.name;
         this.description = builder.description;
@@ -116,13 +122,6 @@ public class PcapNetworkInterface {
             return this;
         }
 
-        public Builder flags(int flags) {
-            this.loopback = (flags & PCAP_IF_LOOPBACK) != 0;
-            this.up = (flags & PCAP_IF_UP) != 0;
-            this.running = (flags & PCAP_IF_RUNNING) != 0;
-            return this;
-        }
-
         public Builder loopback(boolean loopback) {
             this.loopback = loopback;
             return this;
@@ -169,6 +168,10 @@ public class PcapNetworkInterface {
         private final Inet4Address broadcastAddress;
         private final Inet4Address destinationAddress;
 
+        /**
+         * Pcap ipv4 adddress.
+         * @param builder builder.
+         */
         public PcapInet4Address(Builder builder) {
             this.address = builder.address;
             this.netmask = builder.netmask;
@@ -254,6 +257,10 @@ public class PcapNetworkInterface {
         private final Inet6Address broadcastAddress;
         private final Inet6Address destinationAddress;
 
+        /**
+         * Pcap ipv6 address.
+         * @param builder builder.
+         */
         public PcapInet6Address(Builder builder) {
             this.address = builder.address;
             this.netmask = builder.netmask;
@@ -286,7 +293,7 @@ public class PcapNetworkInterface {
             return new StringBuilder("PcapInet6Address{")
                     .append("address=").append(address)
                     .append(", netmask=").append(netmask)
-                    .append(", broadcastAddress=").append(broadcastAddress )
+                    .append(", broadcastAddress=").append(broadcastAddress)
                     .append(", destinationAddress=").append(destinationAddress)
                     .append('}').toString();
         }

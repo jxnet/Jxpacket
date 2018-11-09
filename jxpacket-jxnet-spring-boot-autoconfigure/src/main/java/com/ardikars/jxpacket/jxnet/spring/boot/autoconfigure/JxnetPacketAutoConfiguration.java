@@ -1,15 +1,52 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.jxnet.spring.boot.autoconfigure;
+
+import static com.ardikars.jxnet.Jxnet.FindHardwareAddress;
+import static com.ardikars.jxnet.Jxnet.OK;
+import static com.ardikars.jxnet.Jxnet.PcapFindAllDevs;
 
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.net.MacAddress;
 import com.ardikars.common.util.Address;
 import com.ardikars.common.util.Platforms;
-import com.ardikars.jxnet.*;
+import com.ardikars.jxnet.Application;
+import com.ardikars.jxnet.Context;
+import com.ardikars.jxnet.DataLinkType;
+import com.ardikars.jxnet.ImmediateMode;
+import com.ardikars.jxnet.Pcap;
+import com.ardikars.jxnet.PcapAddr;
+import com.ardikars.jxnet.PcapDirection;
+import com.ardikars.jxnet.PcapIf;
+import com.ardikars.jxnet.PcapTimestampPrecision;
+import com.ardikars.jxnet.PcapTimestampType;
+import com.ardikars.jxnet.PromiscuousMode;
+import com.ardikars.jxnet.RadioFrequencyMonitorMode;
+import com.ardikars.jxnet.SockAddr;
 import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.PcapNetworkInterface;
 import com.ardikars.jxpacket.common.api.exception.DeviceNotFoundException;
 import com.ardikars.jxpacket.jxnet.JxnetPacket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +58,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author jxpacket 2018/11/08
@@ -55,7 +87,7 @@ public class JxnetPacketAutoConfiguration {
     @Value("${spring.application.version:0.0.0}")
     private String applicationVersion;
 
-    private JxnetConfigurationProperties properties;
+    private final JxnetConfigurationProperties properties;
 
     @Autowired
     public JxnetPacketAutoConfiguration(JxnetConfigurationProperties properties) {
@@ -67,6 +99,12 @@ public class JxnetPacketAutoConfiguration {
         return new JxnetPacket(context);
     }
 
+    /**
+     * Jxnet application context.
+     * @param pcapIf network interface.
+     * @param errbuf error buffer.
+     * @return returns {@link Context}.
+     */
     @Bean("com.ardikars.jxnet.contex")
     public Context context(PcapNetworkInterface pcapIf,
                            @Qualifier("com.ardikars.jxnet.errbuf") StringBuilder errbuf) {
@@ -93,6 +131,7 @@ public class JxnetPacketAutoConfiguration {
                 break;
             default:
                 timestampType = PcapTimestampType.HOST;
+                break;
         }
         PcapDirection direction;
         switch (properties.getDirection()) {
@@ -104,6 +143,7 @@ public class JxnetPacketAutoConfiguration {
                 break;
             default:
                 direction = PcapDirection.PCAP_D_INOUT;
+                break;
         }
         PcapTimestampPrecision timestampPrecision = properties.getTimestampPrecision()
                 == com.ardikars.jxpacket.common.api.constant.PcapTimestampPrecision.NANO
@@ -150,11 +190,17 @@ public class JxnetPacketAutoConfiguration {
         return Application.getApplicationContext();
     }
 
+    /**
+     * Network interface.
+     * @param errbuf error buffer.
+     * @return returns {@link PcapNetworkInterface}.
+     * @throws DeviceNotFoundException device not found exception.
+     */
     @Bean
     public PcapNetworkInterface networkInterface(@Qualifier("com.ardikars.jxnet.errbuf") StringBuilder errbuf) throws DeviceNotFoundException {
         String source = properties.getSource();
         List<PcapIf> alldevsp = new ArrayList<>();
-        if (Jxnet.PcapFindAllDevs(alldevsp, errbuf) != Jxnet.OK && LOGGER.isDebugEnabled()) {
+        if (PcapFindAllDevs(alldevsp, errbuf) != OK && LOGGER.isDebugEnabled()) {
             LOGGER.debug("Error: {}", errbuf.toString());
         }
         if (source == null || source.isEmpty()) {
@@ -188,35 +234,57 @@ public class JxnetPacketAutoConfiguration {
     }
 
     private PcapNetworkInterface parsePcapNetworkInterface(PcapIf networkInterface) {
+        List<Address> hardwareAddresses = findHardwareAddress(networkInterface);
+        List<PcapNetworkInterface.PcapAddress> addresses = findAddresses(networkInterface);
+        return new PcapNetworkInterface.Builder()
+                .name(networkInterface.getName())
+                .description(networkInterface.getDescription())
+                .hardwareAddresses(hardwareAddresses)
+                .addresses(addresses)
+                .loopback(networkInterface.isLoopback())
+                .up(networkInterface.isUp())
+                .running(networkInterface.isRunning())
+                .addresses(addresses)
+                .build();
+    }
+
+    private List<Address> findHardwareAddress(PcapIf networkInterface) {
         List<Address> hardwareAddresses = new ArrayList<>();
         if (networkInterface.isLoopback()) {
             hardwareAddresses.add(MacAddress.ZERO);
         } else {
             if (Platforms.isWindows()) {
-                byte[] hardwareAddress = Jxnet.FindHardwareAddress(networkInterface.getName());
+                byte[] hardwareAddress = FindHardwareAddress(networkInterface.getName());
                 if (hardwareAddress != null && hardwareAddress.length == MacAddress.MAC_ADDRESS_LENGTH) {
                     hardwareAddresses.add(MacAddress.valueOf(hardwareAddress));
                 } else {
-                    throw new DeviceNotFoundException();
+                    return hardwareAddresses;
                 }
             } else {
                 try {
                     hardwareAddresses.add(MacAddress.fromNicName(networkInterface.getName()));
                 } catch (SocketException e) {
-                    throw new DeviceNotFoundException();
+                    return hardwareAddresses;
                 }
             }
         }
-        List<PcapNetworkInterface.PcapAddress> addresses = networkInterface.getAddresses().stream()
-                .filter(pcapAddr -> pcapAddr.getAddr().getSaFamily() == SockAddr.Family.AF_INET ||
-                        pcapAddr.getAddr().getSaFamily() == SockAddr.Family.AF_INET6)
+        return hardwareAddresses;
+    }
+
+    private List<PcapNetworkInterface.PcapAddress> findAddresses(PcapIf networkInterface) {
+        return networkInterface.getAddresses().stream()
+                .filter(pcapAddr -> pcapAddr.getAddr().getSaFamily() == SockAddr.Family.AF_INET
+                        || pcapAddr.getAddr().getSaFamily() == SockAddr.Family.AF_INET6)
                 .map(pcapAddr -> {
                     byte[] rawAddress = pcapAddr.getAddr().getData();
                     byte[] rawNetmask = pcapAddr.getNetmask().getData();
                     byte[] rawBroadcastAddress = pcapAddr.getBroadAddr().getData();
                     byte[] rawDestinationAddress = pcapAddr.getBroadAddr().getData();
                     if (pcapAddr.getAddr().getSaFamily() == SockAddr.Family.AF_INET) {
-                        Inet4Address address, netmask, broadcastAddress, destinationAddress;
+                        Inet4Address address;
+                        Inet4Address netmask;
+                        Inet4Address broadcastAddress;
+                        Inet4Address destinationAddress;
                         if (rawAddress != null && rawAddress.length == Inet4Address.IPV4_ADDRESS_LENGTH) {
                             address = Inet4Address.valueOf(rawAddress);
                         } else {
@@ -244,7 +312,10 @@ public class JxnetPacketAutoConfiguration {
                                 .destinationAddress(destinationAddress)
                                 .build();
                     } else {
-                        Inet6Address address, netmask, broadcastAddress, destinationAddress;
+                        Inet6Address address;
+                        Inet6Address netmask;
+                        Inet6Address broadcastAddress;
+                        Inet6Address destinationAddress;
                         if (rawAddress != null && rawAddress.length == Inet6Address.IPV6_ADDRESS_LENGTH) {
                             address = Inet6Address.valueOf(rawAddress);
                         } else {
@@ -273,16 +344,6 @@ public class JxnetPacketAutoConfiguration {
                                 .build();
                     }
                 }).collect(Collectors.toList());
-        return new PcapNetworkInterface.Builder()
-                .name(networkInterface.getName())
-                .description(networkInterface.getDescription())
-                .hardwareAddresses(hardwareAddresses)
-                .addresses(addresses)
-                .loopback(networkInterface.isLoopback())
-                .up(networkInterface.isUp())
-                .running(networkInterface.isRunning())
-                .addresses(addresses)
-                .build();
     }
 
 }

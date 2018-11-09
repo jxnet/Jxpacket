@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya <contact@ardikars.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.ardikars.jxpacket.pcap4j.spring.boot.autoconfigure;
 
 import com.ardikars.common.net.Inet4Address;
@@ -11,10 +28,16 @@ import com.ardikars.jxpacket.common.api.constant.PromiscuousMode;
 import com.ardikars.jxpacket.common.api.exception.DeviceNotFoundException;
 import com.ardikars.jxpacket.common.api.exception.NativeException;
 import com.ardikars.jxpacket.pcap4j.Pcap4jPacket;
-import org.pcap4j.core.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.pcap4j.core.PcapAddress;
+import org.pcap4j.core.PcapHandle;
+import org.pcap4j.core.PcapIpV4Address;
+import org.pcap4j.core.PcapIpV6Address;
+import org.pcap4j.core.PcapNativeException;
+import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.namednumber.DataLinkType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -23,10 +46,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author jxpacket 2018/11/08
@@ -37,8 +56,6 @@ import java.util.stream.Collectors;
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 @EnableConfigurationProperties(Pcap4jConfigurationProperties.class)
 public class Pcap4jPacketAutoConfiguration {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Pcap4jPacketAutoConfiguration.class.getName());
 
     private final Pcap4jConfigurationProperties properties;
 
@@ -52,15 +69,22 @@ public class Pcap4jPacketAutoConfiguration {
         return new Pcap4jPacket(pcapHandle);
     }
 
+    /**
+     * Pcap4j pcap handle.
+     * @param pcapIf network interface.
+     * @return returns {@link PcapHandle}.
+     */
     @Bean("org.pcap4j.core.pcapHandle")
     public PcapHandle pcapHandle(PcapNetworkInterface pcapIf) {
         switch (properties.getPcapType()) {
             case DEAD:
                 try {
                     if (properties.getTimestampPrecision() == PcapTimestampPrecision.NANO) {
-                        return Pcaps.openDead(DataLinkType.getInstance(properties.getDatalink()), properties.getSnapshot(), PcapHandle.TimestampPrecision.NANO);
+                        return Pcaps.openDead(DataLinkType.getInstance(properties.getDatalink()),
+                                properties.getSnapshot(), PcapHandle.TimestampPrecision.NANO);
                     } else {
-                        return Pcaps.openDead(DataLinkType.getInstance(properties.getDatalink()), properties.getSnapshot(), PcapHandle.TimestampPrecision.MICRO);
+                        return Pcaps.openDead(DataLinkType.getInstance(properties.getDatalink()),
+                                properties.getSnapshot(), PcapHandle.TimestampPrecision.MICRO);
                     }
                 } catch (PcapNativeException e) {
                     throw new NativeException();
@@ -77,7 +101,8 @@ public class Pcap4jPacketAutoConfiguration {
                 }
             default:
                 try {
-                    Optional<org.pcap4j.core.PcapNetworkInterface> networkInterface = Pcaps.findAllDevs().stream().filter(iface -> iface.getName().equalsIgnoreCase(pcapIf.getName()))
+                    Optional<org.pcap4j.core.PcapNetworkInterface> networkInterface = Pcaps.findAllDevs().stream()
+                            .filter(iface -> iface.getName().equalsIgnoreCase(pcapIf.getName()))
                             .findFirst();
                     if (!networkInterface.isPresent()) {
                         throw new DeviceNotFoundException();
@@ -96,6 +121,10 @@ public class Pcap4jPacketAutoConfiguration {
     }
 
 
+    /**
+     * Network interface.
+     * @return returns {@link PcapNetworkInterface}.
+     */
     @Bean
     public PcapNetworkInterface networkInterface() {
         try {
@@ -104,15 +133,12 @@ public class Pcap4jPacketAutoConfiguration {
             if (source == null || source.isEmpty()) {
                 for (org.pcap4j.core.PcapNetworkInterface networkInterface : networkInterfaces) {
                     for (PcapAddress address : networkInterface.getAddresses()) {
-                        if (address instanceof PcapIpV4Address) {
-                            if (address.getAddress() != null) {
-                                byte[] data = address.getAddress().getAddress();
-                                if (data != null) {
-                                    Inet4Address inet4Address = Inet4Address.valueOf(data);
-                                    if (!inet4Address.equals(Inet4Address.LOCALHOST) && !address.equals(Inet4Address.ZERO)) {
-                                        return parsePcapNetworkInterface(networkInterface);
-                                    }
-                                }
+                        if (address instanceof PcapIpV4Address && address.getAddress() != null
+                            && address.getAddress().getAddress() != null) {
+                            byte[] data = address.getAddress().getAddress();
+                            Inet4Address inet4Address = Inet4Address.valueOf(data);
+                            if (!inet4Address.equals(Inet4Address.LOCALHOST) && !inet4Address.equals(Inet4Address.ZERO)) {
+                                return parsePcapNetworkInterface(networkInterface);
                             }
                         }
                     }

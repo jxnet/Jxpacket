@@ -17,8 +17,11 @@
 
 package com.ardikars.jxpacket.jxnet;
 
-import com.ardikars.jxnet.*;
-import com.ardikars.jxpacket.common.*;
+import com.ardikars.jxnet.Context;
+import com.ardikars.jxnet.DataLinkType;
+import com.ardikars.jxnet.PcapCode;
+import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.Listener;
 import com.ardikars.jxpacket.common.api.PacketCode;
@@ -36,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class JxnetPacket implements Jxpacket {
 
-    private Context context;
+    private final Context context;
 
     public JxnetPacket(Context context) {
         this.context = context;

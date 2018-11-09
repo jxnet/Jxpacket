@@ -18,7 +18,7 @@
     <rule ref="rulesets/java/basic.xml/AvoidBranchingStatementAsLastInLoop"/>
     <rule ref="rulesets/java/finalizers.xml/AvoidCallingFinalize"/>
     <rule ref="rulesets/java/strictexception.xml/AvoidCatchingNPE"/>
-    <rule ref="rulesets/java/strictexception.xml/AvoidCatchingThrowable"/>
+    <!--<rule ref="rulesets/java/strictexception.xml/AvoidCatchingThrowable"/>-->
     <rule ref="rulesets/java/design.xml/AvoidConstantsInterface"/>
     <rule ref="rulesets/java/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <rule ref="rulesets/java/design.xml/AvoidDeeplyNestedIfStmts"/>
@@ -207,7 +207,7 @@
     <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInCaseInsensitiveComparisons"/>
     <rule ref="rulesets/java/design.xml/PositionLiteralsFirstInComparisons"/>
     <rule ref="rulesets/java/optimizations.xml/PrematureDeclaration"/>
-    <rule ref="rulesets/java/design.xml/PreserveStackTrace"/>
+    <!--<rule ref="rulesets/java/design.xml/PreserveStackTrace"/>-->
     <rule ref="rulesets/java/clone.xml/ProperCloneImplementation"/>
     <rule ref="rulesets/java/logging-jakarta-commons.xml/ProperLogger"/>
     <rule ref="rulesets/java/optimizations.xml/RedundantFieldInitializer"/>

@@ -17,7 +17,8 @@
 
 package com.ardikars.jxpacket.pcap4j;
 
-import com.ardikars.jxpacket.common.*;
+import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.Listener;
 import com.ardikars.jxpacket.common.api.PacketCode;
@@ -25,13 +26,12 @@ import com.ardikars.jxpacket.common.api.PacketListener;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.pcap4j.core.NotOpenException;
 import org.pcap4j.core.PcapHandle;
 import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.RawPacketListener;
 import org.pcap4j.packet.namednumber.DataLinkType;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author jxpacket 2018/11/06
@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Pcap4jPacket implements Jxpacket {
 
-    private PcapHandle context;
+    private final PcapHandle context;
 
     public Pcap4jPacket(PcapHandle context) {
         this.context = context;

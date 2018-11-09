@@ -28,18 +28,21 @@ import com.ardikars.jxpacket.core.icmp.Icmp4;
 import com.ardikars.jxpacket.core.icmp.Icmp6;
 import com.ardikars.jxpacket.core.ip.Ip4;
 import com.ardikars.jxpacket.core.ip.Ip6;
-import com.ardikars.jxpacket.core.ip.ip6.*;
+import com.ardikars.jxpacket.core.ip.ip6.Authentication;
+import com.ardikars.jxpacket.core.ip.ip6.DestinationOptions;
+import com.ardikars.jxpacket.core.ip.ip6.Fragment;
+import com.ardikars.jxpacket.core.ip.ip6.HopByHopOptions;
+import com.ardikars.jxpacket.core.ip.ip6.Routing;
 import com.ardikars.jxpacket.core.tcp.Tcp;
 import com.ardikars.jxpacket.core.udp.Udp;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.logging.Logger;
 
 /**
  * @author jxpacket 2018/11/05

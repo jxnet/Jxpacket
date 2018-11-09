@@ -66,7 +66,7 @@ public interface Packet extends Iterable<Packet>, Serializable {
 
         default void release(ByteBuf buffer) {
             int refCnt = buffer.refCnt();
-            if (refCnt > 0) {
+            while (refCnt > 0) {
                 try {
                     buffer.release();
                 } catch (Throwable throwable) {
