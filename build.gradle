@@ -159,20 +159,6 @@ if (gradle.startParameter.taskNames.contains('github') ||
     apply from: 'gradle/githubRelease.gradle'
 }
 
-task dist(type: Zip) {
-
-    rootProject.allprojects.collect { it.tasks }.flatten()
-
-    archiveName = "${NAME}-${VERSION}.zip"
-
-    subprojects.each { subproject ->
-        from subproject.jar.outputs.files
-        from subproject.javadocJar.outputs.files
-        from subproject.sourcesJar.outputs.files
-    }
-
-}
-
 if (gradle.startParameter.taskNames.contains('github') ||
         gradle.startParameter.taskNames.contains('githubRelease')) {
     apply from: 'gradle/githubRelease.gradle'
