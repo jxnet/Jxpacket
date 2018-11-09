@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.common;
-
-import java.nio.ByteBuffer;
+package com.ardikars.jxpacket.common.api;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.5.0
  */
-public interface RawPacketListener<U> extends Listener<ByteBuffer, U> {
+public interface Listener<T, U> {
+
+    void receive(T packet, U argument);
 
 }

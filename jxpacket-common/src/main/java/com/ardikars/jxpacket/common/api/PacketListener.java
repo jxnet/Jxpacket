@@ -15,14 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.common;
+package com.ardikars.jxpacket.common.api;
+
+import com.ardikars.jxpacket.common.Packet;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.5.0
  */
-public interface Listener<T, U> {
-
-    void receive(T packet, U argument);
+public interface PacketListener<U> extends Listener<Packet, U> {
 
 }

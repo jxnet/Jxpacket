@@ -33,20 +33,22 @@ public class Ip6TcpTest extends BaseTest {
     @Test
     public void payloadType() {
         StreamSupport.stream(ethernet.spliterator(), false)
-                .map(packet -> packet.getHeader())
                 .forEach(System.out::println);
     }
 
     @Test
     public void filter() {
         ethernet.get(Tcp.class)
-                .stream().map(pkt -> pkt.getHeader())
                 .forEach(System.out::println);
     }
 
     @After
     public void after() {
-//        buf.release(); // buffer already release to the pool
+        try {
+            buf.release(); // buffer already release to the pool
+        } catch (Throwable e) {
+            //
+        }
     }
 
 

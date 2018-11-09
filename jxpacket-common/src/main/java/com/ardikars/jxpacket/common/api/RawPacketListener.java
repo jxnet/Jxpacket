@@ -15,16 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.common;
+package com.ardikars.jxpacket.common.api;
+
+import java.nio.ByteBuffer;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.5.0
  */
-public enum PacketCode {
-
-    OK,
-    WARNING,
-    ERROR
+public interface RawPacketListener<U> extends Listener<ByteBuffer, U> {
 
 }

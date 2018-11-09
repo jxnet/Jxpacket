@@ -15,20 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.common;
-
-import io.netty.buffer.ByteBuf;
+package com.ardikars.jxpacket.common.api;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.5.0
  */
-public interface Jxpacket {
+public enum PacketCode {
 
-    PacketCode inject(Packet packet);
-
-    PacketCode inject(ByteBuf buffer);
-
-    <T, U> PacketCode capture(int count, Listener<T, U> packet, U argument);
+    OK,
+    WARNING,
+    ERROR
 
 }

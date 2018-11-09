@@ -8,7 +8,10 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         ArpTest.class,
         Ip4TcpTest.class,
-        Ip4UdpTest.class
+        Ip4UdpTest.class,
+        Ip6TcpTest.class,
+        Ip6UdpTest.class,
+        VlanArpTest.class
 })
 public class SuiteTest {
 

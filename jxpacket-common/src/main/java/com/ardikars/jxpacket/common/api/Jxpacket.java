@@ -15,12 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.common;
+package com.ardikars.jxpacket.common.api;
+
+import com.ardikars.jxpacket.common.Packet;
+import io.netty.buffer.ByteBuf;
 
 /**
  * @author Ardika Rommy Sanjaya
  * @since 1.5.0
  */
-public interface PacketListener<U> extends Listener<Packet, U> {
+public interface Jxpacket {
+
+    PacketCode inject(Packet packet);
+
+    PacketCode inject(ByteBuf buffer);
+
+    <T, U> PacketCode capture(int count, Listener<T, U> packet, U argument);
 
 }

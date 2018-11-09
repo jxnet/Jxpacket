@@ -1,0 +1,35 @@
+
+/**
+ * Copyright (C) 2017-2018 Jxpacket
+ */
+
+
+allprojects {
+
+    apply plugin: 'maven'
+
+    install {
+        System.setProperty('maven.repo.local', "${MAVEN_LOCAL_REPOSITORY}")
+        repositories.mavenInstaller {
+            pom.project pom_project
+            pom.project {
+
+                name = project.name
+
+                if (project.description == null || project.description.isEmpty()) {
+                    description = "${DESCRIPTION}"
+                } else {
+                    description = project.description
+                }
+
+                if (project.name.equals('jxpacket')) {
+                    dependencyManagement {
+                        dependencies bom_dependencies
+                    }
+                }
+
+            }
+        }
+    }
+
+}

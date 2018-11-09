@@ -38,13 +38,8 @@ version = "${VERSION}"
 subprojects {
 
     apply plugin: 'java'
-    apply plugin: 'signing'
-    apply plugin: 'maven'
-    apply plugin: 'com.jfrog.bintray'
+    apply plugin: 'io.spring.dependency-management'
     apply plugin: 'jacoco'
-    apply plugin: 'checkstyle'
-    apply plugin: 'pmd'
-    apply plugin: 'com.github.spotbugs'
     apply plugin: 'com.github.kt3k.coveralls'
 
     group = rootProject.group
@@ -56,12 +51,20 @@ subprojects {
     [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
     repositories {
+        mavenCentral()
         jcenter()
     }
 
+    dependencyManagement {
+        imports { mavenBom("com.ardikars.common:common:${COMMON_VERSION}") }
+        imports { mavenBom("io.netty:netty-bom:${NETTY_VERSION}") }
+    }
+
     dependencies {
-        implementation ("com.ardikars.common:common-net:${COMMON_VERSION}")
-        implementation ("com.ardikars.common:common-util:$COMMON_VERSION")
+        implementation ("com.ardikars.common:common-net")
+        implementation ("com.ardikars.common:common-util")
+        implementation ("io.netty:netty-buffer")
+        testImplementation ('junit:junit:4.12')
     }
 
     configurations.archives.artifacts.with { archives ->
@@ -100,78 +103,6 @@ subprojects {
         }
     }
 
-    checkstyle {
-        ignoreFailures = false
-        checkstyleTest.enabled = false
-
-        configFile = rootProject.file('gradle/resources/checkstyle/checkstyle.xml')
-        configProperties = [
-                "suppressionFile" : rootProject.file('gradle/resources/checkstyle/suppression.xml'),
-                "headerFile" : rootProject.file('gradle/resources/checkstyle/license.header')
-        ]
-
-        checkstyleMain {
-            source = sourceSets.main.allSource
-        }
-        configurations {
-            checkstyle
-        }
-        checkstyleMain {
-            reports {
-                html {
-                    //destination "${project.buildDir}/reports/checkstyle.html"
-                }
-            }
-        }
-        toolVersion = "${CHECKSTYLE_VERSION}"
-    }
-
-    spotbugs {
-        ignoreFailures = false
-        reportsDir = file("$project.buildDir/reports/findbugs")
-        effort = "max"
-        excludeFilter rootProject.file('gradle/resources/findbugs/findbugs-exclude.xml')
-        spotbugsMain {
-            reports {
-                xml.enabled = false
-                html.enabled = true
-            }
-        }
-        toolVersion "${SPOTBUGS_VERSION}"
-    }
-
-    pmd {
-        ignoreFailures = false
-        sourceSets = [sourceSets.main]
-        reportsDir = file("$project.buildDir/reports/pmd")
-        ruleSetFiles = rootProject.files("./gradle/resources/pmd/pmd.xml")
-        toolVersion "${PMD_VERION}"
-    }
-
-    jacoco {
-        toolVersion = "${JACOCO_VERSION}"
-    }
-
-    jacocoTestReport {
-        reports {
-            xml.enabled true
-            csv.enabled false
-            html.destination file("${buildDir}/jacocoHtml")
-        }
-    }
-
-
-    test {
-        testLogging {
-            showStandardStreams = true
-        }
-        jacoco {
-            append = false
-            destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
-            classDumpDir = file("$buildDir/jacoco/classpathdumps")
-        }
-    }
-
     task javadocJar(type: Jar) {
         classifier = 'javadoc'
         from javadoc
@@ -186,62 +117,26 @@ subprojects {
         //options.compilerArgs << "-Xlint:unchecked" << "-Werror"
     }
 
-    artifacts {
-        archives jar, sourcesJar, javadocJar
+    jacoco {
+        toolVersion = "${JACOCO_VERSION}"
     }
 
-    install {
-        System.setProperty('maven.repo.local', "${MAVEN_LOCAL_REPOSITORY}")
-        repositories.mavenInstaller {
-            pom.project pom_project
+    jacocoTestReport {
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination file("${buildDir}/jacocoHtml")
         }
     }
 
-    signing {
-        required { gradle.taskGraph.hasTask('uploadArchives') || gradle.taskGraph.hasTask('bintrayUpload') }
-        sign configurations.archives
-    }
-
-    uploadArchives {
-        repositories.mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                authentication(userName: defaultBlank({ sonatypeUser }), password: defaultBlank({ sonatypePass }))
-            }
-            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                authentication(userName: defaultBlank({ sonatypeUser }), password: defaultBlank({ sonatypePass }))
-            }
-            pom.project pom_project
+    test {
+        testLogging {
+            showStandardStreams = true
         }
-    }
-
-    bintray {
-        user = defaultBlank({ bintrayUser })
-        key = defaultBlank({ bintrayPass })
-        configurations = ['archives']
-        dryRun = false
-        publish = true
-        override = true
-        pkg {
-            repo = 'maven'
-            name = 'com.ardikars.jxpacket'
-            desc = 'Jxpacket is a network packet crafting library for java.'
-            licenses = ['GNU Lesser General Public License, Version 3.0']
-            vcsUrl = 'https://github.com/jxnet/Jxpacket.git'
-            version {
-                name = project.version
-                vcsTag = project.version
-                gpg {
-                    sign = true
-                    passphrase = defaultBlank({ signing.password })
-                }
-                mavenCentralSync {
-                    sync = true
-                    user = defaultBlank({ sonatypeUser })
-                    password = defaultBlank({ sonatypePass })
-                    close = '1'
-                }
-            }
+        jacoco {
+            append = false
+            destinationFile = file("$buildDir/jacoco/jacocoTest.exec")
+            classDumpDir = file("$buildDir/jacoco/classpathdumps")
         }
     }
 

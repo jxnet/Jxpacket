@@ -1,13 +1,13 @@
 
 /**
- * Copyright (C) 2017  Ardika Rommy Sanjaya
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya
  */
 
 ext {
 
 	NAME = 'Jxpacket'
 	GROUP = 'com.ardikars.jxpacket'
-	VERSION = '1.1.0.RC5'
+	VERSION = '1.1.0.RC6'
 
 	NDK_HOME = "${System.env.NDK_HOME}"
 	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
@@ -24,8 +24,10 @@ ext {
 	PMD_VERION = '6.5.0'
 	JACOCO_VERSION = '0.8.2'
 
-	COMMON_VERSION = '1.2.0.Final'
+	COMMON_VERSION = '1.2.2.RC5'
 	NETTY_VERSION = '4.1.31.Final'
+	SPRING_BOOT_VERSION = '2.0.4.RELEASE'
+	JXNET_VERSION = '1.4.4.Final'
 
 	pom_project = {
 

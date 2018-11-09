@@ -1,0 +1,18 @@
+
+/**
+ * Copyright (C) 2017-2018 Jxpacket
+ */
+
+task dist(type: Zip) {
+
+    rootProject.allprojects.collect { it.tasks }.flatten()
+
+    archiveName = "${NAME}-${VERSION}.zip"
+
+    subprojects.each { subproject ->
+        from subproject.jar.outputs.files
+        from subproject.javadocJar.outputs.files
+        from subproject.sourcesJar.outputs.files
+    }
+
+}

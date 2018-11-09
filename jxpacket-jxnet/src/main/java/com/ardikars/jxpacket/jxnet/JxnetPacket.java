@@ -19,6 +19,10 @@ package com.ardikars.jxpacket.jxnet;
 
 import com.ardikars.jxnet.*;
 import com.ardikars.jxpacket.common.*;
+import com.ardikars.jxpacket.common.api.Jxpacket;
+import com.ardikars.jxpacket.common.api.Listener;
+import com.ardikars.jxpacket.common.api.PacketCode;
+import com.ardikars.jxpacket.common.api.PacketListener;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;

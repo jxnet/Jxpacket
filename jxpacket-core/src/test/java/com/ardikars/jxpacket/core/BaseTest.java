@@ -2,6 +2,7 @@ package com.ardikars.jxpacket.core;
 
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.PooledByteBufAllocator;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
@@ -37,5 +38,10 @@ public class BaseTest {
 	protected static final String IPV6_TCP_SYN = "000573a007d168a3c4f949f686dd600000000020064020010470e5bfdead49572174e82c48872607f8b0400c0c03000000000000001af9c7001903a088300000000080022000da4700000204058c0103030801010402";
 
 	protected static final String IPV6_UDP = "33330001000300123f97920186dd6000000000291101fe800000000000009c09b4160768ff42ff020000000000000000000000010003cd1b14eb0029563fd0c8000000010000000000000f63686d757468752d77372d746573740000ff0001";
+
+	@Test
+	public void test() {
+		assert true;
+	}
 
 }

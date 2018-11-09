@@ -25,6 +25,15 @@
 /jxpacket-pcap4j/target
 /jxpacket-pcap4j/build
 /jxpacket-pcap4j/out
+/jxpacket-pcap4j-spring-boot-autoconfigure/target
+/jxpacket-pcap4j-spring-boot-autoconfigure/build
+/jxpacket-pcap4j-spring-boot-autoconfigure/out
+/jxpacket-jxnet-spring-boot-autoconfigure/target
+/jxpacket-jxnet-spring-boot-autoconfigure/build
+/jxpacket-jxnet-spring-boot-autoconfigure/out
+/jxpacket-spring-boot-starter/target
+/jxpacket-spring-boot-starter/build
+/jxpacket-spring-boot-starter/out
 *.log
 *~
 *.txt

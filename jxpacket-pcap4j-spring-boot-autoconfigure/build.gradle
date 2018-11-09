@@ -1,0 +1,13 @@
+
+dependencies {
+    implementation ("org.springframework.boot:spring-boot-configuration-processor")
+    implementation ("org.springframework.boot:spring-boot-autoconfigure")
+    implementation ("org.pcap4j:pcap4j-core:1.7.3")
+    implementation project(':jxpacket-common')
+    implementation project(':jxpacket-pcap4j')
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+dependencyManagement {
+    imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${SPRING_BOOT_VERSION}") }
+}
