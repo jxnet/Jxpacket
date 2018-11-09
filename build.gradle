@@ -173,6 +173,28 @@ task dist(type: Zip) {
 
 }
 
+if (gradle.startParameter.taskNames.contains('github') ||
+        gradle.startParameter.taskNames.contains('githubRelease')) {
+    apply from: 'gradle/githubRelease.gradle'
+}
+
+if (gradle.startParameter.taskNames.contains("install")) {
+    apply from: 'gradle/artifactInstall.gradle'
+}
+
+if (gradle.startParameter.taskNames.contains("dist")) {
+    apply from: 'gradle/artifactDistribute.gradle'
+}
+
+if (gradle.startParameter.taskNames.contains("build")) {
+    apply from: 'gradle/codeAnalysis.gradle'
+}
+
+if (gradle.startParameter.taskNames.contains("bintrayUpload") ||
+        gradle.startParameter.taskNames.contains("uploadArchives")) {
+    apply from: 'gradle/artifactRelease.gradle'
+}
+
 task wrapper(type: Wrapper) {
     distributionUrl = "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip"
 }
