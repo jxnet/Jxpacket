@@ -6,4 +6,6 @@ include 'jxpacket-common'
 include 'jxpacket-example'
 include 'jxpacket-jxnet'
 include 'jxpacket-pcap4j'
+include 'jxpacket-spring-boot-autoconfigure'
 include 'jxpacket-spring-boot-starter'
+

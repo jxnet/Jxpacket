@@ -1,0 +1,77 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket",
+      "type": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.blocking",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.datalink",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.direction",
+      "type": "com.ardikars.jxpacket.common.api.constant.PcapDirection"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.file",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.immediate",
+      "type": "com.ardikars.jxpacket.common.api.constant.ImmediateMode"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.pcap-type",
+      "type": "com.ardikars.jxpacket.common.api.constant.PcapType"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.promiscuous",
+      "type": "com.ardikars.jxpacket.common.api.constant.PromiscuousMode"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.rfmon",
+      "type": "com.ardikars.jxpacket.common.api.constant.RadioFrequencyMonitorMode"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.snapshot",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.source",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.timeout",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.timestamp-precision",
+      "type": "com.ardikars.jxpacket.common.api.constant.PcapTimestampPrecision"
+    },
+    {
+      "sourceType": "com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties",
+      "name": "jxpacket.timestamp-type",
+      "type": "com.ardikars.jxpacket.common.api.constant.PcapTimestampType"
+    }
+  ]
+}

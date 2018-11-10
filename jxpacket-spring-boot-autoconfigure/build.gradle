@@ -1,0 +1,20 @@
+
+apply plugin: 'io.spring.dependency-management'
+
+dependencies {
+    implementation ("org.springframework.boot:spring-boot-configuration-processor")
+    implementation ("org.springframework.boot:spring-boot-autoconfigure")
+    implementation ("com.ardikars.jxnet:jxnet-context")
+    implementation ("com.ardikars.jxnet:jxnet-core")
+    implementation ("org.pcap4j:pcap4j-core:1.7.3")
+    implementation project(":jxpacket-jxnet")
+    implementation project(":jxpacket-pcap4j")
+    implementation project(":jxpacket-common")
+}
+
+dependencyManagement {
+    imports {
+        imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${SPRING_BOOT_VERSION}") }
+        mavenBom "com.ardikars.jxnet:jxnet:1.4.4.Final"
+    }
+}
