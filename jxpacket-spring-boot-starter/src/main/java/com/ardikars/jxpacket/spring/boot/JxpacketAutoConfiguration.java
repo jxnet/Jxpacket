@@ -19,7 +19,6 @@ package com.ardikars.jxpacket.spring.boot;
 
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 
 /**
@@ -28,7 +27,6 @@ import org.springframework.core.Ordered;
  */
 @Configuration
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-@Import(JxpacketImportSelector.class)
 public class JxpacketAutoConfiguration {
 
 }
