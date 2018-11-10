@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.pcap4j.spring.boot.autoconfigure;
+package com.ardikars.jxpacket.spring.boot;
 
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.net.Inet6Address;
@@ -39,7 +39,6 @@ import org.pcap4j.core.PcapNativeException;
 import org.pcap4j.core.Pcaps;
 import org.pcap4j.packet.namednumber.DataLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -52,20 +51,20 @@ import org.springframework.core.Ordered;
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
 @Configuration
-@ConditionalOnClass(Pcap4jConfigurationProperties.class)
+@ConditionalOnClass(Pcaps.class)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-@EnableConfigurationProperties(Pcap4jConfigurationProperties.class)
-public class Pcap4jPacketAutoConfiguration {
+@EnableConfigurationProperties(JxpacketConfigurationProperties.class)
+public class Pcap4jAutoConfiguration extends AbstractAutoConfiguration {
 
-    private final Pcap4jConfigurationProperties properties;
+    private final JxpacketConfigurationProperties properties;
 
     @Autowired
-    public Pcap4jPacketAutoConfiguration(Pcap4jConfigurationProperties properties) {
+    public Pcap4jAutoConfiguration(JxpacketConfigurationProperties properties) {
         this.properties = properties;
     }
 
-    @Bean("jxpacket")
-    public Jxpacket jxpacket(@Qualifier("org.pcap4j.core.pcapHandle") PcapHandle pcapHandle) {
+    @Bean
+    public Jxpacket jxpacket(PcapHandle pcapHandle) {
         return new Pcap4jPacket(pcapHandle);
     }
 
@@ -134,7 +133,7 @@ public class Pcap4jPacketAutoConfiguration {
                 for (org.pcap4j.core.PcapNetworkInterface networkInterface : networkInterfaces) {
                     for (PcapAddress address : networkInterface.getAddresses()) {
                         if (address instanceof PcapIpV4Address && address.getAddress() != null
-                            && address.getAddress().getAddress() != null) {
+                                && address.getAddress().getAddress() != null) {
                             byte[] data = address.getAddress().getAddress();
                             Inet4Address inet4Address = Inet4Address.valueOf(data);
                             if (!inet4Address.equals(Inet4Address.LOCALHOST) && !inet4Address.equals(Inet4Address.ZERO)) {
@@ -191,6 +190,18 @@ public class Pcap4jPacketAutoConfiguration {
                 .running(networkInterface.isRunning())
                 .addresses(addresses)
                 .build();
+    }
+
+    @Override
+    public String prettyApplicationInformation() {
+        return new StringBuilder()
+                .append("Pcap4j ")
+                .append(super.toString()).toString();
+    }
+
+    @Override
+    public String toString() {
+        return prettyApplicationInformation();
     }
 
 }

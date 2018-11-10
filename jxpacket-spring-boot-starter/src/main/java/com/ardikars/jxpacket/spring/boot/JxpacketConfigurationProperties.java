@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.jxnet.spring.boot.autoconfigure;
+package com.ardikars.jxpacket.spring.boot;
 
 import com.ardikars.jxpacket.common.api.constant.ImmediateMode;
 import com.ardikars.jxpacket.common.api.constant.PcapDirection;
@@ -28,11 +28,11 @@ import javax.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author jxpacket 2018/11/09
+ * @author jxpacket 2018/11/10
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
-@ConfigurationProperties(prefix = "jxnet")
-public class JxnetConfigurationProperties {
+@ConfigurationProperties(prefix = "jxpacket")
+public class JxpacketConfigurationProperties {
 
     private String source;
 

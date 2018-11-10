@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.ardikars.jxpacket.spring.boot.JxpacketAutoConfiguration
+  com.ardikars.jxpacket.spring.boot.JxnetAutoConfiguration,\
+  com.ardikars.jxpacket.spring.boot.Pcap4jAutoConfiguration

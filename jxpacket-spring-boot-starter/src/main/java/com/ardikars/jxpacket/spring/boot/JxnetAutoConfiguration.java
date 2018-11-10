@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.jxnet.spring.boot.autoconfigure;
+package com.ardikars.jxpacket.spring.boot;
 
 import static com.ardikars.jxnet.Jxnet.FindHardwareAddress;
 import static com.ardikars.jxnet.Jxnet.OK;
@@ -30,6 +30,7 @@ import com.ardikars.jxnet.Application;
 import com.ardikars.jxnet.Context;
 import com.ardikars.jxnet.DataLinkType;
 import com.ardikars.jxnet.ImmediateMode;
+import com.ardikars.jxnet.Jxnet;
 import com.ardikars.jxnet.Pcap;
 import com.ardikars.jxnet.PcapAddr;
 import com.ardikars.jxnet.PcapDirection;
@@ -39,6 +40,7 @@ import com.ardikars.jxnet.PcapTimestampType;
 import com.ardikars.jxnet.PromiscuousMode;
 import com.ardikars.jxnet.RadioFrequencyMonitorMode;
 import com.ardikars.jxnet.SockAddr;
+import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.PcapNetworkInterface;
 import com.ardikars.jxpacket.common.api.exception.DeviceNotFoundException;
@@ -50,26 +52,21 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 
 /**
- * @author jxpacket 2018/11/08
+ * @author jxpacket 2018/11/10
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
 @Configuration
-@ConditionalOnClass(JxnetConfigurationProperties.class)
-@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
-@EnableConfigurationProperties(JxnetConfigurationProperties.class)
-public class JxnetPacketAutoConfiguration {
+@ConditionalOnClass({Jxnet.class, Context.class, Packet.class})
+@EnableConfigurationProperties(JxpacketConfigurationProperties.class)
+public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JxnetPacketAutoConfiguration.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(JxnetAutoConfiguration.class.getName());
 
     private static final byte[] IPV6_ZERO_BYTES = new byte[] {
             (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
@@ -78,19 +75,10 @@ public class JxnetPacketAutoConfiguration {
             (byte) 0x0, (byte) 0x0, (byte) 0x0, (byte) 0x0,
     };
 
-    @Value("${spring.application.name:}")
-    private String applicationName;
-
-    @Value("${spring.application.displayName:}")
-    private String applicationDisplayName;
-
-    @Value("${spring.application.version:0.0.0}")
-    private String applicationVersion;
-
-    private final JxnetConfigurationProperties properties;
+    private final JxpacketConfigurationProperties properties;
 
     @Autowired
-    public JxnetPacketAutoConfiguration(JxnetConfigurationProperties properties) {
+    public JxnetAutoConfiguration(JxpacketConfigurationProperties properties) {
         this.properties = properties;
     }
 
@@ -105,9 +93,8 @@ public class JxnetPacketAutoConfiguration {
      * @param errbuf error buffer.
      * @return returns {@link Context}.
      */
-    @Bean("com.ardikars.jxnet.contex")
-    public Context context(PcapNetworkInterface pcapIf,
-                           @Qualifier("com.ardikars.jxnet.errbuf") StringBuilder errbuf) {
+    @Bean
+    public Context context(PcapNetworkInterface pcapIf, StringBuilder errbuf) {
         String source = pcapIf.getName();
         PromiscuousMode promiscuousMode = properties.getPromiscuous()
                 == com.ardikars.jxpacket.common.api.constant.PromiscuousMode.NON_PROMISCUOUS
@@ -186,7 +173,7 @@ public class JxnetPacketAutoConfiguration {
                 builder.pcapType(Pcap.PcapType.LIVE);
                 break;
         }
-        Application.run(applicationName, applicationDisplayName, applicationVersion, builder);
+        Application.run(getApplicationName(), getApplicationDisplayName(), getApplicationVersion(), builder);
         return Application.getApplicationContext();
     }
 
@@ -197,7 +184,7 @@ public class JxnetPacketAutoConfiguration {
      * @throws DeviceNotFoundException device not found exception.
      */
     @Bean
-    public PcapNetworkInterface networkInterface(@Qualifier("com.ardikars.jxnet.errbuf") StringBuilder errbuf) throws DeviceNotFoundException {
+    public PcapNetworkInterface networkInterface(StringBuilder errbuf) throws DeviceNotFoundException {
         String source = properties.getSource();
         List<PcapIf> alldevsp = new ArrayList<>();
         if (PcapFindAllDevs(alldevsp, errbuf) != OK && LOGGER.isDebugEnabled()) {
@@ -228,7 +215,7 @@ public class JxnetPacketAutoConfiguration {
      * Error buffer.
      * @return error buffer.
      */
-    @Bean("com.ardikars.jxnet.errbuf")
+    @Bean
     public StringBuilder errbuf() {
         return new StringBuilder();
     }
@@ -344,6 +331,18 @@ public class JxnetPacketAutoConfiguration {
                                 .build();
                     }
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public String prettyApplicationInformation() {
+        return new StringBuilder()
+                .append("Jxnet ")
+                .append(super.toString()).toString();
+    }
+
+    @Override
+    public String toString() {
+        return prettyApplicationInformation();
     }
 
 }
