@@ -14,7 +14,7 @@ dependencies {
 
 dependencyManagement {
     imports {
-        imports { mavenBom("org.springframework.boot:spring-boot-dependencies:${SPRING_BOOT_VERSION}") }
-        mavenBom "com.ardikars.jxnet:jxnet:1.4.4.Final"
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${SPRING_BOOT_VERSION}")
+        mavenBom("com.ardikars.jxnet:jxnet:${JXNET_VERSION}")
     }
 }
