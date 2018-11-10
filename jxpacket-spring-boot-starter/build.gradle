@@ -1,5 +1,6 @@
 
 dependencies {
+    compile project(":jxpacket-spring-boot-autoconfigure")
     compile project(":jxpacket-common")
     compile project(":jxpacket-core")
 }
