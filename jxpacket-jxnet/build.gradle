@@ -1,15 +1,16 @@
 
-apply plugin: 'io.spring.dependency-management'
-
 dependencies {
-    implementation ('com.ardikars.jxnet:jxnet-context')
-    implementation ('com.ardikars.jxnet:jxnet-core')
-    implementation project(':jxpacket-common')
-    implementation project(':jxpacket-core')
+    compile ('com.ardikars.common:common-net')
+    compile ('com.ardikars.common:common-util')
+    compile ('com.ardikars.jxnet:jxnet-context')
+    compile ('com.ardikars.jxnet:jxnet-core')
+    compile project(':jxpacket-common')
+    compile project(':jxpacket-core')
 }
 
 dependencyManagement {
     imports {
         mavenBom "com.ardikars.jxnet:jxnet:${JXNET_VERSION}"
+        mavenBom "com.ardikars.common:common:${COMMON_VERSION}"
     }
 }
