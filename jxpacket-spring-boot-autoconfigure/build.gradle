@@ -1,16 +1,14 @@
 
-//apply plugin: 'io.spring.dependency-management'
-
 dependencies {
     implementation ("org.springframework.boot:spring-boot-configuration-processor")
     implementation ("org.springframework.boot:spring-boot-autoconfigure")
     implementation project(":jxpacket-jxnet")
     implementation project(":jxpacket-pcap4j")
-    compile project(":jxpacket-common")
-    compile ("com.ardikars.common:common-net")
-    compile ("com.ardikars.common:common-util")
-    compile ("com.ardikars.jxnet:jxnet-context")
-    compile ("com.ardikars.jxnet:jxnet-core")
+    implementation project(":jxpacket-common")
+    implementation ("com.ardikars.common:common-net")
+    implementation ("com.ardikars.common:common-util")
+    implementation ("com.ardikars.jxnet:jxnet-context")
+    implementation ("com.ardikars.jxnet:jxnet-core")
 }
 
 dependencyManagement {

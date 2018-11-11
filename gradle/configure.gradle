@@ -7,7 +7,7 @@ ext {
 
 	NAME = 'Jxpacket'
 	GROUP = 'com.ardikars.jxpacket'
-	VERSION = '1.1.0.RC15'
+	VERSION = '1.1.0.RC16'
 	DESCRIPTION = 'Jxpacket is a network packet crafting library for java.'
 
 	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
@@ -122,7 +122,7 @@ ext {
 			artifactId "jxpacket-spring-boot-starter"
 			version "${VERSION}"
 		}
-		
+
 	}
 
 	defaultBlank = { closure ->

@@ -1,8 +1,9 @@
 
 dependencies {
-    compile ("com.ardikars.common:common-net")
-    compile ("com.ardikars.common:common-util")
     compile project(":jxpacket-spring-boot-autoconfigure")
     compile project(":jxpacket-common")
     compile project(":jxpacket-core")
+    compile project(":jxpacket-common")
+    implementation project(":jxpacket-jxnet")
+    implementation project(":jxpacket-pcap4j")
 }
