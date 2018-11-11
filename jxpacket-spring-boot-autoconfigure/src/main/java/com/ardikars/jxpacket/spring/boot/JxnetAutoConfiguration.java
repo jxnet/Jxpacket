@@ -61,7 +61,7 @@ import org.springframework.context.annotation.Configuration;
  * @author jxpacket 2018/11/10
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
-@Configuration
+@Configuration("com.ardikars.jxpacket.JxnetAutoConfiguration")
 @ConditionalOnClass({Jxnet.class, Context.class, Packet.class})
 @EnableConfigurationProperties(JxpacketConfigurationProperties.class)
 public class JxnetAutoConfiguration extends AbstractAutoConfiguration {

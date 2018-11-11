@@ -50,7 +50,7 @@ import org.springframework.core.Ordered;
  * @author jxpacket 2018/11/08
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
-@Configuration
+@Configuration("com.ardikars.jxpacket.pcap4jAutoConfiguration")
 @ConditionalOnClass(Pcaps.class)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 @EnableConfigurationProperties(JxpacketConfigurationProperties.class)
