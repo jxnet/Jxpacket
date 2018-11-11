@@ -50,7 +50,7 @@ import org.springframework.core.Ordered;
  * @author jxpacket 2018/11/08
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
-@Configuration
+@Configuration("com.ardikars.jxpacket.pcap4jAutoConfiguration")
 @ConditionalOnClass(Pcaps.class)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
 @EnableConfigurationProperties(JxpacketConfigurationProperties.class)
@@ -195,7 +195,7 @@ public class Pcap4jAutoConfiguration extends AbstractAutoConfiguration {
     @Override
     public String prettyApplicationInformation() {
         return new StringBuilder()
-                .append("Pcap4j ")
+                .append("Pcap4j")
                 .append(super.toString()).toString();
     }
 

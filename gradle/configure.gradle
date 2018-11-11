@@ -7,7 +7,7 @@ ext {
 
 	NAME = 'Jxpacket'
 	GROUP = 'com.ardikars.jxpacket'
-	VERSION = '1.1.0.RC16'
+	VERSION = '1.1.0.RC20'
 	DESCRIPTION = 'Jxpacket is a network packet crafting library for java.'
 
 	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
@@ -28,6 +28,7 @@ ext {
 	NETTY_VERSION = '4.1.31.Final'
 	SPRING_BOOT_VERSION = '2.0.4.RELEASE'
 	JXNET_VERSION = '1.4.7.Final'
+	PCAP4J_VERSION = '1.7.3'
 
 	pom_project = {
 
