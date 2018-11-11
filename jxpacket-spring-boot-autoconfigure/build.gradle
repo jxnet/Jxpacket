@@ -4,17 +4,12 @@ dependencies {
     implementation ("org.springframework.boot:spring-boot-autoconfigure")
     implementation project(":jxpacket-jxnet")
     implementation project(":jxpacket-pcap4j")
-    implementation project(":jxpacket-common")
-    implementation ("com.ardikars.common:common-net")
-    implementation ("com.ardikars.common:common-util")
-    implementation ("com.ardikars.jxnet:jxnet-context")
-    implementation ("com.ardikars.jxnet:jxnet-core")
 }
 
 dependencyManagement {
     imports {
         mavenBom("org.springframework.boot:spring-boot-dependencies:${SPRING_BOOT_VERSION}")
-        mavenBom("com.ardikars.common:common:${COMMON_VERSION}")
-        mavenBom("com.ardikars.jxnet:jxnet:${JXNET_VERSION}")
+        mavenBom "com.ardikars.jxnet:jxnet:${JXNET_VERSION}"
+        mavenBom "com.ardikars.common:common:${COMMON_VERSION}"
     }
 }

@@ -1,6 +1,14 @@
 
 dependencies {
-    compile group: 'org.pcap4j', name: 'pcap4j-core', version: '1.7.3'
-    implementation project(':jxpacket-common')
-    implementation project(':jxpacket-core')
+    compile ('com.ardikars.common:common-net')
+    compile ('com.ardikars.common:common-util')
+    compile ("org.pcap4j:pcap4j-core:1.7.3")
+    compile project(':jxpacket-common')
+    compile project(':jxpacket-core')
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.ardikars.common:common:${COMMON_VERSION}"
+    }
 }
