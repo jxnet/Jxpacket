@@ -1,10 +1,10 @@
 
 dependencies {
-    compile ('com.ardikars.common:common-net')
-    compile ('com.ardikars.common:common-util')
+    implementation ('com.ardikars.common:common-net')
+    implementation ('com.ardikars.common:common-util')
     implementation ("org.pcap4j:pcap4j-core:${PCAP4J_VERSION}")
-    compile project(':jxpacket-common')
-    compile project(':jxpacket-core')
+    implementation project(':jxpacket-common')
+    implementation project(':jxpacket-core')
 }
 
 dependencyManagement {
