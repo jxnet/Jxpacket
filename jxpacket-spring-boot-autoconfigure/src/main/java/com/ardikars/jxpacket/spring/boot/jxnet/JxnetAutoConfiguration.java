@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.spring.boot;
+package com.ardikars.jxpacket.spring.boot.jxnet;
 
 import static com.ardikars.jxnet.Jxnet.FindHardwareAddress;
 import static com.ardikars.jxnet.Jxnet.OK;
@@ -45,6 +45,8 @@ import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.PcapNetworkInterface;
 import com.ardikars.jxpacket.common.api.exception.DeviceNotFoundException;
 import com.ardikars.jxpacket.jxnet.JxnetPacket;
+import com.ardikars.jxpacket.spring.boot.AbstractAutoConfiguration;
+import com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.ardikars.jxpacket.spring.boot;
+package com.ardikars.jxpacket.spring.boot.pcap4j;
 
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.net.Inet6Address;
@@ -28,6 +28,8 @@ import com.ardikars.jxpacket.common.api.constant.PromiscuousMode;
 import com.ardikars.jxpacket.common.api.exception.DeviceNotFoundException;
 import com.ardikars.jxpacket.common.api.exception.NativeException;
 import com.ardikars.jxpacket.pcap4j.Pcap4jPacket;
+import com.ardikars.jxpacket.spring.boot.AbstractAutoConfiguration;
+import com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

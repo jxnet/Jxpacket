@@ -29,6 +29,21 @@ allprojects {
                 }
 
             }
+
+            if (!project.name.equals("jxpacket")) {
+                pom.withXml {
+                    asNode().dependencies.dependency.findAll { xmlDep ->
+                        if (xmlDep.scope.text() == 'compile') {
+                            def xmlOptional = xmlDep.optional[0]
+                            if (!xmlOptional) {
+                                xmlOptional = xmlDep.appendNode('optional')
+                            }
+                            xmlOptional.value = 'true'
+                        }
+                    }
+                }
+            }
+
         }
     }
 

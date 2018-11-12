@@ -2,8 +2,8 @@
 dependencies {
     implementation ('com.ardikars.common:common-net')
     implementation ('com.ardikars.common:common-util')
-    compileOnly ('com.ardikars.jxnet:jxnet-context')
-    compileOnly ('com.ardikars.jxnet:jxnet-core')
+    compile ('com.ardikars.jxnet:jxnet-context')
+    compile ('com.ardikars.jxnet:jxnet-core')
     implementation project(':jxpacket-common')
     implementation project(':jxpacket-core')
 }

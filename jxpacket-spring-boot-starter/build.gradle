@@ -1,10 +1,10 @@
 
 dependencies {
-    compile project(":jxpacket-spring-boot-autoconfigure")
-    compile project(":jxpacket-core")
-    compile project(":jxpacket-common")
-    compileOnly project(":jxpacket-jxnet")
-    compileOnly project(":jxpacket-pcap4j")
+    implementation project(":jxpacket-spring-boot-autoconfigure")
+    implementation project(":jxpacket-core")
+    implementation project(":jxpacket-common")
+    compile project(":jxpacket-jxnet")
+    compile project(":jxpacket-pcap4j")
 }
 
 dependencyManagement {

@@ -2,7 +2,7 @@
 dependencies {
     implementation ('com.ardikars.common:common-net')
     implementation ('com.ardikars.common:common-util')
-    compileOnly ("org.pcap4j:pcap4j-core:${PCAP4J_VERSION}")
+    compile "org.pcap4j:pcap4j-core:${PCAP4J_VERSION}"
     implementation project(':jxpacket-common')
     implementation project(':jxpacket-core')
 }
