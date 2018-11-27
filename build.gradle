@@ -173,7 +173,7 @@ if (gradle.startParameter.taskNames.contains("dist")) {
 }
 
 if (gradle.startParameter.taskNames.contains("build")) {
-    apply from: 'gradle/codeAnalysis.gradle'
+//    apply from: 'gradle/codeAnalysis.gradle'
 }
 
 if (gradle.startParameter.taskNames.contains("bintrayUpload") ||
