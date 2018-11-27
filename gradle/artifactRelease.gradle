@@ -71,7 +71,7 @@ allprojects {
                     passphrase = defaultBlank({ signing.password })
                 }
                 mavenCentralSync {
-                    sync = true
+                    sync = false
                     user = defaultBlank({ sonatypeUser })
                     password = defaultBlank({ sonatypePass })
                     close = '1'

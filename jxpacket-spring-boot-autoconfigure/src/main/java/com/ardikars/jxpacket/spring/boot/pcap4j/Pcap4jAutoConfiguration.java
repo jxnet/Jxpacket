@@ -30,23 +30,19 @@ import com.ardikars.jxpacket.common.api.exception.NativeException;
 import com.ardikars.jxpacket.pcap4j.Pcap4jPacket;
 import com.ardikars.jxpacket.spring.boot.AbstractAutoConfiguration;
 import com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import org.pcap4j.core.PcapAddress;
-import org.pcap4j.core.PcapHandle;
-import org.pcap4j.core.PcapIpV4Address;
-import org.pcap4j.core.PcapIpV6Address;
-import org.pcap4j.core.PcapNativeException;
-import org.pcap4j.core.Pcaps;
+import org.pcap4j.core.*;
 import org.pcap4j.packet.namednumber.DataLinkType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author jxpacket 2018/11/08
@@ -54,7 +50,7 @@ import org.springframework.core.Ordered;
  */
 @Configuration("com.ardikars.jxpacket.pcap4jAutoConfiguration")
 @ConditionalOnClass(Pcaps.class)
-@AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE)
+@AutoConfigureOrder(-2)
 @EnableConfigurationProperties(JxpacketConfigurationProperties.class)
 public class Pcap4jAutoConfiguration extends AbstractAutoConfiguration {
 
@@ -66,6 +62,7 @@ public class Pcap4jAutoConfiguration extends AbstractAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public Jxpacket jxpacket(PcapHandle pcapHandle) {
         return new Pcap4jPacket(pcapHandle);
     }

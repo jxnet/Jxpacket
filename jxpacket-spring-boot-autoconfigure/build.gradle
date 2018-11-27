@@ -2,9 +2,12 @@
 dependencies {
     implementation ("org.springframework.boot:spring-boot-configuration-processor")
     implementation ("org.springframework.boot:spring-boot-autoconfigure")
+    implementation ("com.ardikars.jxnet:jxnet-spring-boot-starter")
+    implementation ("org.pcap4j:pcap4j-core:${PCAP4J_VERSION}")
     implementation project(":jxpacket-common")
-    compile project(":jxpacket-jxnet")
-    compile project(":jxpacket-pcap4j")
+    implementation project(":jxpacket-core")
+    implementation project(":jxpacket-jxnet")
+    implementation project(":jxpacket-pcap4j")
 }
 
 dependencyManagement {

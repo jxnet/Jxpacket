@@ -17,47 +17,38 @@
 
 package com.ardikars.jxpacket.spring.boot.jxnet;
 
-import static com.ardikars.jxnet.Jxnet.FindHardwareAddress;
-import static com.ardikars.jxnet.Jxnet.OK;
-import static com.ardikars.jxnet.Jxnet.PcapFindAllDevs;
-
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.net.MacAddress;
 import com.ardikars.common.util.Address;
 import com.ardikars.common.util.Platforms;
-import com.ardikars.jxnet.Application;
-import com.ardikars.jxnet.Context;
-import com.ardikars.jxnet.DataLinkType;
-import com.ardikars.jxnet.ImmediateMode;
-import com.ardikars.jxnet.Jxnet;
-import com.ardikars.jxnet.Pcap;
-import com.ardikars.jxnet.PcapAddr;
-import com.ardikars.jxnet.PcapDirection;
-import com.ardikars.jxnet.PcapIf;
-import com.ardikars.jxnet.PcapTimestampPrecision;
-import com.ardikars.jxnet.PcapTimestampType;
-import com.ardikars.jxnet.PromiscuousMode;
-import com.ardikars.jxnet.RadioFrequencyMonitorMode;
-import com.ardikars.jxnet.SockAddr;
+import com.ardikars.jxnet.*;
+import com.ardikars.jxnet.spring.boot.autoconfigure.JxnetConfigurationProperties;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.PcapNetworkInterface;
+import com.ardikars.jxpacket.common.api.constant.PcapType;
 import com.ardikars.jxpacket.common.api.exception.DeviceNotFoundException;
 import com.ardikars.jxpacket.jxnet.JxnetPacket;
 import com.ardikars.jxpacket.spring.boot.AbstractAutoConfiguration;
 import com.ardikars.jxpacket.spring.boot.JxpacketConfigurationProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+
+import static com.ardikars.jxnet.Jxnet.*;
 
 /**
  * @author jxpacket 2018/11/10
@@ -65,7 +56,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration("com.ardikars.jxpacket.JxnetAutoConfiguration")
 @ConditionalOnClass({Jxnet.class, Context.class, Packet.class})
+@AutoConfigureOrder(-1)
 @EnableConfigurationProperties(JxpacketConfigurationProperties.class)
+@Import({JxnetConfigurationProperties.class, com.ardikars.jxnet.spring.boot.autoconfigure.JxnetAutoConfiguration.class})
 public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JxnetAutoConfiguration.class.getName());
@@ -80,7 +73,29 @@ public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
     private final JxpacketConfigurationProperties properties;
 
     @Autowired
-    public JxnetAutoConfiguration(JxpacketConfigurationProperties properties) {
+    public JxnetAutoConfiguration(JxpacketConfigurationProperties properties, JxnetConfigurationProperties jxnetProperties) {
+        switch (jxnetProperties.getPcapType()) {
+            case OFFLINE:
+                properties.setPcapType(PcapType.OFFLINE);
+                break;
+            case DEAD:
+                properties.setPcapType(PcapType.DEAD);
+                break;
+            default:
+                properties.setPcapType(PcapType.LIVE);
+        }
+        properties.setSource(jxnetProperties.getSource());
+        properties.setTimeout(jxnetProperties.getTimeout());
+        properties.setSnapshot(jxnetProperties.getSnapshot());
+        properties.setDirection(com.ardikars.jxpacket.common.api.constant.PcapDirection.valueOf(jxnetProperties.getDirection().name()));
+        properties.setImmediate(com.ardikars.jxpacket.common.api.constant.ImmediateMode.valueOf(jxnetProperties.getImmediate().name()));
+        properties.setPromiscuous(com.ardikars.jxpacket.common.api.constant.PromiscuousMode.valueOf(jxnetProperties.getPromiscuous().name()));
+        properties.setRfmon(com.ardikars.jxpacket.common.api.constant.RadioFrequencyMonitorMode.valueOf(jxnetProperties.getRfmon().name()));
+        properties.setDatalink((int) jxnetProperties.getDatalink().getValue());
+        properties.setBlocking(jxnetProperties.getBlocking());
+        properties.setFile(jxnetProperties.getFile());
+        properties.setTimestampType(com.ardikars.jxpacket.common.api.constant.PcapTimestampType.valueOf(jxnetProperties.getTimestampType().name()));
+        properties.setTimestampPrecision(com.ardikars.jxpacket.common.api.constant.PcapTimestampPrecision.valueOf(jxnetProperties.getTimestampPrecision().name()));
         this.properties = properties;
     }
 
@@ -89,13 +104,8 @@ public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
         return new JxnetPacket(context);
     }
 
-    /**
-     * Jxnet application context.
-     * @param pcapIf network interface.
-     * @param errbuf error buffer.
-     * @return returns {@link Context}.
-     */
     @Bean
+    @ConditionalOnMissingBean
     public Context context(PcapNetworkInterface pcapIf, StringBuilder errbuf) {
         String source = pcapIf.getName();
         PromiscuousMode promiscuousMode = properties.getPromiscuous()
@@ -218,6 +228,7 @@ public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
      * @return error buffer.
      */
     @Bean
+    @ConditionalOnMissingBean
     public StringBuilder errbuf() {
         return new StringBuilder();
     }
@@ -348,3 +359,4 @@ public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
     }
 
 }
+
