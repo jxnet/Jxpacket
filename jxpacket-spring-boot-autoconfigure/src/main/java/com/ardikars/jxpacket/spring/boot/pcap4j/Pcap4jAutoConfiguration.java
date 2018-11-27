@@ -131,7 +131,7 @@ public class Pcap4jAutoConfiguration extends AbstractAutoConfiguration {
             if (source == null || source.isEmpty()) {
                 for (org.pcap4j.core.PcapNetworkInterface networkInterface : networkInterfaces) {
                     for (PcapAddress address : networkInterface.getAddresses()) {
-                        if (address instanceof PcapIpV4Address && address.getAddress() != null
+                        if (address.getAddress() != null && address.getAddress() instanceof java.net.Inet4Address
                                 && address.getAddress().getAddress() != null) {
                             byte[] data = address.getAddress().getAddress();
                             Inet4Address inet4Address = Inet4Address.valueOf(data);
