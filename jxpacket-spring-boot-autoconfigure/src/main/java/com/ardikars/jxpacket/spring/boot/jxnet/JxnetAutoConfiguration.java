@@ -23,7 +23,6 @@ import com.ardikars.common.net.MacAddress;
 import com.ardikars.common.util.Address;
 import com.ardikars.common.util.Platforms;
 import com.ardikars.jxnet.*;
-import com.ardikars.jxnet.spring.boot.autoconfigure.JxnetConfigurationProperties;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.api.Jxpacket;
 import com.ardikars.jxpacket.common.api.PcapNetworkInterface;
@@ -58,7 +57,7 @@ import static com.ardikars.jxnet.Jxnet.*;
 @ConditionalOnClass({Jxnet.class, Context.class, Packet.class})
 @AutoConfigureOrder(-1)
 @EnableConfigurationProperties(JxpacketConfigurationProperties.class)
-@Import({JxnetConfigurationProperties.class, com.ardikars.jxnet.spring.boot.autoconfigure.JxnetAutoConfiguration.class})
+@Import({com.ardikars.jxnet.spring.boot.autoconfigure.JxnetConfigurationProperties.class, com.ardikars.jxnet.spring.boot.autoconfigure.JxnetAutoConfiguration.class})
 public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JxnetAutoConfiguration.class.getName());
@@ -73,7 +72,7 @@ public class JxnetAutoConfiguration extends AbstractAutoConfiguration {
     private final JxpacketConfigurationProperties properties;
 
     @Autowired
-    public JxnetAutoConfiguration(JxpacketConfigurationProperties properties, JxnetConfigurationProperties jxnetProperties) {
+    public JxnetAutoConfiguration(JxpacketConfigurationProperties properties, com.ardikars.jxnet.spring.boot.autoconfigure.JxnetConfigurationProperties jxnetProperties) {
         switch (jxnetProperties.getPcapType()) {
             case OFFLINE:
                 properties.setPcapType(PcapType.OFFLINE);
