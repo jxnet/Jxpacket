@@ -53,6 +53,9 @@ subprojects {
     repositories {
         mavenCentral()
         jcenter()
+        maven {
+            url 'https://dl.bintray.com/ardikars/maven'
+        }
     }
 
     dependencyManagement {
@@ -173,7 +176,7 @@ if (gradle.startParameter.taskNames.contains("dist")) {
 }
 
 if (gradle.startParameter.taskNames.contains("build")) {
-    apply from: 'gradle/codeAnalysis.gradle'
+//    apply from: 'gradle/codeAnalysis.gradle'
 }
 
 if (gradle.startParameter.taskNames.contains("bintrayUpload") ||
