@@ -118,24 +118,24 @@ public class RouterAdvertisement extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("currentHopLimit=").append(getCurrentHopLimit())
-                    .append(", manageFlag=").append(isManageFlag())
-                    .append(", otherFlag=").append(isOtherFlag())
-                    .append(", routerLifetime=").append(getRouterLifetime())
-                    .append(", reachableTime=").append(getReachableTime())
-                    .append(", retransmitTimer=").append(getRetransmitTimer())
-                    .append(", options=").append(getOptions())
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\tcurrentHopLimit: ").append(currentHopLimit).append('\n')
+                    .append("\tmanageFlag: ").append(manageFlag).append('\n')
+                    .append("\totherFlag: ").append(otherFlag).append('\n')
+                    .append("\trouterLifetime: ").append(routerLifetime).append('\n')
+                    .append("\treachableTime: ").append(reachableTime).append('\n')
+                    .append("\tretransmitTimer: ").append(retransmitTimer).append('\n')
+                    .append("\toptions: ").append(options).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("RouterAdvertisement{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ RouterAdvertisement Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder implements Packet.Builder {

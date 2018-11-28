@@ -147,26 +147,26 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("hardwareType=").append(getHardwareType())
-					.append(", protocolType=").append(getPayloadType())
-					.append(", hardwareAddressLength=").append(getHardwareAddressLength())
-					.append(", protocolAddressLength=").append(getProtocolAddressLength())
-					.append(", operationCode=").append(getOperationCode())
-					.append(", senderHardwareAddress=").append(getSenderHardwareAddress())
-					.append(", senderProtocolAddress=").append(getSenderProtocolAddress())
-					.append(", targetHardwareAddress=").append(getTargetHardwareAddress())
-					.append(", targetProtocolAddress=").append(getTargetProtocolAddress())
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\thardwareType: ").append(hardwareType).append('\n')
+					.append("\tprotocolType: ").append(protocolType).append('\n')
+					.append("\thardwareAddressLength: ").append(hardwareAddressLength).append('\n')
+					.append("\tprotocolAddressLength: ").append(protocolAddressLength).append('\n')
+					.append("\toperationCode: ").append(operationCode).append('\n')
+					.append("\tsenderHardwareAddress: ").append(senderHardwareAddress).append('\n')
+					.append("\tsenderProtocolAddress: ").append(senderProtocolAddress).append('\n')
+					.append("\ttargetHardwareAddress: ").append(targetHardwareAddress).append('\n')
+					.append("\ttargetProtocolAddress: ").append(targetProtocolAddress).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Arp{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Arp Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

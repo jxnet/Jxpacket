@@ -18,7 +18,7 @@ public class ArpTest extends BaseTest {
     private byte[] data = StringUtil.decodeHexDump(ETHERNET_II_ARP);
 
     private Ethernet ethernet;
-    private ByteBuf buf = allocator.directBuffer(1500);
+    private ByteBuf buf = allocator.directBuffer(data.length);
 
     @Before
     public void before() {
@@ -36,7 +36,7 @@ public class ArpTest extends BaseTest {
 
     @Test
     public void filter() {
-        ethernet.get(UnknownPacket.class)
+        ethernet.get(Arp.class)
                 .forEach(System.out::println);
     }
 

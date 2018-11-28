@@ -106,22 +106,22 @@ public class NeighborAdvertisement extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("routerFlag=").append(isOverrideFlag())
-                    .append(", solicitedFlag=").append(isSolicitedFlag())
-                    .append(", overrideFlag=").append(isOverrideFlag())
-                    .append(", targetAddress=").append(getTargetAddress())
-                    .append(", options=").append(getOptions())
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\trouterFlag: ").append(routerFlag).append('\n')
+                    .append("\tsolicitedFlag: ").append(solicitedFlag).append('\n')
+                    .append("\toverrideFlag: ").append(overrideFlag).append('\n')
+                    .append("\ttargetAddress: ").append(targetAddress).append('\n')
+                    .append("\toptions: ").append(options).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("NeighborAdvertisement{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ NeighborAdvertisement Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder implements Packet.Builder {

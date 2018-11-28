@@ -160,27 +160,27 @@ public class Tcp extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("sourcePort=").append(getSourcePort())
-                    .append(", destinationPort=").append(getDestinationPort())
-                    .append(", sequence=").append(getSequence())
-                    .append(", acknowledge=").append(getAcknowledge())
-                    .append(", dataOffset=").append(getDataOffset())
-                    .append(", flags=").append(getFlags())
-                    .append(", windowSize=").append(getWindowSize())
-                    .append(", checksum=").append(getChecksum())
-                    .append(", urgentPointer=").append(getUrgentPointer())
-                    .append(", options=").append(Arrays.toString(getOptions()))
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\tsourcePort: ").append(sourcePort).append('\n')
+                    .append("\tdestinationPort: ").append(destinationPort).append('\n')
+                    .append("\tsequence: ").append(sequence).append('\n')
+                    .append("\tacknowledge: ").append(acknowledge).append('\n')
+                    .append("\tdataOffset: ").append(dataOffset).append('\n')
+                    .append("\tflags: ").append(flags).append('\n')
+                    .append("\twindowSize: ").append(windowSize).append('\n')
+                    .append("\tchecksum: ").append(checksum).append('\n')
+                    .append("\turgentPointer: ").append(urgentPointer).append('\n')
+                    .append("\toptions: ").append(Arrays.toString(options)).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("Tcp{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ Tcp Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder implements Packet.Builder {

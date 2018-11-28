@@ -77,18 +77,18 @@ public class RouterSolicitation extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("options=").append(getOptions())
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\toptions: ").append(options).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("RouterSolicitation{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ RouterSolicitation Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder implements Packet.Builder {

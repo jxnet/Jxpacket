@@ -109,21 +109,21 @@ public class Vlan extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("priorityCodePoint=").append(getPriorityCodePoint())
-					.append(", canonicalFormatIndicator=").append(getCanonicalFormatIndicator())
-					.append(", vlanIdentifier=").append(getVlanIdentifier())
-					.append(", type=").append(getType())
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tpriorityCodePoint: ").append(priorityCodePoint).append('\n')
+					.append("\tcanonicalFormatIndicator: ").append(canonicalFormatIndicator).append('\n')
+					.append("\tvlanIdentifier: ").append(vlanIdentifier).append('\n')
+					.append("\ttype: ").append(type).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Vlan{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Vlan Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

@@ -122,25 +122,25 @@ public class Ip6 extends Ip {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("version=").append(super.getVersion())
-					.append(", trafficClass=").append(getTrafficClass())
-					.append(", flowLabel=").append(getFlowLabel())
-					.append(", payloadLength=").append(getPayloadLength())
-					.append(", nextHeader=").append(getNextHeader())
-					.append(", hopLimit=").append(getHopLimit())
-					.append(", sourceAddress=").append(getSourceAddress())
-					.append(", destinationAddress=").append(getDestinationAddress())
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tversion: ").append(version).append('\n')
+					.append("\ttrafficClass: ").append(trafficClass).append('\n')
+					.append("\tflowLabel: ").append(flowLabel).append('\n')
+					.append("\tpayloadLength: ").append(payloadLength).append('\n')
+					.append("\tnextHeader: ").append(nextHeader).append('\n')
+					.append("\thopLimit: ").append(hopLimit).append('\n')
+					.append("\tsourceAddress: ").append(sourceAddress).append('\n')
+					.append("\tdestinationAddress: ").append(destinationAddress).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Ip6{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Ip6 Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder extends IpPaketBuilder {

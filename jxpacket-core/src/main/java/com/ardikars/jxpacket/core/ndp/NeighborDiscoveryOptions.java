@@ -94,9 +94,8 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("options=").append(getOptions())
-                    .append('}')
+            return new StringBuilder()
+                    .append("\toptions: ").append(options).append('\n')
                     .toString();
         }
 
@@ -104,9 +103,9 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     @Override
     public String toString() {
-        return new StringBuilder("NeighborDiscoveryOptions{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ NeighborDiscoveryOptions Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class OptionType extends NamedNumber<Byte, OptionType> {

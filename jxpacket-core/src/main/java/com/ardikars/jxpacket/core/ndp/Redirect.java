@@ -93,20 +93,20 @@ public class Redirect extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("targetAddress=").append(getTargetAddress())
-                    .append(", destinationAddress=").append(getDestinationAddress())
-                    .append(", options=").append(getOptions())
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\ttargetAddress: ").append(targetAddress).append('\n')
+                    .append("\tdestinationAddress: ").append(destinationAddress).append('\n')
+                    .append("\toptions: ").append(options).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("Redirect{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ Redirect Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder implements Packet.Builder {

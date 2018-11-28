@@ -102,21 +102,21 @@ public class Fragment extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("nextHeader=").append(getNextHeader())
-					.append(", fragmentOffset=").append(getFragmentOffset())
-					.append(", flagType=").append(getFlagType())
-					.append(", identification=").append(getIdentification())
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tnextHeader: ").append(nextHeader).append('\n')
+					.append("\tfragmentOffset: ").append(fragmentOffset).append('\n')
+					.append("\tflagType: ").append(flagType).append('\n')
+					.append("\tidentification: ").append(identification).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Fragment{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Fragment Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

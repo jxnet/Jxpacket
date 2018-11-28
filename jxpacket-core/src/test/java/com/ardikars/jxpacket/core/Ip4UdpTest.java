@@ -19,7 +19,7 @@ public class Ip4UdpTest extends BaseTest {
     private byte[] data = StringUtil.decodeHexDump(ETHERNET_IPV4_UDP);
 
     private Ethernet ethernet;
-    private ByteBuf buf = allocator.directBuffer(1500);
+    private ByteBuf buf = allocator.directBuffer(data.length);
 
     @Before
     public void before() {

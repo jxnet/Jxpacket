@@ -119,22 +119,22 @@ public class Routing extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("nextHeader=").append(getNextHeader())
-					.append(", extensionLength=").append(getExtensionLength())
-					.append(", routingType=").append(getRoutingType())
-					.append(", segmentLeft=").append(getSegmentLeft())
-					.append(", routingData=").append(Arrays.toString(getRoutingData()))
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tnextHeader: ").append(nextHeader).append('\n')
+					.append("\textensionLength: ").append(extensionLength).append('\n')
+					.append("\troutingType: ").append(routingType).append('\n')
+					.append("\tsegmentLeft: ").append(segmentLeft).append('\n')
+					.append("\troutingData: ").append(Arrays.toString(routingData)).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Routing{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Routing Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

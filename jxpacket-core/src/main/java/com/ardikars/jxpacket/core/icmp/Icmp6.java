@@ -90,19 +90,19 @@ public class Icmp6 extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("typeAndCode=").append(super.typeAndCode)
-                    .append(", checksum=").append(super.checksum)
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\ttypeAndCode: ").append(typeAndCode).append('\n')
+                    .append("\tchecksum: ").append(checksum).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("Icmp6{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ Icmp6 Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder extends Icmp.IcmpPacketBuilder {

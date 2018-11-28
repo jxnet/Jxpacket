@@ -56,9 +56,9 @@ public class DestinationOptions extends Options {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("DestinationOptions{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ DestinationOptions Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder extends Options.Builder {

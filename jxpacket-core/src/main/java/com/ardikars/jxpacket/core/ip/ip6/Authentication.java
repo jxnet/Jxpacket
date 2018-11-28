@@ -119,22 +119,22 @@ public class Authentication extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("nextHeader=").append(getNextHeader())
-					.append(", payloadLength=").append(getPayloadLength())
-					.append(", securityParameterIndex=").append(getSecurityParameterIndex())
-					.append(", sequenceNumber=").append(getSequenceNumber())
-					.append(", integrityCheckValue=").append(Arrays.toString(getIntegrityCheckValue()))
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tnextHeader: ").append(nextHeader).append('\n')
+					.append("\tpayloadLength: ").append(payloadLength).append('\n')
+					.append("\tsecurityParameterIndex: ").append(securityParameterIndex).append('\n')
+					.append("\tsequenceNumber: ").append(sequenceNumber).append('\n')
+					.append("\tintegrityCheckValue: ").append(Arrays.toString(integrityCheckValue)).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Authentication{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Authentication Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

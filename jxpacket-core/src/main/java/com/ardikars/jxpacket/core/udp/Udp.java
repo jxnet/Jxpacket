@@ -95,21 +95,21 @@ public class Udp extends AbstractPacket {
 
         @Override
         public String toString() {
-            return new StringBuilder("Header{")
-                    .append("sourcePort=").append(getSourcePort())
-                    .append(", destinationPort=").append(getDestinationPort())
-                    .append(", length=").append(getLength())
-                    .append(", checksum=").append(getChecksum())
-                    .append('}').toString();
+            return new StringBuilder()
+                    .append("\tsourcePort: ").append(sourcePort).append('\n')
+                    .append("\tdestinationPort: ").append(destinationPort).append('\n')
+                    .append("\tlength: ").append(length).append('\n')
+                    .append("\tchecksum: ").append(checksum).append('\n')
+                    .toString();
         }
 
     }
 
     @Override
     public String toString() {
-        return new StringBuilder("Udp{")
-                .append("header=").append(header)
-                .append('}').toString();
+        return new StringBuilder("[ Udp Header (").append(getHeader().getLength()).append(" bytes) ]")
+                .append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+                .toString();
     }
 
     public static class Builder implements Packet.Builder {

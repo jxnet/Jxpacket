@@ -72,18 +72,17 @@ public class UnknownPacket extends AbstractPacket {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("buffer=").append(buffer)
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tbuffer: ").append(buffer).append('\n')
+					.toString();
 		}
 
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("UnknownPacket{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ UnknownPacket Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).toString();
 	}
 
 	public static final class Builder implements Packet.Builder {

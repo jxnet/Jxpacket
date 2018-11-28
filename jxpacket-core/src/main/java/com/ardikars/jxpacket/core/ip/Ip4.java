@@ -195,31 +195,30 @@ public class Ip4 extends Ip {
 
 		@Override
 		public String toString() {
-			return new StringBuilder("Header{")
-					.append("version=").append(super.getVersion())
-					.append(", headerLength=").append(getHeaderLength())
-					.append(", diffServ=").append(getDiffServ())
-					.append(", expCon=").append(getExpCon())
-					.append(", totalLength=").append(getTotalLength())
-					.append(", identification=").append(getIdentification())
-					.append(", flags=").append(getFlags())
-					.append(", fragmentOffset=").append(getFragmentOffset())
-					.append(", ttl=").append(getTtl())
-					.append(", protocol=").append(getProtocol())
-					.append(", checksum=").append(getChecksum())
-					.append(", sourceAddress=").append(getSourceAddress())
-					.append(", destinationAddress=").append(getDestinationAddress())
-					.append(", options=").append(Arrays.toString(getOptions()))
-					.append('}').toString();
+			return new StringBuilder()
+					.append("\tversion: ").append(version).append('\n')
+					.append("\theaderLength: ").append(headerLength).append('\n')
+					.append("\tdiffServ: ").append(diffServ).append('\n')
+					.append("\texpCon: ").append(expCon).append('\n')
+					.append("\ttotalLength: ").append(totalLength).append('\n')
+					.append("\tidentification: ").append(identification).append('\n')
+					.append("\tflags: ").append(flags).append('\n')
+					.append("\tfragmentOffset: ").append(fragmentOffset).append('\n')
+					.append("\tttl: ").append(ttl).append('\n')
+					.append("\tprotocol: ").append(protocol).append('\n')
+					.append("\tchecksum: ").append(checksum).append('\n')
+					.append("\tsourceAddress: ").append(sourceAddress).append('\n')
+					.append("\tdestinationAddress: ").append(destinationAddress).append('\n')
+					.append("\toptions: ").append(Arrays.toString(options)).append('\n')
+					.toString();
 		}
-
 	}
 
 	@Override
 	public String toString() {
-		return new StringBuilder("Ip4{")
-				.append("header=").append(header)
-				.append('}').toString();
+		return new StringBuilder("[ Ip4 Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+				.toString();
 	}
 
 	public static final class Builder extends IpPaketBuilder {

@@ -18,7 +18,7 @@ public class VlanArpTest extends BaseTest {
     private byte[] data = StringUtil.decodeHexDump(ETHERNET_II_Q_IN_Q_ARP);
 
     private Ethernet ethernet;
-    private ByteBuf buf = allocator.directBuffer(1500);
+    private ByteBuf buf = allocator.directBuffer(data.length);
 
     @Before
     public void before() {
