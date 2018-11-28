@@ -1,0 +1,137 @@
+
+/**
+ * Copyright (C) 2017-2018  Ardika Rommy Sanjaya
+ */
+
+ext {
+
+	NAME = 'Jxpacket'
+	GROUP = 'com.ardikars.jxpacket'
+	VERSION = '1.1.0.RC30'
+	DESCRIPTION = 'Jxpacket is a network packet crafting library for java.'
+
+	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
+
+	JAVA_VERSION = '1.8'
+	JUNIT_VERSION = '4.12'
+	MOCKITO_VERSION = '2.13.0'
+	GRADLE_VERSION = '4.5'
+	SLF4J_VERSION = '1.7.25'
+	LOGBACK_VERSION = '1.2.3'
+
+	CHECKSTYLE_VERSION = '8.10.1'
+	SPOTBUGS_VERSION = '3.1.5'
+	PMD_VERION = '6.5.0'
+	JACOCO_VERSION = '0.8.2'
+
+	COMMON_VERSION = '1.2.2.Final'
+	NETTY_VERSION = '4.1.31.Final'
+	SPRING_BOOT_VERSION = '2.0.4.RELEASE'
+	JXNET_VERSION = '1.4.8.RC1'
+	PCAP4J_VERSION = '1.7.3'
+
+	pom_project = {
+
+		name = "${NAME}"
+
+		description = "${DESCRIPTION}"
+
+		url 'https://github.com/jxnet/Jxpacket'
+
+		developers {
+			developer {
+				id 'ardikars'
+				name 'Ardika Rommy Sanjaya'
+				email 'contact@ardikars.com'
+			}
+		}
+
+		licenses {
+			license {
+				name 'GNU Lesser General Public License, Version 3.0'
+				url 'http://www.gnu.org/licenses'
+				distribution 'repo'
+			}
+		}
+
+		scm {
+			url 'https://github.com/jxnet/Jxpacket.git'
+			connection 'scm:git:https://github.com/jxnet/Jxpacket.git'
+			developerConnection 'scm:git:git@github.com/jxnet/Jxpacket.git'
+			tag 'HEAD'
+		}
+
+		organization {
+			name 'ardikars'
+			url 'http://ardikars.com'
+		}
+
+	}
+
+	bom_dependencies = {
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-common"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-core"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-iso8583"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-jxnet"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-jxnet-spring-boot-autoconfigure"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-mt940"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-pcap4j"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-spring-boot-autoconfigure"
+			version "${VERSION}"
+		}
+
+		dependency {
+			groupId "${GROUP}"
+			artifactId "jxpacket-spring-boot-starter"
+			version "${VERSION}"
+		}
+
+	}
+
+	defaultBlank = { closure ->
+		try {
+			closure()
+		} catch (MissingPropertyException e) {
+			''
+		}
+	}
+
+}
