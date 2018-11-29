@@ -34,7 +34,8 @@ public class Fragment extends AbstractPacket {
 
 	private Fragment(final Builder builder) {
 		this.header = new Header(builder);
-		this.payload = null;
+		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override
@@ -126,6 +127,8 @@ public class Fragment extends AbstractPacket {
 		private FlagType flagType;
 		private int identification;
 
+		private ByteBuf payloadBuffer;
+
 		public Builder nextHeader(TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
@@ -158,6 +161,7 @@ public class Fragment extends AbstractPacket {
 			this.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
 			this.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
 			this.identification = buffer.getInt(4);
+			this.payloadBuffer = buffer.copy(5, buffer.capacity() - 5);
 			release(buffer);
 			return new Fragment(this);
 		}

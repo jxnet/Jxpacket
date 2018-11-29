@@ -28,7 +28,8 @@ public class HopByHopOptions extends Options {
 
 	private HopByHopOptions(final Builder builder) {
 		this.header = new Header(builder);
-		this.payload = null;
+		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override
@@ -79,6 +80,8 @@ public class HopByHopOptions extends Options {
 			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
 					+ Options.Header.LENGTH_UNIT * extensionLength];
 			buffer.getBytes(2, options);
+			int size = options.length + 2;
+			payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			release(buffer);
 			return new HopByHopOptions(this);
 		}

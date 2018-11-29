@@ -37,7 +37,8 @@ public class Routing extends AbstractPacket {
 
 	private Routing(final Builder builder) {
 		this.header = new Routing.Header(builder);
-		this.payload = null;
+		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override
@@ -146,6 +147,8 @@ public class Routing extends AbstractPacket {
 
 		private byte[] routingData;
 
+		private ByteBuf payloadBuffer;
+
 		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
@@ -196,6 +199,8 @@ public class Routing extends AbstractPacket {
 			index += 1;
 			builder.routingData = new byte[Header.FIXED_ROUTING_DATA_LENGTH + 8 * builder.extensionLength];
 			buffer.getBytes(index, builder.routingData);
+			int size = index + builder.routingData.length;
+			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			release(buffer);
 			return new Routing(builder);
 		}

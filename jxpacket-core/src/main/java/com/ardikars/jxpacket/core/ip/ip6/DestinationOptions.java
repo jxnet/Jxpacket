@@ -28,7 +28,8 @@ public class DestinationOptions extends Options {
 
 	private DestinationOptions(final Builder builder) {
 		this.header = new DestinationOptions.Header(builder);
-		this.payload = null;
+		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override
@@ -74,10 +75,13 @@ public class DestinationOptions extends Options {
 
 		@Override
 		public Packet build(final ByteBuf buffer) {
+			nextHeader = TransportLayer.valueOf(buffer.getByte(0));
 			extensionLength = buffer.getInt(1);
 			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
 					+ Options.Header.LENGTH_UNIT * extensionLength];
 			buffer.getBytes(5, options);
+			int size = options.length + 2;
+			payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			release(buffer);
 			return new DestinationOptions(this);
 		}

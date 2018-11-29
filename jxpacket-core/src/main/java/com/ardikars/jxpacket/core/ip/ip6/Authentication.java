@@ -32,7 +32,8 @@ public class Authentication extends AbstractPacket {
 
 	private Authentication(final Builder builder) {
 		this.header = new Authentication.Header(builder);
-		this.payload = null;
+		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
+				.newInstance(builder.payloadBuffer);
 	}
 
 	@Override
@@ -145,6 +146,8 @@ public class Authentication extends AbstractPacket {
 		private int sequenceNumber;
 		private byte[] integrityCheckValue;
 
+		private ByteBuf payloadBuffer;
+
 		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 			return this;
@@ -189,9 +192,12 @@ public class Authentication extends AbstractPacket {
 			builder.securityParameterIndex = buffer.getInt(4);
 			builder.sequenceNumber = buffer.getInt(8);
 			builder.integrityCheckValue = new byte[(builder.payloadLength + 2) * 8 - 12];
+			int size = 12;
 			if (builder.integrityCheckValue != null) {
 				buffer.getBytes(12, builder.integrityCheckValue);
+				size += builder.integrityCheckValue.length;
 			}
+			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
 			release(buffer);
 			return new Authentication(builder);
 		}

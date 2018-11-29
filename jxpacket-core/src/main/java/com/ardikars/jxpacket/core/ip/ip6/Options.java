@@ -99,6 +99,8 @@ public abstract class Options extends AbstractPacket {
 		protected int extensionLength;
 		protected byte[] options;
 
+		protected ByteBuf payloadBuffer;
+
 		public Builder(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
 		}
