@@ -5,89 +5,59 @@ Jxpacket
 Jxpacket is network packet crafting libarary for java.
 
 
-### How to Use
-
-  - ##### Gradle project
->> Add a dependency to the build.gradle as like below:
->>>
->>> ```
->>> dependencies { 
->>>     compile 'com.ardikars.common:common-net:${common.version}'
->>>     compile 'com.ardikars.jxnet:jxnet-spring-boot-starter:${jxnet.version}'
->>>     compile 'com.ardikars.jxpacket:jxpacket-core:${jxpacket.version}'
->>> }
->>>```
-  - ##### Maven project
->> Add a dependency to the pom.xml as like below:
->>>
->>> ```
->>> <dependencies>
->>>     <dependency>
->>>         <groupId>com.ardikars.common</groupId>
->>>         <artifactId>common-net</artifactId>
->>>         <version>${common.version}</version>
->>>     </dependency>
->>>     <dependency>
->>>         <groupId>com.ardikars.jxnet</groupId>
->>>         <artifactId>jxnet-spring-boot-starter</artifactId>
->>>         <version>${jxnet.version}</version>
->>>     </dependency>
->>>     <dependency>
->>>         <groupId>com.ardikars.jxpacket</groupId>
->>>         <artifactId>jxpacket-core</artifactId>
->>>         <version>${jxpacket.version}</version>
->>>     </dependency>
->>> </dependencies>
->>>```
-
-Build Jxnet from Source
-=============================
-
-### Build
-   - ```./gradlew clean build```
-   
-### Skip Test
-   - ```./gradlew clean build -x test```
-
-Jxpacket dependencies
-=====================
-  - com.ardikars.common:common-util
-  - com.ardikars.common:common-net
-  - io.netty:netty-buffer
-  
-Example
-=======
-```java
-
-@SpringBootApplication
-public class ExampleApplication implements CommandLineRunner {
-
-    @Autowired
-    private Context context;
-
-    public static void main(String[] args) {
-        register();
-        SpringApplication.run(ExampleApplication.class, args);
-    }
-
-    @Override
-    public void run(String... args) throws Exception {
-        context.pcapLoop(1000, (user, h, bytes) -> {
-            ByteBuf buffer = ByteBufAllocator.DEFAULT.buffer(bytes.capacity());
-            buffer.setBytes(0, bytes);
-            Packet packet = Ethernet.newPacket(buffer);
-            packet.forEach(pkt -> System.out.println(pkt.getHeader()));
-        }, "");
-    }
-
-    private static void register() {
-        NetworkLayer.register(NetworkLayer.IPV4, new Ip4.Builder());
-        TransportLayer.register(TransportLayer.TCP, new Tcp.Builder());
-    }
-
-}
-
-```
+### Supported protocol
+* ARP (Address Resolution Protocol)
+* Ethernet (EN10MB), IEEE 802.1Q VLAN-tagged frames
+* ICMPv4 (Internet Control Message Protocol Version 4)
+  * Destination Unreachable
+  * Echo Reply
+  * Echo Request
+  * Parameter Problem
+  * Redirect Message
+  * Router Advertisement
+  * Router Solicitation
+  * Time Exceeded
+  * Timestamp
+  * Timestamp Reply
+* ICMPv6 (Internet Control Message Protocol Version 6)
+  * Destination Unreachable
+  * Echo Reply
+  * Echo Request
+  * Home Agent Address Discovery Reply
+  * Home Agent Address Discovery Request
+  * Inverse NeighborDiscovery Advertisement
+  * Inverse NeighborDiscovery Solicitation
+  * Mobile Prefix Advertisement
+  * Mobile Prefix Solicitation
+  * Multicast Listener Done
+  * Multicast Listener Query
+  * Multicast Listener Report v1
+  * Multicast Listener Report v2
+  * Neighbor Advertisement
+  * Neighbor Solicitation
+  * Node Information Query
+  * Node Information Response
+  * Packet Too Big Message
+  * Router Advertisement
+  * Router Renumbering
+  * Router Solicitation
+  * Time Exceeded
+* IPv4 (Internet Protocol Version 4)
+* IPv6 (Internet Protocol Version 6)
+  * Authentication Header Extension
+  * Destination Option Header Extension
+  * Fragment Header Extension
+  * Hop by Hop Option Header Extension
+  * Routing Header Extension
+* NDP (Neighbor Discovery Protocol)
+  * Neighbor Advertisement
+  * Neighbor Discovery Options
+  * Neighbor Solicitation
+  * Ridirect
+  * Router Advertisement
+  * Router Solicitation
+* TCP (Transmission Control Protocol)
+* UDP (User Datagram Protocol)
 
 License
 =======
