@@ -56,8 +56,8 @@ public class HopByHopOptions extends Options {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("[ HopByHopOptions Header (").append(getHeader().getLength()).append(" bytes) ]")
-				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+		return new StringBuilder("\t[ HopByHopOptions Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\t\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
 				.toString();
 	}
 
@@ -74,11 +74,11 @@ public class HopByHopOptions extends Options {
 
 		@Override
 		public HopByHopOptions build(final ByteBuf buffer) {
-			Builder builder = new Builder();
-			builder.extensionLength = buffer.getInt(1);
-			builder.options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
-					+ Options.Header.LENGTH_UNIT * builder.extensionLength];
-			buffer.getBytes(5, options);
+			nextHeader = TransportLayer.valueOf(buffer.getByte(0));
+			extensionLength = buffer.getByte(1);
+			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
+					+ Options.Header.LENGTH_UNIT * extensionLength];
+			buffer.getBytes(2, options);
 			release(buffer);
 			return new HopByHopOptions(this);
 		}

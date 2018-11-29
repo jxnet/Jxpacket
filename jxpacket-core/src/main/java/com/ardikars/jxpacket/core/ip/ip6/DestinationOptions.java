@@ -56,8 +56,8 @@ public class DestinationOptions extends Options {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("[ DestinationOptions Header (").append(getHeader().getLength()).append(" bytes) ]")
-				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+		return new StringBuilder("\t[ DestinationOptions Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\t\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
 				.toString();
 	}
 
@@ -74,10 +74,9 @@ public class DestinationOptions extends Options {
 
 		@Override
 		public Packet build(final ByteBuf buffer) {
-			Builder builder = new Builder();
-			builder.extensionLength = buffer.getInt(1);
-			builder.options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
-					+ Options.Header.LENGTH_UNIT * builder.extensionLength];
+			extensionLength = buffer.getInt(1);
+			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
+					+ Options.Header.LENGTH_UNIT * extensionLength];
 			buffer.getBytes(5, options);
 			release(buffer);
 			return new DestinationOptions(this);

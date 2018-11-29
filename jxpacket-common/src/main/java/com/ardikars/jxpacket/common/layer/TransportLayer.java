@@ -29,13 +29,13 @@ public final class TransportLayer extends NamedNumber<Byte, TransportLayer> impl
 
     public static final TransportLayer ICMP = new TransportLayer((byte) 1, "Internet Control Message Protocol Version 4");
 
-    public static final TransportLayer IPV6 = new TransportLayer((byte) 41, "IPv6 HeaderAbstract.");
+    public static final TransportLayer IPV6 = new TransportLayer((byte) 41, "IPv6 Header.");
 
     public static final TransportLayer IPV6_ICMP = new TransportLayer((byte) 58, "Internet Control Message Protocol Version 6");
 
-    public static final TransportLayer IPV6_ROUTING = new TransportLayer((byte) 43, "Routing HeaderAbstract for IPv6.");
+    public static final TransportLayer IPV6_ROUTING = new TransportLayer((byte) 43, "Routing Header for IPv6.");
 
-    public static final TransportLayer IPV6_FRAGMENT = new TransportLayer((byte) 44, "Fragment HeaderAbstract for IPv6.");
+    public static final TransportLayer IPV6_FRAGMENT = new TransportLayer((byte) 44, "Fragment Header for IPv6.");
 
     public static final TransportLayer IPV6_HOPOPT = new TransportLayer((byte) 0, "IPv6 Hop by Hop NeighborDiscoveryOptions.");
 
@@ -43,7 +43,7 @@ public final class TransportLayer extends NamedNumber<Byte, TransportLayer> impl
 
     public static final TransportLayer IPV6_ESP = new TransportLayer((byte) 50, "IPv6 ESP.");
 
-    public static final TransportLayer IPV6_AH = new TransportLayer((byte) 51, "IPv6 Authentication HeaderAbstract.");
+    public static final TransportLayer IPV6_AH = new TransportLayer((byte) 51, "IPv6 Authentication Header.");
 
     public static final TransportLayer IGMP = new TransportLayer((byte) 2, "Internet Group Management Protocol");
 

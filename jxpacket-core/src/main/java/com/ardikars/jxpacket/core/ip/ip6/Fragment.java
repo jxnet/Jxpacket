@@ -103,10 +103,10 @@ public class Fragment extends AbstractPacket {
 		@Override
 		public String toString() {
 			return new StringBuilder()
-					.append("\tnextHeader: ").append(nextHeader).append('\n')
-					.append("\tfragmentOffset: ").append(fragmentOffset).append('\n')
-					.append("\tflagType: ").append(flagType).append('\n')
-					.append("\tidentification: ").append(identification).append('\n')
+					.append("\t\tnextHeader: ").append(nextHeader).append('\n')
+					.append("\t\tfragmentOffset: ").append(fragmentOffset).append('\n')
+					.append("\t\tflagType: ").append(flagType).append('\n')
+					.append("\t\tidentification: ").append(identification).append('\n')
 					.toString();
 		}
 
@@ -114,8 +114,8 @@ public class Fragment extends AbstractPacket {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("[ Fragment Header (").append(getHeader().getLength()).append(" bytes) ]")
-				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+		return new StringBuilder("\t[ Fragment Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\t\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
 				.toString();
 	}
 

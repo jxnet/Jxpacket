@@ -120,11 +120,11 @@ public class Routing extends AbstractPacket {
 		@Override
 		public String toString() {
 			return new StringBuilder()
-					.append("\tnextHeader: ").append(nextHeader).append('\n')
-					.append("\textensionLength: ").append(extensionLength).append('\n')
-					.append("\troutingType: ").append(routingType).append('\n')
-					.append("\tsegmentLeft: ").append(segmentLeft).append('\n')
-					.append("\troutingData: ").append(Arrays.toString(routingData)).append('\n')
+					.append("\t\tnextHeader: ").append(nextHeader).append('\n')
+					.append("\t\textensionLength: ").append(extensionLength).append('\n')
+					.append("\t\troutingType: ").append(routingType).append('\n')
+					.append("\t\tsegmentLeft: ").append(segmentLeft).append('\n')
+					.append("\t\troutingData: ").append(Arrays.toString(routingData)).append('\n')
 					.toString();
 		}
 
@@ -132,8 +132,8 @@ public class Routing extends AbstractPacket {
 
 	@Override
 	public String toString() {
-		return new StringBuilder("[ Routing Header (").append(getHeader().getLength()).append(" bytes) ]")
-				.append('\n').append(header).append("\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
+		return new StringBuilder("\t[ Routing Header (").append(getHeader().getLength()).append(" bytes) ]")
+				.append('\n').append(header).append("\t\tpayload: ").append(payload != null ? payload.getClass().getSimpleName() : "")
 				.toString();
 	}
 
