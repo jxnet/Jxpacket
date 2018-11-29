@@ -1,10 +1,12 @@
-package com.ardikars.jxpacket.core;
+package com.ardikars.jxpacket.core.udp;
 
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
-import com.ardikars.jxpacket.core.arp.Arp;
+import com.ardikars.jxpacket.common.layer.TransportLayer;
+import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
-import com.ardikars.jxpacket.core.ethernet.Vlan;
+import com.ardikars.jxpacket.core.ip.Ip6;
+import com.ardikars.jxpacket.core.udp.Udp;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 import org.junit.After;
@@ -13,9 +15,9 @@ import org.junit.Test;
 
 import java.util.stream.StreamSupport;
 
-public class VlanArpTest extends BaseTest {
+public class Ip6UdpTest extends BaseTest {
 
-    private byte[] data = StringUtil.decodeHexDump(ETHERNET_II_Q_IN_Q_ARP);
+    private byte[] data = StringUtil.decodeHexDump(IPV6_UDP);
 
     private Ethernet ethernet;
     private ByteBuf buf = allocator.directBuffer(data.length);
@@ -23,13 +25,13 @@ public class VlanArpTest extends BaseTest {
     @Before
     public void before() {
         DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
-        NetworkLayer.register(NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES, new Vlan.Builder());
-        NetworkLayer.register(NetworkLayer.ARP, new Arp.Builder());
+        NetworkLayer.register(NetworkLayer.IPV6, new Ip6.Builder());
+        TransportLayer.register(TransportLayer.UDP, new Udp.Builder());
         buf.setBytes(0, data);
         ethernet = Ethernet.newPacket(buf);
     }
 
-    @org.junit.Test
+    @Test
     public void payloadType() {
         StreamSupport.stream(ethernet.spliterator(), false)
                 .forEach(System.out::println);
@@ -37,7 +39,7 @@ public class VlanArpTest extends BaseTest {
 
     @Test
     public void filter() {
-        ethernet.get(Arp.class)
+        ethernet.get(Udp.class)
                 .forEach(System.out::println);
     }
 

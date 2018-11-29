@@ -1,12 +1,12 @@
-package com.ardikars.jxpacket.core;
+package com.ardikars.jxpacket.core.tcp;
 
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
+import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
-import com.ardikars.jxpacket.core.icmp.Icmp6;
-import com.ardikars.jxpacket.core.ip.Ip4;
 import com.ardikars.jxpacket.core.ip.Ip6;
+import com.ardikars.jxpacket.core.tcp.Tcp;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 import org.junit.After;
@@ -15,13 +15,9 @@ import org.junit.Test;
 
 import java.util.stream.StreamSupport;
 
-/**
- * @author jxpacket 2018/11/29
- * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
- */
-public class Ip6OverIp4Test extends BaseTest {
+public class Ip6TcpTest extends BaseTest {
 
-    private byte[] data = StringUtil.decodeHexDump(IPV6_OVER_IPV4);
+    private byte[] data = StringUtil.decodeHexDump(IPV6_TCP_SYN);
 
     private Ethernet ethernet;
     private ByteBuf buf = allocator.directBuffer(data.length);
@@ -29,9 +25,8 @@ public class Ip6OverIp4Test extends BaseTest {
     @Before
     public void before() {
         DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
-        NetworkLayer.register(NetworkLayer.IPV4, new Ip4.Builder());
-        TransportLayer.register(TransportLayer.IPV6, new Ip6.Builder());
-        TransportLayer.register(TransportLayer.IPV6_ICMP, new Icmp6.Builder());
+        NetworkLayer.register(NetworkLayer.IPV6, new Ip6.Builder());
+        TransportLayer.register(TransportLayer.TCP, new Tcp.Builder());
         buf.setBytes(0, data);
         ethernet = Ethernet.newPacket(buf);
     }
@@ -44,7 +39,7 @@ public class Ip6OverIp4Test extends BaseTest {
 
     @Test
     public void filter() {
-        ethernet.get(Icmp6.class)
+        ethernet.get(Tcp.class)
                 .forEach(System.out::println);
     }
 
@@ -56,5 +51,6 @@ public class Ip6OverIp4Test extends BaseTest {
             //
         }
     }
+
 
 }

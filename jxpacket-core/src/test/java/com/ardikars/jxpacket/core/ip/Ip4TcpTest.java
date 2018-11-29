@@ -1,8 +1,9 @@
-package com.ardikars.jxpacket.core;
+package com.ardikars.jxpacket.core.ip;
 
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
+import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
 import com.ardikars.jxpacket.core.ip.Ip4;
 import com.ardikars.jxpacket.core.tcp.Tcp;

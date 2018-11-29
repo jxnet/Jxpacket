@@ -191,7 +191,7 @@ public class Authentication extends AbstractPacket {
 			builder.payloadLength = buffer.getByte(1);
 			builder.securityParameterIndex = buffer.getInt(4);
 			builder.sequenceNumber = buffer.getInt(8);
-			builder.integrityCheckValue = new byte[(builder.payloadLength + 2) * 8 - 12];
+			builder.integrityCheckValue = new byte[(builder.payloadLength + 2) * 4 - 12];
 			int size = 12;
 			if (builder.integrityCheckValue != null) {
 				buffer.getBytes(12, builder.integrityCheckValue);

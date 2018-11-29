@@ -1,8 +1,9 @@
-package com.ardikars.jxpacket.core;
+package com.ardikars.jxpacket.core.ip;
 
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
+import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
 import com.ardikars.jxpacket.core.icmp.Icmp6;
 import com.ardikars.jxpacket.core.ip.Ip6;
@@ -21,7 +22,7 @@ import java.util.stream.StreamSupport;
  * @author jxpacket 2018/11/29
  * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
  */
-public class Ipv6HopByHopOptionTest extends BaseTest {
+public class Ip6HopByHopOptionTest extends BaseTest {
 
     private byte[] data = StringUtil.decodeHexDump(IPV6_HOP_BY_HOP_OPTION);
 
