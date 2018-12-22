@@ -21,6 +21,7 @@ import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -32,6 +33,7 @@ public class Redirect extends AbstractPacket {
     public Redirect(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        this.payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -44,7 +46,7 @@ public class Redirect extends AbstractPacket {
         return payload;
     }
 
-    public static class Header implements Packet.Header {
+    public static class Header extends AbstractPacket.Header {
 
         public static final byte REDIRECT_HEADER_LENGTH = 36;
 
@@ -57,6 +59,7 @@ public class Redirect extends AbstractPacket {
             this.targetAddress = builder.targetAddress;
             this.destinationAddress = builder.destinationAddress;
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public Inet6Address getTargetAddress() {
@@ -73,7 +76,7 @@ public class Redirect extends AbstractPacket {
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
-            return null;
+            return (T) UnknownPacket.UNKNOWN_PAYLOAD_TYPE;
         }
 
         @Override
@@ -83,11 +86,13 @@ public class Redirect extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setInt(0, 0);
-            buffer.setBytes(4, targetAddress.getAddress());
-            buffer.setBytes(20, destinationAddress.getAddress());
-            buffer.setBytes(36, options.getHeader().getBuffer());
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeInt(0);
+                buffer.writeBytes(targetAddress.getAddress());
+                buffer.writeBytes(destinationAddress.getAddress());
+                buffer.writeBytes(options.getHeader().getBuffer());
+            }
             return buffer;
         }
 
@@ -109,12 +114,15 @@ public class Redirect extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private Inet6Address targetAddress;
         private Inet6Address destinationAddress;
 
         private NeighborDiscoveryOptions options;
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         public Builder targetAddrss(Inet6Address targetAddress) {
             this.targetAddress = targetAddress;
@@ -142,6 +150,8 @@ public class Redirect extends AbstractPacket {
             this.destinationAddress = Inet6Address.valueOf(destination);
             this.options = (NeighborDiscoveryOptions) new NeighborDiscoveryOptions.Builder()
                     .build(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new Redirect(this);
         }
 

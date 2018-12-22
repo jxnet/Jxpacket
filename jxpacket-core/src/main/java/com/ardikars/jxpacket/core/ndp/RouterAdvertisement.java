@@ -31,6 +31,7 @@ public class RouterAdvertisement extends AbstractPacket {
     public RouterAdvertisement(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        this.payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class RouterAdvertisement extends AbstractPacket {
         return payload;
     }
 
-    public static class Header implements Packet.Header {
+    public static class Header extends AbstractPacket.Header {
 
         public static final int ROUTER_ADVERTISEMENT_HEADER_LENGTH = 12;
 
@@ -64,6 +65,7 @@ public class RouterAdvertisement extends AbstractPacket {
             this.reachableTime = builder.reachableTime;
             this.retransmitTimer = builder.retransmitTimer;
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public int getCurrentHopLimit() {
@@ -106,13 +108,15 @@ public class RouterAdvertisement extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setByte(0, currentHopLimit);
-            buffer.setByte(1, (byte) ((manageFlag ? 1 : 0) << 7 | (otherFlag ? 1 : 0) << 6));
-            buffer.setShort(2, routerLifetime);
-            buffer.setInt(4, reachableTime);
-            buffer.setInt(8, retransmitTimer);
-            buffer.setBytes(12, options.getHeader().getBuffer());
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeByte(currentHopLimit);
+                buffer.writeByte(((manageFlag ? 1 : 0) << 7 | (otherFlag ? 1 : 0) << 6));
+                buffer.writeShort(routerLifetime);
+                buffer.writeInt(reachableTime);
+                buffer.writeInt(retransmitTimer);
+                buffer.writeBytes(options.getHeader().getBuffer());
+            }
             return buffer;
         }
 
@@ -138,7 +142,7 @@ public class RouterAdvertisement extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private byte currentHopLimit;
         private boolean manageFlag;
@@ -148,6 +152,9 @@ public class RouterAdvertisement extends AbstractPacket {
         private int retransmitTimer;
 
         private NeighborDiscoveryOptions options;
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         public Builder currentHopLimit(int currentHopLimit) {
             this.currentHopLimit = (byte) (currentHopLimit & 0xff);
@@ -200,6 +207,8 @@ public class RouterAdvertisement extends AbstractPacket {
             this.retransmitTimer = buffer.readInt();
             this.options = (NeighborDiscoveryOptions) new NeighborDiscoveryOptions.Builder()
                     .build(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new RouterAdvertisement(this);
         }
 

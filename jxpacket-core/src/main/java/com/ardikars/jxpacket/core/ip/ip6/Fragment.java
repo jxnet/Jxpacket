@@ -22,7 +22,6 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +35,7 @@ public class Fragment extends AbstractPacket {
 		this.header = new Header(builder);
 		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
 				.newInstance(builder.payloadBuffer);
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class Fragment extends AbstractPacket {
 		return payload;
 	}
 
-	public static final class Header implements Packet.Header {
+	public static final class Header extends AbstractPacket.Header {
 
 		public static final int FIXED_FRAGMENT_HEADER_LENGTH = 8;
 
@@ -62,6 +62,7 @@ public class Fragment extends AbstractPacket {
 			this.fragmentOffset = builder.fragmentOffset;
 			this.flagType = builder.flagType;
 			this.identification = builder.identification;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public TransportLayer getNextHeader() {
@@ -92,12 +93,14 @@ public class Fragment extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			buffer.setByte(0, nextHeader.getValue());
-			buffer.setByte(1, (byte) 0); // reserved
-			buffer.setShort(2, (short) ((fragmentOffset & 0x1fff) << 3
-					| flagType.getValue() & 0x1));
-			buffer.setInt(3, identification);
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.writeByte(nextHeader.getValue());
+				buffer.writeByte(0); // reserved
+				buffer.writeShort(((fragmentOffset & 0x1fff) << 3
+						| flagType.getValue() & 0x1));
+				buffer.writeInt(identification);
+			}
 			return buffer;
 		}
 
@@ -120,13 +123,14 @@ public class Fragment extends AbstractPacket {
 				.toString();
 	}
 
-	public static final class Builder implements Packet.Builder {
+	public static final class Builder extends AbstractPacket.Builder {
 
 		private TransportLayer nextHeader;
 		private short fragmentOffset;
 		private FlagType flagType;
 		private int identification;
 
+		private ByteBuf buffer;
 		private ByteBuf payloadBuffer;
 
 		public Builder nextHeader(TransportLayer nextHeader) {
@@ -156,13 +160,13 @@ public class Fragment extends AbstractPacket {
 
 		@Override
 		public Fragment build(final ByteBuf buffer) {
-			this.nextHeader = TransportLayer.valueOf(buffer.getByte(0));
-			short sscratch = buffer.getShort(2);
+			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
+			short sscratch = buffer.readShort();
 			this.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
 			this.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
-			this.identification = buffer.getInt(4);
-			this.payloadBuffer = buffer.copy(5, buffer.capacity() - 5);
-			release(buffer);
+			this.identification = buffer.readInt();
+			this.buffer = buffer;
+			this.payloadBuffer = buffer.slice();
 			return new Fragment(this);
 		}
 

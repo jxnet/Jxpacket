@@ -32,6 +32,7 @@ public class NeighborSolicitation extends AbstractPacket {
     public NeighborSolicitation(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        this.payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class NeighborSolicitation extends AbstractPacket {
         return payload;
     }
 
-    public static class Header implements Packet.Header {
+    public static class Header extends AbstractPacket.Header {
 
         public static final int NEIGHBOR_SOLICITATION_HEADER_LENGTH = 16;
 
@@ -55,6 +56,7 @@ public class NeighborSolicitation extends AbstractPacket {
         private Header(Builder builder) {
             this.targetAddress = builder.targetAddress;
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public Inet6Address getTargetAddress() {
@@ -77,9 +79,11 @@ public class NeighborSolicitation extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setBytes(0, targetAddress.getAddress());
-            buffer.setBytes(16, options.getHeader().getBuffer());
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeBytes(targetAddress.getAddress());
+                buffer.writeBytes(options.getHeader().getBuffer());
+            }
             return buffer;
         }
 
@@ -100,11 +104,14 @@ public class NeighborSolicitation extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private Inet6Address targetAddress;
 
         private NeighborDiscoveryOptions options;
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         public Builder targetAddress(Inet6Address targetAddress) {
             this.targetAddress = targetAddress;
@@ -128,6 +135,8 @@ public class NeighborSolicitation extends AbstractPacket {
             this.targetAddress = Inet6Address.valueOf(ipv6AddrBuffer);
             this.options = (NeighborDiscoveryOptions) new NeighborDiscoveryOptions.Builder()
                     .build(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new NeighborSolicitation(this);
         }
 

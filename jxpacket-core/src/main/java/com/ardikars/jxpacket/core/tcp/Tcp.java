@@ -35,11 +35,12 @@ public class Tcp extends AbstractPacket {
         this.header = new Tcp.Header(builder);
         this.payload = ApplicationLayer.valueOf(this.header.getPayloadType().getValue())
                 .newInstance(builder.payloadBuffer);
+        payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
     public Tcp.Header getHeader() {
-        return this.header;
+        return header;
     }
 
     @Override
@@ -50,7 +51,7 @@ public class Tcp extends AbstractPacket {
     /**
      * @see <a href="https://tools.ietf.org/html/rfc793">TCP</a>
      */
-    public static final class Header implements Packet.Header {
+    public static final class Header extends AbstractPacket.Header {
 
         public static final int TCP_HEADER_LENGTH = 20;
 
@@ -79,23 +80,23 @@ public class Tcp extends AbstractPacket {
         }
 
         public int getSourcePort() {
-            return this.sourcePort & 0xffff;
+            return sourcePort & 0xffff;
         }
 
         public int getDestinationPort() {
-            return this.destinationPort & 0xffff;
+            return destinationPort & 0xffff;
         }
 
         public int getSequence() {
-            return this.sequence;
+            return sequence;
         }
 
         public int getAcknowledge() {
-            return this.acknowledge;
+            return acknowledge;
         }
 
         public int getDataOffset() {
-            return this.dataOffset & 0xf;
+            return dataOffset & 0xf;
         }
 
         public TcpFlags getFlags() {
@@ -103,15 +104,15 @@ public class Tcp extends AbstractPacket {
         }
 
         public int getWindowSize() {
-            return this.windowSize & 0xffff;
+            return windowSize & 0xffff;
         }
 
         public int getChecksum() {
-            return this.checksum & 0xffff;
+            return checksum & 0xffff;
         }
 
         public int getUrgentPointer() {
-            return this.urgentPointer & 0xffff;
+            return urgentPointer & 0xffff;
         }
 
         /**
@@ -183,7 +184,7 @@ public class Tcp extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private short sourcePort;
         private short destinationPort;

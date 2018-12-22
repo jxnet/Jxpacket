@@ -24,7 +24,7 @@ import io.netty.buffer.ByteBufAllocator;
 
 public abstract class Icmp extends AbstractPacket {
 
-    protected static abstract class IcmpHeader implements Header {
+    protected static abstract class AbstractPacketHeader extends Header {
 
         public static final int ICMP_HEADER_LENGTH = 4;
 
@@ -41,31 +41,31 @@ public abstract class Icmp extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = ByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setShort(0, typeAndCode.getType());
-            buffer.setShort(1, typeAndCode.getCode());
-            buffer.setShort(2, checksum);
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeByte(typeAndCode.getType());
+                buffer.writeByte(typeAndCode.getCode());
+                buffer.writeShort(checksum);
+            }
             return buffer;
         }
 
     }
 
-    protected static abstract class IcmpPacketBuilder implements Builder {
+    protected static abstract class AbstractPacketBuilder extends Builder {
 
         protected IcmpTypeAndCode typeAndCode;
         protected short checksum;
 
-        //protected ByteBuffer payloadBuffer;
-
-        public IcmpPacketBuilder typeAndCode(IcmpTypeAndCode typeAndCode) {
+        public AbstractPacketBuilder typeAndCode(IcmpTypeAndCode typeAndCode) {
             this.typeAndCode = typeAndCode;
             return this;
         }
 
-        /*public IcmpPacketBuilder payloadBuffer(ByteBuffer buffer) {
-            this.payloadBuffer = buffer;
+        public AbstractPacketBuilder checksum(short checksum) {
+            this.checksum = checksum;
             return this;
-        }*/
+        }
 
     }
 

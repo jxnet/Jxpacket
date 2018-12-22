@@ -22,7 +22,6 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +35,7 @@ public class Vlan extends AbstractPacket {
 		this.header = new Vlan.Header(builder);
 		this.payload = NetworkLayer.valueOf(this.header.getType().getValue())
 				.newInstance(builder.payloadBuffer);
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	public static Vlan newPacket(final ByteBuf buffer) {
@@ -44,19 +44,19 @@ public class Vlan extends AbstractPacket {
 
 	@Override
 	public Vlan.Header getHeader() {
-		return this.header;
+		return header;
 	}
 
 	@Override
 	public Packet getPayload() {
-		return this.payload;
+		return payload;
 	}
 
 	/**
 	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_802.1ad">IEEE 802.1ad</a>
 	 * @see <a href="https://en.wikipedia.org/wiki/IEEE_802.1Q">IEEE 802.1Q</a>
 	 */
-	public static final class Header implements Packet.Header {
+	public static final class Header extends AbstractPacket.Header {
 
 		public static final int VLAN_HEADER_LENGTH = 4;
 
@@ -70,6 +70,7 @@ public class Vlan extends AbstractPacket {
 			this.canonicalFormatIndicator = builder.canonicalFormatIndicator;
 			this.vlanIdentifier = builder.vlanIdentifier;
 			this.type = builder.type;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public PriorityCodePoint getPriorityCodePoint() {
@@ -90,7 +91,7 @@ public class Vlan extends AbstractPacket {
 
 		@Override
 		public NetworkLayer getPayloadType() {
-			return this.type;
+			return type;
 		}
 
 		@Override
@@ -100,10 +101,12 @@ public class Vlan extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			buffer.setShort(0, NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
-			buffer.setShort(2, ((priorityCodePoint.getValue() << 13) & 0x07)
-					| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff));
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.setShort(0, NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
+				buffer.setShort(2, ((priorityCodePoint.getValue() << 13) & 0x07)
+						| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff));
+			}
 			return buffer;
 		}
 
@@ -126,13 +129,14 @@ public class Vlan extends AbstractPacket {
 				.toString();
 	}
 
-	public static final class Builder implements Packet.Builder {
+	public static final class Builder extends AbstractPacket.Builder {
 
 		private PriorityCodePoint priorityCodePoint; // 3 bit
 		private byte canonicalFormatIndicator; // 1 bit
 		private short vlanIdentifier; // 12 bit
 		private NetworkLayer type;
 
+		private ByteBuf buffer;
 		private ByteBuf payloadBuffer;
 
 		public Builder priorityCodePoint(final PriorityCodePoint priorityCodePoint) {
@@ -167,16 +171,15 @@ public class Vlan extends AbstractPacket {
 
 		@Override
 		public Vlan build(final ByteBuf buffer) {
-			short tci = buffer.getShort(0);
-			short type = buffer.getShort(2);
-			Vlan.Builder builder = new Builder();
-			builder.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));
-			builder.canonicalFormatIndicator = (byte) (tci >> 14 & 0x01);
-			builder.vlanIdentifier = (short) (tci & 0x0fff);
-			builder.type = NetworkLayer.valueOf(type);
-			builder.payloadBuffer = buffer.copy(Header.VLAN_HEADER_LENGTH, buffer.capacity() - Header.VLAN_HEADER_LENGTH);
-			release(buffer);
-			return new Vlan(builder);
+			short tci = buffer.readShort();
+			short type = buffer.readShort();
+			this.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));
+			this.canonicalFormatIndicator = (byte) (tci >> 14 & 0x01);
+			this.vlanIdentifier = (short) (tci & 0x0fff);
+			this.type = NetworkLayer.valueOf(type);
+			this.buffer = buffer;
+			this.payloadBuffer = buffer.slice();
+			return new Vlan(this);
 		}
 
 	}

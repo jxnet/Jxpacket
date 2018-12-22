@@ -58,16 +58,17 @@ public class Icmp6 extends AbstractPacket {
 
     public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<>();
 
-    private final Header header;
+    private final Icmp6.Header header;
     private final Packet payload;
 
     public Icmp6(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
-    public Header getHeader() {
+    public Icmp6.Header getHeader() {
         return header;
     }
 
@@ -76,11 +77,12 @@ public class Icmp6 extends AbstractPacket {
         return payload;
     }
 
-    public static class Header extends Icmp.IcmpHeader {
+    public static class Header extends Icmp.AbstractPacketHeader {
 
         private Header(Builder builder) {
-            super.typeAndCode = builder.typeAndCode;
-            super.checksum = builder.checksum;
+            typeAndCode = builder.typeAndCode;
+            checksum = builder.checksum;
+            buffer = builder.buffer.slice(0, getLength());
         }
 
         @Override
@@ -105,7 +107,10 @@ public class Icmp6 extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder extends Icmp.IcmpPacketBuilder {
+    public static class Builder extends Icmp.AbstractPacketBuilder {
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         @Override
         public Packet build() {
@@ -114,8 +119,8 @@ public class Icmp6 extends AbstractPacket {
 
         @Override
         public Packet build(ByteBuf buffer) {
-            byte type = buffer.getByte(0);
-            byte code = buffer.getByte(1);
+            byte type = buffer.readByte();
+            byte code = buffer.readByte();
             Optional<Icmp.IcmpTypeAndCode> optional = Icmp6.ICMP6_REGISTRY.stream()
                     .filter(typeAndCode -> typeAndCode.getType() == type && typeAndCode.getCode() == code)
                     .findFirst();
@@ -124,6 +129,9 @@ public class Icmp6 extends AbstractPacket {
             } else {
                 super.typeAndCode = new Icmp.IcmpTypeAndCode(type, code, "Unknown");
             }
+            super.checksum = buffer.readShort();
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new Icmp6(this);
         }
 

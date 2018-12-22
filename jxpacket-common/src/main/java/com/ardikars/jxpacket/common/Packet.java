@@ -62,8 +62,10 @@ public interface Packet extends Iterable<Packet>, Serializable {
     /**
      * The interface for packet builder.
      */
+    @Deprecated
     interface Builder extends com.ardikars.common.util.Builder<Packet, ByteBuf> {
 
+        @Deprecated
         default void release(ByteBuf buffer) {
             int refCnt = buffer.refCnt();
             while (refCnt > 0) {
@@ -81,6 +83,7 @@ public interface Packet extends Iterable<Packet>, Serializable {
     /**
      * The interface for packet factory.
      */
+    @Deprecated
     interface Factory extends com.ardikars.common.util.Factory<Packet, ByteBuf> {
 
     }
@@ -107,6 +110,7 @@ public interface Packet extends Iterable<Packet>, Serializable {
          * Returns header as byte buffer.
          * @return return byte buffer.
          */
+        @Deprecated
         ByteBuf getBuffer();
 
     }

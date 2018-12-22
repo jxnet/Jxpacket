@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 public abstract class Options extends AbstractPacket {
 
-	abstract static class Header extends Ip6.ExtensionHeader {
+	protected abstract static class Header extends Ip6.ExtensionHeader {
 
 		public static final int FIXED_OPTIONS_LENGTH = 6;
 		public static final int LENGTH_UNIT = 8;
@@ -42,6 +42,7 @@ public abstract class Options extends AbstractPacket {
 			this.nextHeader = nextHeader;
 			this.extensionLength = builder.extensionLength;
 			this.options = builder.options;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public TransportLayer getNextHeader() {
@@ -73,11 +74,13 @@ public abstract class Options extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			buffer.setByte(0, nextHeader.getValue());
-			buffer.setInt(1, extensionLength);
-			if (options != null) {
-				buffer.setBytes(5, options);
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.writeByte(nextHeader.getValue());
+				buffer.writeInt(extensionLength);
+				if (options != null) {
+					buffer.writeBytes(options);
+				}
 			}
 			return buffer;
 		}
@@ -93,12 +96,13 @@ public abstract class Options extends AbstractPacket {
 
 	}
 
-	abstract static class Builder implements Packet.Builder {
+	protected abstract static class Builder extends AbstractPacket.Builder {
 
 		protected TransportLayer nextHeader;
 		protected int extensionLength;
 		protected byte[] options;
 
+		protected ByteBuf buffer;
 		protected ByteBuf payloadBuffer;
 
 		public Builder(final TransportLayer nextHeader) {

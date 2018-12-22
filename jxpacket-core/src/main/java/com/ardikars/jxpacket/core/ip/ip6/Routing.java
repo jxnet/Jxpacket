@@ -24,7 +24,6 @@ import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ip.Ip6;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,6 +38,7 @@ public class Routing extends AbstractPacket {
 		this.header = new Routing.Header(builder);
 		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
 				.newInstance(builder.payloadBuffer);
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	@Override
@@ -69,6 +69,7 @@ public class Routing extends AbstractPacket {
 			this.routingType = builder.routingType;
 			this.segmentLeft = builder.segmentLeft;
 			this.routingData = builder.routingData;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public TransportLayer getNextHeader() {
@@ -109,12 +110,16 @@ public class Routing extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			buffer.setByte(0, nextHeader.getValue());
-			buffer.setByte(1, extensionLength);
-			buffer.setByte(2, routingType.getValue());
-			buffer.setByte(3, segmentLeft);
-			buffer.setBytes(4, routingData);
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.writeByte(nextHeader.getValue());
+				buffer.writeByte(extensionLength);
+				buffer.writeByte(routingType.getValue());
+				buffer.writeByte(segmentLeft);
+				if (routingData != null) {
+					buffer.writeBytes(routingData);
+				}
+			}
 			return buffer;
 		}
 
@@ -138,7 +143,7 @@ public class Routing extends AbstractPacket {
 				.toString();
 	}
 
-	public static final class Builder implements Packet.Builder {
+	public static final class Builder extends AbstractPacket.Builder {
 
 		private TransportLayer nextHeader;
 		private byte extensionLength;
@@ -147,6 +152,7 @@ public class Routing extends AbstractPacket {
 
 		private byte[] routingData;
 
+		private ByteBuf buffer;
 		private ByteBuf payloadBuffer;
 
 		public Builder nextHeader(final TransportLayer nextHeader) {
@@ -187,22 +193,15 @@ public class Routing extends AbstractPacket {
 
 		@Override
 		public Routing build(final ByteBuf buffer) {
-			int index = 0;
-			Builder builder = new Builder();
-			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(index));
-			index += 1;
-			builder.extensionLength = buffer.getByte(index);
-			index += 1;
-			builder.routingType = Routing.Type.valueOf(buffer.getByte(index));
-			index += 1;
-			builder.segmentLeft = buffer.getByte(index);
-			index += 1;
-			builder.routingData = new byte[Header.FIXED_ROUTING_DATA_LENGTH + 8 * builder.extensionLength];
-			buffer.getBytes(index, builder.routingData);
-			int size = index + builder.routingData.length;
-			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
-			release(buffer);
-			return new Routing(builder);
+			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
+			this.extensionLength = buffer.readByte();
+			this.routingType = Routing.Type.valueOf(buffer.readByte());
+			this.segmentLeft = buffer.readByte();
+			this.routingData = new byte[Header.FIXED_ROUTING_DATA_LENGTH + 8 * this.extensionLength];
+			buffer.readBytes(this.routingData);
+			this.buffer = buffer;
+			this.payloadBuffer = buffer.slice();
+			return new Routing(this);
 		}
 
 	}

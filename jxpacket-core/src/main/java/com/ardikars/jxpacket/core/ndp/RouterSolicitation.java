@@ -20,6 +20,8 @@ package com.ardikars.jxpacket.core.ndp;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
+import com.sun.org.apache.bcel.internal.classfile.Unknown;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
@@ -31,6 +33,7 @@ public class RouterSolicitation extends AbstractPacket {
     public RouterSolicitation(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        this.payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -43,7 +46,7 @@ public class RouterSolicitation extends AbstractPacket {
         return payload;
     }
 
-    public static class Header implements Packet.Header {
+    public static class Header extends AbstractPacket.Header {
 
         public static final int ROUTER_SOLICITATION_HEADER_LENGTH = 4;
 
@@ -51,6 +54,7 @@ public class RouterSolicitation extends AbstractPacket {
 
         public Header(Builder builder) {
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public NeighborDiscoveryOptions getOptions() {
@@ -59,7 +63,7 @@ public class RouterSolicitation extends AbstractPacket {
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
-            return null;
+            return (T) UnknownPacket.UNKNOWN_PAYLOAD_TYPE;
         }
 
         @Override
@@ -69,9 +73,11 @@ public class RouterSolicitation extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setInt(0, 0);
-            buffer.setBytes(4, options.getHeader().getBuffer());
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeInt(0);
+                buffer.writeBytes(options.getHeader().getBuffer());
+            }
             return buffer;
         }
 
@@ -91,9 +97,12 @@ public class RouterSolicitation extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private NeighborDiscoveryOptions options;
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         public Builder options(NeighborDiscoveryOptions options) {
             this.options = options;
@@ -110,6 +119,8 @@ public class RouterSolicitation extends AbstractPacket {
             buffer.readInt();
             this.options = (NeighborDiscoveryOptions) new NeighborDiscoveryOptions.Builder()
                     .build(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new RouterSolicitation(this);
         }
 

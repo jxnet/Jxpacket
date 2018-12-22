@@ -27,10 +27,23 @@ import io.netty.buffer.ByteBuf;
  */
 public class UnknownPacket extends AbstractPacket {
 
+	public static final NamedNumber<Integer, ?> UNKNOWN_PAYLOAD_TYPE
+			= null;/*new NamedNumber<Integer, NamedNumber>(-1, "UNKNOWN PAYLOAD TYPE") {
+
+		@Override
+		public Integer getValue() {
+			return super.getValue();
+		}
+
+	};*/
+
 	private final UnknownPacket.Header header;
+	private final Packet payload;
 
 	private UnknownPacket(final Builder builder) {
 		this.header = new UnknownPacket.Header(builder);
+		this.payload = null;
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	public static UnknownPacket newPacket(final ByteBuf buffer) {
@@ -39,15 +52,15 @@ public class UnknownPacket extends AbstractPacket {
 
 	@Override
 	public UnknownPacket.Header getHeader() {
-		return this.header;
+		return header;
 	}
 
 	@Override
 	public Packet getPayload() {
-		return null;
+		return payload;
 	}
 
-	public static final class Header implements Packet.Header {
+	public static final class Header extends AbstractPacket.Header {
 
 		final private ByteBuf buffer;
 
@@ -62,12 +75,12 @@ public class UnknownPacket extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			return this.buffer;
+			return buffer;
 		}
 
 		@Override
 		public <T extends NamedNumber> T getPayloadType() {
-			return null;
+			return (T) UNKNOWN_PAYLOAD_TYPE;
 		}
 
 		@Override
@@ -85,7 +98,7 @@ public class UnknownPacket extends AbstractPacket {
 				.append('\n').append(header).toString();
 	}
 
-	public static final class Builder implements Packet.Builder {
+	public static final class Builder extends AbstractPacket.Builder {
 
 		private ByteBuf payloadBuffer;
 
@@ -103,7 +116,6 @@ public class UnknownPacket extends AbstractPacket {
 		public UnknownPacket build(ByteBuf buffer) {
 			Builder builder = new Builder()
 					.payloadBuffer(buffer);
-			release(buffer);
 			return new UnknownPacket(builder);
 		}
 

@@ -21,11 +21,11 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 
 public abstract class Ip extends AbstractPacket {
 
-	protected static abstract class IpHeader implements Header {
+	protected static abstract class AbstractPacketHeader extends Header {
 
 		protected final byte version;
 
-		protected IpHeader(final byte version) {
+		protected AbstractPacketHeader(final byte version) {
 			this.version = version;
 		}
 
@@ -35,7 +35,7 @@ public abstract class Ip extends AbstractPacket {
 
 	}
 
-	protected static abstract class IpPaketBuilder implements Builder {
+	protected static abstract class AbstractPaketBuilder extends Builder {
 
 	}
 

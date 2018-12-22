@@ -32,20 +32,20 @@ public class Udp extends AbstractPacket {
         this.header = new Header(builder);
         this.payload = ApplicationLayer.valueOf(this.header.getPayloadType().getValue())
                 .newInstance(builder.payloadBuffer);
+        payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
     public Udp.Header getHeader() {
-        return this.header;
+        return header;
     }
 
     @Override
     public Packet getPayload() {
-        return this.payload;
+        return payload;
     }
 
-
-    public static class Header implements Packet.Header {
+    public static class Header extends AbstractPacket.Header {
 
         public static final int UDP_HEADER_LENGTH = 8;
 
@@ -112,7 +112,7 @@ public class Udp extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private short sourcePort;
         private short destinationPort;
@@ -157,7 +157,7 @@ public class Udp extends AbstractPacket {
             this.destinationPort = buffer.getShort(2);
             this.length = buffer.getShort(4);
             this.checksum = buffer.getShort(6);
-            this.payloadBuffer = buffer.copy(8, buffer.capacity() - 8);
+            this.payloadBuffer = copy(buffer, 8, buffer.capacity() - 8);
             release(buffer);
             return new Udp(this);
         }

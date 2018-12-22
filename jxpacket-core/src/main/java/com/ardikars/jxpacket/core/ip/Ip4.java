@@ -34,22 +34,23 @@ public class Ip4 extends Ip {
 		this.header = new Ip4.Header(builder);
 		this.payload = TransportLayer.valueOf(this.header.getPayloadType().getValue())
 				.newInstance(builder.payloadBuffer);
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	@Override
 	public Ip4.Header getHeader() {
-		return this.header;
+		return header;
 	}
 
 	@Override
 	public Packet getPayload() {
-		return this.payload;
+		return payload;
 	}
 
 	/**
 	 * @see <a href="https://tools.ietf.org/html/rfc760">IPV4 HeaderAbstract</a>
 	 */
-	public static final class Header extends IpHeader {
+	public static final class Header extends AbstractPacketHeader {
 
 		public static final int IPV4_HEADER_LENGTH = 20;
 
@@ -82,6 +83,7 @@ public class Ip4 extends Ip {
 			this.sourceAddress = builder.sourceAddress;
 			this.destinationAddress = builder.destinationAddress;
 			this.options = builder.options;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public int getHeaderLength() {
@@ -142,9 +144,22 @@ public class Ip4 extends Ip {
 			return options;
 		}
 
+		public boolean isValidChecksum() {
+			int accumulation = 0;
+			for (int i = 0; i < headerLength * 2; ++i) {
+				accumulation += 0xffff & buffer.getShort(0);
+			}
+			accumulation = (accumulation >> 16 & 0xffff)
+					+ (accumulation & 0xffff);
+			if (checksum != (short) (~accumulation & 0xffff)) {
+				return false;
+			}
+			return true;
+		}
+
 		@Override
 		public TransportLayer getPayloadType() {
-			return this.protocol;
+			return protocol;
 		}
 
 		@Override
@@ -154,41 +169,21 @@ public class Ip4 extends Ip {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			int index = 0;
-			buffer.setByte(index, (byte) ((super.version & 0xf) << 4 | headerLength & 0xf));
-			index += 1;
-			buffer.setByte(index, (byte) (((diffServ << 2) & 0x3f) | expCon & 0x3));
-			index += 1;
-			buffer.setShort(index, totalLength);
-			index += 2;
-			buffer.setShort(index, identification);
-			index += 2;
-			buffer.setShort(index, (flags & 0x7) << 13 | fragmentOffset & 0x1fff);
-			index += 2;
-			buffer.setByte(index, ttl);
-			index += 1;
-			buffer.setByte(index, protocol.getValue());
-			index += 1;
-			buffer.setShort(index, checksum & 0xffff);
-			index += 2;
-			buffer.setBytes(index, sourceAddress.toBytes());
-			index += Inet4Address.IPV4_ADDRESS_LENGTH;
-			buffer.setBytes(index, destinationAddress.toBytes());
-			index += Inet4Address.IPV4_ADDRESS_LENGTH;
-			if (options != null && headerLength > 5) {
-				buffer.setBytes(index, options);
-			}
-			short checksum = this.checksum;
-			if (checksum == 0) {
-				int accumulation = 0;
-				for (int i = 0; i < headerLength * 2; ++i) {
-					accumulation += 0xffff & buffer.getShort(0);
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.writeByte((byte) ((super.version & 0xf) << 4 | headerLength & 0xf));
+				buffer.writeByte((byte) (((diffServ << 2) & 0x3f) | expCon & 0x3));
+				buffer.writeShort(totalLength);
+				buffer.writeShort(identification);
+				buffer.writeShort((flags & 0x7) << 13 | fragmentOffset & 0x1fff);
+				buffer.writeByte(ttl);
+				buffer.writeByte(protocol.getValue());
+				buffer.writeShort(checksum & 0xffff);
+				buffer.writeBytes(sourceAddress.toBytes());
+				buffer.writeBytes(destinationAddress.toBytes());
+				if (options != null && headerLength > 5) {
+					buffer.writeBytes(options);
 				}
-				accumulation = (accumulation >> 16 & 0xffff)
-						+ (accumulation & 0xffff);
-				checksum = (short) (~accumulation & 0xffff);
-				buffer.setShort(10, checksum & 0xffff);
 			}
 			return buffer;
 		}
@@ -221,7 +216,7 @@ public class Ip4 extends Ip {
 				.toString();
 	}
 
-	public static final class Builder extends IpPaketBuilder {
+	public static final class Builder extends AbstractPaketBuilder {
 
 		private byte headerLength;
 		private byte diffServ;
@@ -237,7 +232,13 @@ public class Ip4 extends Ip {
 		private Inet4Address destinationAddress;
 		private byte[] options;
 
+		private ByteBuf buffer;
 		private ByteBuf payloadBuffer;
+
+		/**
+		 * A helper field.
+		 */
+		private boolean calculateChecksum;
 
 		public Builder headerLength(final int headerLength) {
 			this.headerLength = (byte) (headerLength & 0xf);
@@ -299,6 +300,11 @@ public class Ip4 extends Ip {
 			return this;
 		}
 
+		public Builder calculateChecksum(boolean calculateChecksum) {
+			this.calculateChecksum = calculateChecksum;
+			return this;
+		}
+
 		/**
 		 * Add options.
 		 * @param options options.
@@ -310,10 +316,6 @@ public class Ip4 extends Ip {
 			return this;
 		}
 
-		public ByteBuf getPayloadBuffer() {
-			return this.payloadBuffer;
-		}
-
 		@Override
 		public Packet build() {
 			return new Ip4(this);
@@ -321,38 +323,47 @@ public class Ip4 extends Ip {
 
 		@Override
 		public Packet build(final ByteBuf buffer) {
-			Builder builder = new Builder();
-			builder.headerLength = (byte) (buffer.getByte(0) & 0xf);
-			byte tmp = buffer.getByte(1);
-			builder.diffServ = (byte) ((tmp >> 2) & 0x3f);
-			builder.expCon = (byte) (tmp & 0x3);
-			builder.totalLength = buffer.getShort(2);
-			builder.identification = buffer.getShort(4);
-			short sscratch = buffer.getShort(6);
-			builder.flags = (byte) (sscratch >> 13 & 0x7);
-			builder.fragmentOffset = (short) (sscratch & 0x1fff);
-			builder.ttl = buffer.getByte(8);
-			builder.protocol = TransportLayer.valueOf(buffer.getByte(9));
-			builder.checksum = (short) (buffer.getShort(10) & 0xffff);
+			this.headerLength = (byte) (buffer.readByte() & 0xf);
+			byte tmp = buffer.readByte();
+			this.diffServ = (byte) ((tmp >> 2) & 0x3f);
+			this.expCon = (byte) (tmp & 0x3);
+			this.totalLength = buffer.readShort();
+			this.identification = buffer.readShort();
+			short sscratch = buffer.readShort();
+			this.flags = (byte) (sscratch >> 13 & 0x7);
+			this.fragmentOffset = (short) (sscratch & 0x1fff);
+			this.ttl = buffer.readByte();
+			this.protocol = TransportLayer.valueOf(buffer.readByte());
+			this.checksum = (short) (buffer.readShort() & 0xffff);
 			byte[] ipv4Buffer;
 			ipv4Buffer = new byte[Inet4Address.IPV4_ADDRESS_LENGTH];
-			buffer.getBytes(12, ipv4Buffer);
-			builder.sourceAddress = Inet4Address.valueOf(ipv4Buffer);
+			buffer.readBytes(ipv4Buffer);
+			this.sourceAddress = Inet4Address.valueOf(ipv4Buffer);
 			ipv4Buffer = new byte[Inet4Address.IPV4_ADDRESS_LENGTH];
-			buffer.getBytes(16, ipv4Buffer);
-			builder.destinationAddress = Inet4Address.valueOf(ipv4Buffer);
-			int size = 20;
-			if (builder.headerLength > 5) {
-				int optionsLength = (builder.headerLength - 5) * 4;
-				builder.options = new byte[optionsLength];
-				buffer.getBytes(20, builder.options);
-				size += optionsLength;
+			buffer.readBytes(ipv4Buffer);
+			this.destinationAddress = Inet4Address.valueOf(ipv4Buffer);
+			if (headerLength > 5) {
+				int optionsLength = (headerLength - 5) * 4;
+				this.options = new byte[optionsLength];
+				buffer.readBytes(options);
 			} else {
-				builder.options = new byte[0];
+				options = new byte[0];
 			}
-			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
-			release(buffer);
-			return new Ip4(builder);
+			if (calculateChecksum) {
+				int index = 0;
+				int accumulation = 0;
+				for (int i = 0; i < headerLength * 2; ++i) {
+					accumulation += 0xffff & buffer.getShort(index);
+					index += 2;
+				}
+				accumulation = (accumulation >> 16 & 0xffff) + (accumulation & 0xffff);
+				if (checksum != (short) (~accumulation & 0xffff)) {
+					this.checksum = 0;
+				}
+			}
+			this.buffer = buffer;
+			this.payloadBuffer = buffer.slice();
+			return new Ip4(this);
 		}
 
 	}

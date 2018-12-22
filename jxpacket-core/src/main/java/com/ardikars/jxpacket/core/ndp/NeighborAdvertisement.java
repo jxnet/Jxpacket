@@ -21,8 +21,8 @@ import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 public class NeighborAdvertisement extends AbstractPacket {
 
@@ -32,6 +32,7 @@ public class NeighborAdvertisement extends AbstractPacket {
     public NeighborAdvertisement(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        this.payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class NeighborAdvertisement extends AbstractPacket {
         return payload;
     }
 
-    public static final class Header implements Packet.Header {
+    public static final class Header extends AbstractPacket.Header {
 
         public static final int HEADER_LENGTH = 20;
 
@@ -61,6 +62,7 @@ public class NeighborAdvertisement extends AbstractPacket {
             this.overrideFlag = builder.overrideFlag;
             this.targetAddress = builder.targetAddress;
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public boolean isRouterFlag() {
@@ -85,7 +87,7 @@ public class NeighborAdvertisement extends AbstractPacket {
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
-            return null;
+            return (T) UnknownPacket.UNKNOWN_PAYLOAD_TYPE;
         }
 
         @Override
@@ -95,12 +97,14 @@ public class NeighborAdvertisement extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setInt(0, (this.routerFlag ? 1 : 0) << 31
-                    | (this.solicitedFlag ? 1 : 0) << 30
-                    | (this.overrideFlag ? 1 : 0) << 29);
-            buffer.setBytes(4, this.targetAddress.getAddress());
-            buffer.setBytes(20, options.getHeader().getBuffer());
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeInt((routerFlag ? 1 : 0) << 31
+                        | (solicitedFlag ? 1 : 0) << 30
+                        | (overrideFlag ? 1 : 0) << 29);
+                buffer.writeBytes(targetAddress.getAddress());
+                buffer.writeBytes(options.getHeader().getBuffer());
+            }
             return buffer;
         }
 
@@ -124,7 +128,7 @@ public class NeighborAdvertisement extends AbstractPacket {
                 .toString();
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private boolean routerFlag;
         private boolean solicitedFlag;
@@ -132,6 +136,9 @@ public class NeighborAdvertisement extends AbstractPacket {
         private Inet6Address targetAddress;
 
         private NeighborDiscoveryOptions options;
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         public Builder routerFlag(boolean routerFlag) {
             this.routerFlag = routerFlag;
@@ -174,6 +181,8 @@ public class NeighborAdvertisement extends AbstractPacket {
             this.targetAddress = Inet6Address.valueOf(ipv6AddrBuffer);
             this.options = (NeighborDiscoveryOptions) new NeighborDiscoveryOptions.Builder()
                     .build(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new NeighborAdvertisement(this);
         }
 

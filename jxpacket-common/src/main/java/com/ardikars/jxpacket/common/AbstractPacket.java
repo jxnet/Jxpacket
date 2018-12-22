@@ -18,6 +18,10 @@
 package com.ardikars.jxpacket.common;
 
 import com.ardikars.jxpacket.common.util.PacketIterator;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +33,19 @@ import java.util.List;
  * @since 1.5.0
  */
 public abstract class AbstractPacket implements Packet {
+
+    protected ByteBuf payloadBuffer;
+
+    /**
+     * Returns the {@link ByteBuf} object representing this packet's payload.
+     * @return returns empty buffer if a payload doesn't exits, {@link ByteBuf} object otherwise.
+     */
+    public ByteBuf getPayloadBuffer() {
+        if (payloadBuffer == null) {
+            payloadBuffer = Unpooled.EMPTY_BUFFER;
+        }
+        return payloadBuffer;
+    }
 
     @Override
     public <T extends Packet> boolean contains(Class<T> clazz) {
@@ -51,6 +68,43 @@ public abstract class AbstractPacket implements Packet {
     @Override
     public Iterator<Packet> iterator() {
         return new PacketIterator(this);
+    }
+
+    public static abstract class Header implements Packet.Header {
+
+        protected static final ByteBufAllocator ALLOCATOR = PooledByteBufAllocator.DEFAULT;
+
+        protected ByteBuf buffer;
+
+        /**
+         * Returns header as byte buffer.
+         * @return return byte buffer.
+         */
+        public ByteBuf getBuffer() {
+            if (buffer == null) {
+                buffer = Unpooled.EMPTY_BUFFER;
+            }
+            return buffer;
+        }
+
+    }
+
+    /**
+     * Packet builder.
+     */
+    protected static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf> {
+
+        public void release(ByteBuf buffer) {
+            // do nothing
+        }
+
+    }
+
+    /**
+     * Packet factory.
+     */
+    protected static abstract class Factory implements com.ardikars.common.util.Factory<Packet, ByteBuf> {
+
     }
 
 }

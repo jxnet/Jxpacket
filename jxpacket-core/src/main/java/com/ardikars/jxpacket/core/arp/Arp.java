@@ -25,7 +25,6 @@ import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +38,7 @@ public class Arp extends AbstractPacket {
 		this.header = new Arp.Header(builder);
 		this.payload = NetworkLayer.valueOf(this.header.getPayloadType().getValue())
 				.newInstance(builder.payloadBuffer);
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class Arp extends AbstractPacket {
 	/**
 	 * @see <a href="https://tools.ietf.org/html/rfc826">Arp HeaderAbstract (RFC826)</a>
 	 */
-	public static final class Header implements Packet.Header {
+	public static final class Header extends AbstractPacket.Header {
 
 		public static final int ARP_HEADER_LENGTH = 28;
 
@@ -82,6 +82,7 @@ public class Arp extends AbstractPacket {
 			this.senderProtocolAddress = builder.senderProtocolAddress;
 			this.targetHardwareAddress = builder.targetHardwareAddress;
 			this.targetProtocolAddress = builder.targetProtocolAddress;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public DataLinkLayer getHardwareType() {
@@ -132,16 +133,18 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-			buffer.setShort(0, hardwareType.getValue());
-			buffer.setShort(2, protocolType.getValue());
-			buffer.setByte(4, hardwareAddressLength);
-			buffer.setByte(5, protocolAddressLength);
-			buffer.setShort(6, operationCode.getValue());
-			buffer.setBytes(8, senderHardwareAddress.toBytes());
-			buffer.setBytes(14, senderProtocolAddress.toBytes());
-			buffer.setBytes(18, targetHardwareAddress.toBytes());
-			buffer.setBytes(24, targetProtocolAddress.toBytes());
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.writeShort(hardwareType.getValue());
+				buffer.writeShort(protocolType.getValue());
+				buffer.writeByte(hardwareAddressLength);
+				buffer.writeByte(protocolAddressLength);
+				buffer.writeShort(operationCode.getValue());
+				buffer.writeBytes(senderHardwareAddress.toBytes());
+				buffer.writeBytes(senderProtocolAddress.toBytes());
+				buffer.writeBytes(targetHardwareAddress.toBytes());
+				buffer.writeBytes(targetProtocolAddress.toBytes());
+			}
 			return buffer;
 		}
 
@@ -169,7 +172,7 @@ public class Arp extends AbstractPacket {
 				.toString();
 	}
 
-	public static final class Builder implements Packet.Builder {
+	public static final class Builder extends AbstractPacket.Builder {
 
 		private DataLinkLayer hardwareType;
 		private NetworkLayer protocolType;
@@ -181,6 +184,7 @@ public class Arp extends AbstractPacket {
 		private MacAddress targetHardwareAddress;
 		private Inet4Address targetProtocolAddress;
 
+		private ByteBuf buffer;
 		private ByteBuf payloadBuffer;
 
 		public Builder hardwareType(final DataLinkLayer hardwareType) {
@@ -240,30 +244,29 @@ public class Arp extends AbstractPacket {
 
 		@Override
 		public Arp build(final ByteBuf buffer) {
-			Arp.Builder builder = new Builder();
-			builder.hardwareType = DataLinkLayer.valueOf(buffer.getShort(0));
-			builder.protocolType = NetworkLayer.valueOf(buffer.getShort(2));
-			builder.hardwareAddressLength = buffer.getByte(4);
-			builder.protocolAddressLength = buffer.getByte(5);
-			builder.operationCode = OperationCode.valueOf(buffer.getShort(6));
+			this.hardwareType = DataLinkLayer.valueOf(buffer.readShort());
+			this.protocolType = NetworkLayer.valueOf(buffer.readShort());
+			this.hardwareAddressLength = buffer.readByte();
+			this.protocolAddressLength = buffer.readByte();
+			this.operationCode = OperationCode.valueOf(buffer.readShort());
 			byte[] byteBuffer;
-			int hardwareAddressLength = builder.hardwareAddressLength & 0xff;
-			int protocolAddressLength = builder.protocolAddressLength & 0xff;
+			int hardwareAddressLength = this.hardwareAddressLength & 0xff;
+			int protocolAddressLength = this.protocolAddressLength & 0xff;
 			byteBuffer = new byte[hardwareAddressLength];
-			buffer.getBytes(8, byteBuffer);
-			builder.senderHardwareAddress = MacAddress.valueOf(byteBuffer);
+			buffer.readBytes(byteBuffer);
+			this.senderHardwareAddress = MacAddress.valueOf(byteBuffer);
 			byteBuffer = new byte[protocolAddressLength];
-			buffer.getBytes(14, byteBuffer);
-			builder.senderProtocolAddress = Inet4Address.valueOf(byteBuffer);
+			buffer.readBytes(byteBuffer);
+			this.senderProtocolAddress = Inet4Address.valueOf(byteBuffer);
 			byteBuffer = new byte[hardwareAddressLength];
-			buffer.getBytes(18, byteBuffer);
-			builder.targetHardwareAddress = MacAddress.valueOf(byteBuffer);
+			buffer.readBytes(byteBuffer);
+			this.targetHardwareAddress = MacAddress.valueOf(byteBuffer);
 			byteBuffer = new byte[protocolAddressLength];
-			buffer.getBytes(24, byteBuffer);
-			builder.targetProtocolAddress = Inet4Address.valueOf(byteBuffer);
-			builder.payloadBuffer = buffer.copy(Header.ARP_HEADER_LENGTH, buffer.capacity() - Header.ARP_HEADER_LENGTH);
-			release(buffer);
-			return new Arp(builder);
+			buffer.readBytes(byteBuffer);
+			this.targetProtocolAddress = Inet4Address.valueOf(byteBuffer);
+			this.buffer = buffer;
+			this.payloadBuffer = buffer.slice();
+			return new Arp(this);
 		}
 	}
 

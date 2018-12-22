@@ -21,7 +21,6 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.Arrays;
 
@@ -34,6 +33,7 @@ public class Authentication extends AbstractPacket {
 		this.header = new Authentication.Header(builder);
 		this.payload = TransportLayer.valueOf(header.getPayloadType().getValue())
 				.newInstance(builder.payloadBuffer);
+		payloadBuffer = builder.payloadBuffer;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class Authentication extends AbstractPacket {
 	/**
 	 * @see <a href="https://tools.ietf.org/html/rfc4302">Authentication HeaderAbstract</a>
 	 */
-	public static final class Header implements Packet.Header {
+	public static final class Header extends AbstractPacket.Header {
 
 		public static final byte FIXED_HEADER_LENGTH = 12; // bytes
 
@@ -65,6 +65,7 @@ public class Authentication extends AbstractPacket {
 			this.securityParameterIndex = builder.securityParameterIndex;
 			this.sequenceNumber = builder.sequenceNumber;
 			this.integrityCheckValue = builder.integrityCheckValue;
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public TransportLayer getNextHeader() {
@@ -105,15 +106,16 @@ public class Authentication extends AbstractPacket {
 
 		@Override
 		public ByteBuf getBuffer() {
-			ByteBuf buffer = PooledByteBufAllocator.DEFAULT
-					.directBuffer(getLength());
-			buffer.setByte(0, nextHeader.getValue());
-			buffer.setByte(1, payloadLength);
-			buffer.setShort(2, (short) 0); // reserved
-			buffer.setInt(4, sequenceNumber);
-			buffer.setInt(8, securityParameterIndex);
-			if (integrityCheckValue != null) {
-				buffer.setBytes(12, integrityCheckValue);
+			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer.setByte(0, nextHeader.getValue());
+				buffer.setByte(1, payloadLength);
+				buffer.setShort(2, (short) 0); // reserved
+				buffer.setInt(4, sequenceNumber);
+				buffer.setInt(8, securityParameterIndex);
+				if (integrityCheckValue != null) {
+					buffer.setBytes(12, integrityCheckValue);
+				}
 			}
 			return buffer;
 		}
@@ -138,7 +140,7 @@ public class Authentication extends AbstractPacket {
 				.toString();
 	}
 
-	public static final class Builder implements Packet.Builder {
+	public static final class Builder extends AbstractPacket.Builder {
 
 		private TransportLayer nextHeader;
 		private byte payloadLength;
@@ -146,6 +148,7 @@ public class Authentication extends AbstractPacket {
 		private int sequenceNumber;
 		private byte[] integrityCheckValue;
 
+		private ByteBuf buffer;
 		private ByteBuf payloadBuffer;
 
 		public Builder nextHeader(final TransportLayer nextHeader) {
@@ -186,20 +189,17 @@ public class Authentication extends AbstractPacket {
 
 		@Override
 		public Packet build(final ByteBuf buffer) {
-			Builder builder = new Builder();
-			builder.nextHeader = TransportLayer.valueOf(buffer.getByte(0));
-			builder.payloadLength = buffer.getByte(1);
-			builder.securityParameterIndex = buffer.getInt(4);
-			builder.sequenceNumber = buffer.getInt(8);
-			builder.integrityCheckValue = new byte[(builder.payloadLength + 2) * 4 - 12];
-			int size = 12;
-			if (builder.integrityCheckValue != null) {
-				buffer.getBytes(12, builder.integrityCheckValue);
-				size += builder.integrityCheckValue.length;
+			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
+			this.payloadLength = buffer.readByte();
+			this.securityParameterIndex = buffer.readInt();
+			this.sequenceNumber = buffer.readInt();
+			this.integrityCheckValue = new byte[(this.payloadLength + 2) * 4 - 12];
+			if (this.integrityCheckValue != null) {
+				buffer.readBytes(this.integrityCheckValue);
 			}
-			builder.payloadBuffer = buffer.copy(size, buffer.capacity() - size);
-			release(buffer);
-			return new Authentication(builder);
+			this.buffer = buffer;
+			this.payloadBuffer = buffer.slice();
+			return new Authentication(this);
 		}
 
 	}

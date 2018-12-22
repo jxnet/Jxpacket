@@ -20,8 +20,10 @@ package com.ardikars.jxpacket.core.ndp;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.buffer.Unpooled;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
     public NeighborDiscoveryOptions(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
+        payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -50,12 +53,14 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         return payload;
     }
 
-    public static class Header implements Packet.Header {
+    public static class Header extends AbstractPacket.Header {
 
         private final List<Option> options;
+        private int length = 0;
 
         private Header(Builder builder) {
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public List<Option> getOptions() {
@@ -64,29 +69,31 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
-            return null;
+            return (T) UnknownPacket.UNKNOWN_PAYLOAD_TYPE;
         }
 
         @Override
         public int getLength() {
-            int length = 0;
-            for (Option option : this.options) {
-                length += option.getLength() << 3;
+            if (length == 0) {
+                for (Option option : this.options) {
+                    length += option.getLength() << 3;
+                }
             }
             return length;
         }
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            for (Option option : this.options) {
-                buffer.setByte(0, option.getType().getValue());
-                buffer.setByte(1, option.getLength());
-                buffer.setBytes(2, option.getData());
-                int index = 2 + option.getData().length;
-                int paddingLength = (option.getLength() << 3) - (option.getData().length + 2);
-                for (int i = 0; i < paddingLength; i++) {
-                    buffer.setByte(index + i, (byte) 0);
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                for (Option option : options) {
+                    buffer.writeByte(option.getType().getValue());
+                    buffer.writeByte(option.getLength());
+                    buffer.writeBytes(option.getData());
+                    int paddingLength = (option.getLength() << 3) - (option.getData().length + 2);
+                    for (int i = 0; i < paddingLength; i++) {
+                        buffer.writeByte(0);
+                    }
                 }
             }
             return buffer;
@@ -171,11 +178,11 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         }
 
         public OptionType getType() {
-            return this.type;
+            return type;
         }
 
         public byte getLength() {
-            return this.length;
+            return length;
         }
 
         /**
@@ -200,9 +207,12 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     }
 
-    public static class Builder implements Packet.Builder {
+    public static class Builder extends AbstractPacket.Builder {
 
         private List<Option> options = new ArrayList<>();
+
+        private ByteBuf buffer;
+        private ByteBuf payloadBuffer;
 
         public Builder options(List<Option> options) {
             this.options = options;
@@ -231,6 +241,8 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 buffer.readBytes(data, 0, dataLength);
                 options.add(Option.newInstance(type, data));
             }
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new NeighborDiscoveryOptions(this);
         }
 
