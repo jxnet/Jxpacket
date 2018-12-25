@@ -97,8 +97,8 @@ public class Fragment extends AbstractPacket {
 				buffer = ALLOCATOR.directBuffer(getLength());
 				buffer.writeByte(nextHeader.getValue());
 				buffer.writeByte(0); // reserved
-				buffer.writeShort(((fragmentOffset & 0x1fff) << 3
-						| flagType.getValue() & 0x1));
+				buffer.writeShort((fragmentOffset & 0x1fff) << 3
+						| flagType.getValue() & 0x1);
 				buffer.writeInt(identification);
 			}
 			return buffer;

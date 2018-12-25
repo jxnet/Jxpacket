@@ -24,11 +24,18 @@ import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * NeighborAdvertisement
+ */
 public class NeighborAdvertisement extends AbstractPacket {
 
     private final NeighborAdvertisement.Header header;
     private final Packet payload;
 
+    /**
+     * Build Neighbor Advertisement packet.
+     * @param builder build.
+     */
     public NeighborAdvertisement(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;

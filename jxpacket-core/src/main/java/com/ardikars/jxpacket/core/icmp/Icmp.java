@@ -20,7 +20,6 @@ package com.ardikars.jxpacket.core.icmp;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 public abstract class Icmp extends AbstractPacket {
 

@@ -23,13 +23,19 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
+/**
+ * Redirect
+ */
 public class Redirect extends AbstractPacket {
 
     private final Redirect.Header header;
     private final Packet payload;
 
+    /**
+     * Build Redirect packet.
+     * @param builder builder.
+     */
     public Redirect(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;

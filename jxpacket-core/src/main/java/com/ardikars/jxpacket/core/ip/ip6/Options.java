@@ -18,12 +18,10 @@
 package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.jxpacket.common.AbstractPacket;
-import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ip.Ip6;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.Arrays;
 
@@ -42,7 +40,6 @@ public abstract class Options extends AbstractPacket {
 			this.nextHeader = nextHeader;
 			this.extensionLength = builder.extensionLength;
 			this.options = builder.options;
-			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		public TransportLayer getNextHeader() {
@@ -59,7 +56,7 @@ public abstract class Options extends AbstractPacket {
 				System.arraycopy(options, 0, data, 0, data.length);
 				return data;
 			}
-			return options;
+			return new byte[] { };
 		}
 
 		@Override

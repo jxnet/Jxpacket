@@ -21,7 +21,6 @@ import com.ardikars.common.net.Inet4Address;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.Arrays;
 
@@ -144,6 +143,10 @@ public class Ip4 extends Ip {
 			return options;
 		}
 
+		/**
+		 * Check whether checksum is valid.
+		 * @return returns true if checksum is valid, false otherwise.
+		 */
 		public boolean isValidChecksum() {
 			int accumulation = 0;
 			for (int i = 0; i < headerLength * 2; ++i) {
@@ -151,10 +154,7 @@ public class Ip4 extends Ip {
 			}
 			accumulation = (accumulation >> 16 & 0xffff)
 					+ (accumulation & 0xffff);
-			if (checksum != (short) (~accumulation & 0xffff)) {
-				return false;
-			}
-			return true;
+			return checksum == (short) (~accumulation & 0xffff);
 		}
 
 		@Override

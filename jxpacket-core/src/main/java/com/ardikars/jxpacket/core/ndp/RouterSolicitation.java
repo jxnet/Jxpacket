@@ -23,11 +23,18 @@ import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * RouterSolicitation
+ */
 public class RouterSolicitation extends AbstractPacket {
 
     private final RouterSolicitation.Header header;
     private final Packet payload;
 
+    /**
+     * Builde Router Solicitation packet.
+     * @param builder builder.
+     */
     public RouterSolicitation(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
@@ -50,9 +57,14 @@ public class RouterSolicitation extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        /**
+         * Builde Router Solicitation packet.
+         * @param builder builder.
+         */
         public Header(Builder builder) {
             this.options = builder.options;
-            this.buffer = builder.buffer.slice(0, getLength());
+            this.buffer = builder.buffer.slice(0,
+                    ROUTER_SOLICITATION_HEADER_LENGTH + options.getHeader().getLength());
         }
 
         public NeighborDiscoveryOptions getOptions() {

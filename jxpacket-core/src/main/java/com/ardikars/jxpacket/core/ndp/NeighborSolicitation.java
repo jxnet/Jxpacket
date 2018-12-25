@@ -22,13 +22,19 @@ import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
+/**
+ * NeighborSolicitation
+ */
 public class NeighborSolicitation extends AbstractPacket {
 
     private final NeighborSolicitation.Header header;
     private final Packet payload;
 
+    /**
+     * Build Neighbor Solicitation packet.
+     * @param builder builder.
+     */
     public NeighborSolicitation(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;

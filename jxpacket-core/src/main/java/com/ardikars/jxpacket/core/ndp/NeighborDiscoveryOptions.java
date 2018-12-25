@@ -22,9 +22,6 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,11 +29,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * NeighborDiscoveryOptions
+ */
 public class NeighborDiscoveryOptions extends AbstractPacket {
 
     private final NeighborDiscoveryOptions.Header header;
     private final Packet payload;
 
+    /**
+     * Builde Neighbor Discovery Options packet.
+     * @param builder builder.
+     */
     public NeighborDiscoveryOptions(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
@@ -56,7 +60,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
     public static class Header extends AbstractPacket.Header {
 
         private final List<Option> options;
-        private int length = 0;
+        private int length;
 
         private Header(Builder builder) {
             this.options = builder.options;

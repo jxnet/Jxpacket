@@ -47,6 +47,7 @@ public class DestinationOptions extends Options {
 
 		protected Header(Builder builder) {
 			super(builder, builder.nextHeader);
+			this.buffer = builder.buffer.slice(0, getLength());
 		}
 
 		@Override

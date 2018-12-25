@@ -21,13 +21,19 @@ import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
+/**
+ * RouterAdvertisement
+ */
 public class RouterAdvertisement extends AbstractPacket {
 
     private final RouterAdvertisement.Header header;
     private final Packet payload;
 
+    /**
+     * Builder Router Advertisement packet.
+     * @param builder builder.
+     */
     public RouterAdvertisement(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;
@@ -111,7 +117,7 @@ public class RouterAdvertisement extends AbstractPacket {
             if (buffer == null) {
                 buffer = ALLOCATOR.directBuffer(getLength());
                 buffer.writeByte(currentHopLimit);
-                buffer.writeByte(((manageFlag ? 1 : 0) << 7 | (otherFlag ? 1 : 0) << 6));
+                buffer.writeByte((manageFlag ? 1 : 0) << 7 | (otherFlag ? 1 : 0) << 6);
                 buffer.writeShort(routerLifetime);
                 buffer.writeInt(reachableTime);
                 buffer.writeInt(retransmitTimer);

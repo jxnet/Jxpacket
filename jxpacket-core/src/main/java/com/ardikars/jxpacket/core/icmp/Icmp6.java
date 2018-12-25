@@ -61,6 +61,10 @@ public class Icmp6 extends AbstractPacket {
     private final Icmp6.Header header;
     private final Packet payload;
 
+    /**
+     * Build icmpv6 packet.
+     * @param builder builder.
+     */
     public Icmp6(Builder builder) {
         this.header = new Header(builder);
         this.payload = null;

@@ -93,10 +93,6 @@ public abstract class AbstractPacket implements Packet {
      */
     public static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf> {
 
-        public void release(ByteBuf buffer) {
-            // do nothing
-        }
-
     }
 
     /**

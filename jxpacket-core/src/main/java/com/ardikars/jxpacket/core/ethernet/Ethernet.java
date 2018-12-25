@@ -92,6 +92,7 @@ public class Ethernet extends AbstractPacket {
 		@Override
 		public ByteBuf getBuffer() {
 			if (buffer == null) {
+				buffer = ALLOCATOR.directBuffer(getLength());
 				buffer.writeBytes(destinationMacAddress.toBytes());
 				buffer.writeBytes(sourceMacAddress.toBytes());
 				buffer.writeShort(ethernetType.getValue());

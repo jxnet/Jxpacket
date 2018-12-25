@@ -22,7 +22,6 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 import java.util.Arrays;
 
@@ -151,7 +150,7 @@ public class Tcp extends AbstractPacket {
                 buffer.writeShort(this.destinationPort);
                 buffer.writeInt(this.sequence);
                 buffer.writeInt(this.acknowledge);
-                buffer.writeShort(((this.flags.getShortValue() & 0x1ff) | (this.dataOffset & 0xf) << 12));
+                buffer.writeShort((this.flags.getShortValue() & 0x1ff) | (this.dataOffset & 0xf) << 12);
                 buffer.writeShort(this.windowSize);
                 buffer.writeShort(this.checksum);
                 buffer.writeShort(this.urgentPointer);
