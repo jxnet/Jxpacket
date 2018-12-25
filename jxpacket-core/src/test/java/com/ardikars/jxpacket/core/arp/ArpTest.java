@@ -1,10 +1,8 @@
 package com.ardikars.jxpacket.core.arp;
 
-import com.ardikars.jxpacket.common.UnknownPacket;
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import com.ardikars.jxpacket.core.BaseTest;
-import com.ardikars.jxpacket.core.arp.Arp;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
@@ -25,7 +23,7 @@ public class ArpTest extends BaseTest {
     public void before() {
         DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
         NetworkLayer.register(NetworkLayer.ARP, new Arp.Builder());
-        buf.setBytes(0, data);
+        buf.writeBytes(data);
         ethernet = Ethernet.newPacket(buf);
     }
 
@@ -44,7 +42,7 @@ public class ArpTest extends BaseTest {
     @After
     public void after() {
         try {
-            buf.release(); // buffer already release to the pool
+            buf.release();
         } catch (Throwable e) {
             //
         }

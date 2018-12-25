@@ -27,7 +27,7 @@ public class Ip4TcpTest extends BaseTest {
         DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
         NetworkLayer.register(NetworkLayer.IPV4, new Ip4.Builder());
         TransportLayer.register(TransportLayer.TCP, new Tcp.Builder());
-        buf.setBytes(0, data);
+        buf.writeBytes(data);
         ethernet = Ethernet.newPacket(buf);
     }
 
@@ -46,7 +46,7 @@ public class Ip4TcpTest extends BaseTest {
     @After
     public void after() {
         try {
-            buf.release(); // buffer already release to the pool
+            buf.release();
         } catch (Throwable e) {
             //
         }

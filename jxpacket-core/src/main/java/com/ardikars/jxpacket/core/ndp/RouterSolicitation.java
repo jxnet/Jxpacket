@@ -21,9 +21,7 @@ import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import com.sun.org.apache.bcel.internal.classfile.Unknown;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.PooledByteBufAllocator;
 
 public class RouterSolicitation extends AbstractPacket {
 

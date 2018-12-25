@@ -26,7 +26,7 @@ public class VlanArpTest extends BaseTest {
         DataLinkLayer.register(DataLinkLayer.EN10MB, new Ethernet.Builder());
         NetworkLayer.register(NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES, new Vlan.Builder());
         NetworkLayer.register(NetworkLayer.ARP, new Arp.Builder());
-        buf.setBytes(0, data);
+        buf.writeBytes(data);
         ethernet = Ethernet.newPacket(buf);
     }
 
@@ -45,7 +45,7 @@ public class VlanArpTest extends BaseTest {
     @After
     public void after() {
         try {
-            buf.release(); // buffer already release to the pool
+            buf.release();
         } catch (Throwable e) {
             //
         }

@@ -31,7 +31,7 @@ public class Ip6OverIp4Test extends BaseTest {
         NetworkLayer.register(NetworkLayer.IPV4, new Ip4.Builder());
         TransportLayer.register(TransportLayer.IPV6, new Ip6.Builder());
         TransportLayer.register(TransportLayer.IPV6_ICMP, new Icmp6.Builder());
-        buf.setBytes(0, data);
+        buf.writeBytes(data);
         ethernet = Ethernet.newPacket(buf);
     }
 
@@ -50,7 +50,7 @@ public class Ip6OverIp4Test extends BaseTest {
     @After
     public void after() {
         try {
-            buf.release(); // buffer already release to the pool
+            buf.release();
         } catch (Throwable e) {
             //
         }

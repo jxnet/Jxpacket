@@ -5,7 +5,7 @@ import com.ardikars.jxpacket.core.ethernet.VlanArpTest;
 import com.ardikars.jxpacket.core.ip.Ip4TcpTest;
 import com.ardikars.jxpacket.core.ip.Ip6AuthenticationTest;
 import com.ardikars.jxpacket.core.ip.Ip6RoutingTest;
-import com.ardikars.jxpacket.core.tcp.Ip4UdpTest;
+import com.ardikars.jxpacket.core.udp.Ip4UdpTest;
 import com.ardikars.jxpacket.core.tcp.Ip6TcpTest;
 import com.ardikars.jxpacket.core.udp.Ip6UdpTest;
 import org.junit.Test;

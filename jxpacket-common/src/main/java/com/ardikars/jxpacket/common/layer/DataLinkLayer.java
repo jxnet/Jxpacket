@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.common.layer;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
@@ -45,7 +46,7 @@ public final class DataLinkLayer extends NamedNumber<Short, DataLinkLayer> imple
     private static final Map<DataLinkLayer, Short> registry =
             new HashMap<>();
 
-    private static final Map<Short, Packet.Builder> builder =
+    private static final Map<Short, AbstractPacket.Builder> builder =
             new HashMap<>();
 
     public DataLinkLayer(Short value, String name) {
@@ -54,7 +55,7 @@ public final class DataLinkLayer extends NamedNumber<Short, DataLinkLayer> imple
 
     @Override
     public Packet newInstance(ByteBuf buffer) {
-        Packet.Builder packetBuilder = builder.get(this.getValue());
+        AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
         if (packetBuilder == null) {
             if (buffer == null || buffer.capacity() <= 0) {
                 return null;
@@ -92,7 +93,7 @@ public final class DataLinkLayer extends NamedNumber<Short, DataLinkLayer> imple
      * @param dataLinkLayer data link type.
      * @param packetBuilder packet builder.
      */
-    public static void register(DataLinkLayer dataLinkLayer, Packet.Builder packetBuilder) {
+    public static void register(DataLinkLayer dataLinkLayer, AbstractPacket.Builder packetBuilder) {
         synchronized (builder) {
             builder.put(dataLinkLayer.getValue(), packetBuilder);
         }

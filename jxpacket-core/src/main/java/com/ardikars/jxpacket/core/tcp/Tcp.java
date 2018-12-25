@@ -35,7 +35,7 @@ public class Tcp extends AbstractPacket {
         this.header = new Tcp.Header(builder);
         this.payload = ApplicationLayer.valueOf(this.header.getPayloadType().getValue())
                 .newInstance(builder.payloadBuffer);
-        payloadBuffer = builder.payloadBuffer;
+        this.payloadBuffer = builder.payloadBuffer;
     }
 
     @Override
@@ -77,6 +77,7 @@ public class Tcp extends AbstractPacket {
             this.checksum = builder.checksum;
             this.urgentPointer = builder.urgentPointer;
             this.options = builder.options;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public int getSourcePort() {
@@ -144,17 +145,19 @@ public class Tcp extends AbstractPacket {
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setShort(0, this.sourcePort);
-            buffer.setShort(2, this.destinationPort);
-            buffer.setIndex(4, this.sequence);
-            buffer.setIndex(8, this.acknowledge);
-            buffer.setShort(12, (short) ((this.flags.getShortValue() & 0x1ff) | (this.dataOffset & 0xf) << 12));
-            buffer.setShort(14, this.windowSize);
-            buffer.setShort(16, this.checksum);
-            buffer.setShort(18, this.urgentPointer);
-            if (this.options != null) {
-                buffer.setBytes(20, this.options);
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeShort(this.sourcePort);
+                buffer.writeShort(this.destinationPort);
+                buffer.writeInt(this.sequence);
+                buffer.writeInt(this.acknowledge);
+                buffer.writeShort(((this.flags.getShortValue() & 0x1ff) | (this.dataOffset & 0xf) << 12));
+                buffer.writeShort(this.windowSize);
+                buffer.writeShort(this.checksum);
+                buffer.writeShort(this.urgentPointer);
+                if (this.options != null) {
+                    buffer.writeBytes(this.options);
+                }
             }
             return buffer;
         }
@@ -197,6 +200,7 @@ public class Tcp extends AbstractPacket {
         private short urgentPointer;
         private byte[] options;
 
+        private ByteBuf buffer;
         private ByteBuf payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
@@ -281,8 +285,8 @@ public class Tcp extends AbstractPacket {
                 int length = 20 + optionLength;
                 this.payloadBuffer = buffer.copy(length, buffer.capacity() - length);
             }
-            this.payloadBuffer = buffer.copy(20, buffer.capacity() - 20);
-            release(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new Tcp(this);
         }
 

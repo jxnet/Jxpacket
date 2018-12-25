@@ -20,7 +20,6 @@ package com.ardikars.jxpacket.common;
 import com.ardikars.jxpacket.common.util.PacketIterator;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.Unpooled;
 
 import java.util.ArrayList;
@@ -72,7 +71,7 @@ public abstract class AbstractPacket implements Packet {
 
     public static abstract class Header implements Packet.Header {
 
-        protected static final ByteBufAllocator ALLOCATOR = PooledByteBufAllocator.DEFAULT;
+        protected static final ByteBufAllocator ALLOCATOR = Properties.BYTE_BUF_ALLOCATOR;
 
         protected ByteBuf buffer;
 
@@ -92,7 +91,7 @@ public abstract class AbstractPacket implements Packet {
     /**
      * Packet builder.
      */
-    protected static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf> {
+    public static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf> {
 
         public void release(ByteBuf buffer) {
             // do nothing
@@ -103,7 +102,7 @@ public abstract class AbstractPacket implements Packet {
     /**
      * Packet factory.
      */
-    protected static abstract class Factory implements com.ardikars.common.util.Factory<Packet, ByteBuf> {
+    public static abstract class Factory implements com.ardikars.common.util.Factory<Packet, ByteBuf> {
 
     }
 

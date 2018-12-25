@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.common.layer;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
@@ -103,7 +104,7 @@ public final class NetworkLayer extends NamedNumber<Short, NetworkLayer> impleme
     private static final Map<Short, NetworkLayer> registry
             = new HashMap<Short, NetworkLayer>();
 
-    private static final Map<Short, Packet.Builder> builder
+    private static final Map<Short, AbstractPacket.Builder> builder
             = new HashMap<>();
 
     /**
@@ -116,7 +117,7 @@ public final class NetworkLayer extends NamedNumber<Short, NetworkLayer> impleme
 
     @Override
     public Packet newInstance(ByteBuf buffer) {
-        Packet.Builder packetBuilder = builder.get(this.getValue());
+        AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
         if (packetBuilder == null) {
             if (buffer == null || buffer.capacity() <= 0) {
                 return null;
@@ -155,7 +156,7 @@ public final class NetworkLayer extends NamedNumber<Short, NetworkLayer> impleme
      * @param networkLayer type.
      * @param packetBuilder packet builder.
      */
-    public static void register(NetworkLayer networkLayer, Packet.Builder packetBuilder) {
+    public static void register(NetworkLayer networkLayer, AbstractPacket.Builder packetBuilder) {
         synchronized (builder) {
             builder.put(networkLayer.getValue(), packetBuilder);
         }

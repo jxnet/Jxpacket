@@ -59,6 +59,7 @@ public class Udp extends AbstractPacket {
             this.destinationPort = builder.destinationPort;
             this.length = builder.length;
             this.checksum = builder.checksum;
+            this.buffer = builder.buffer.slice(0, getLength());
         }
 
         public int getSourcePort() {
@@ -80,16 +81,18 @@ public class Udp extends AbstractPacket {
 
         @Override
         public int getLength() {
-            return length & 0xffff;
+            return UDP_HEADER_LENGTH;
         }
 
         @Override
         public ByteBuf getBuffer() {
-            ByteBuf buffer = PooledByteBufAllocator.DEFAULT.directBuffer(getLength());
-            buffer.setShort(0, this.sourcePort);
-            buffer.setShort(2, this.destinationPort);
-            buffer.setShort(4, this.length);
-            buffer.setShort(6, this.checksum);
+            if (buffer == null) {
+                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer.writeShort(this.sourcePort);
+                buffer.writeShort(this.destinationPort);
+                buffer.writeShort(this.length);
+                buffer.writeShort(this.checksum);
+            }
             return buffer;
         }
 
@@ -119,6 +122,7 @@ public class Udp extends AbstractPacket {
         private short length;
         private short checksum;
 
+        private ByteBuf buffer;
         private ByteBuf payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
@@ -157,8 +161,8 @@ public class Udp extends AbstractPacket {
             this.destinationPort = buffer.getShort(2);
             this.length = buffer.getShort(4);
             this.checksum = buffer.getShort(6);
-            this.payloadBuffer = copy(buffer, 8, buffer.capacity() - 8);
-            release(buffer);
+            this.buffer = buffer;
+            this.payloadBuffer = buffer.slice();
             return new Udp(this);
         }
 

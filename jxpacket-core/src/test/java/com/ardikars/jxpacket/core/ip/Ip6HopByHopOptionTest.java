@@ -42,7 +42,7 @@ public class Ip6HopByHopOptionTest extends BaseTest {
         TransportLayer.register(TransportLayer.IPV6_ROUTING, new Routing.Builder());
         TransportLayer.register(TransportLayer.IPV6_FRAGMENT, new Fragment.Builder());
         TransportLayer.register(TransportLayer.IPV6_HOPOPT, new HopByHopOptions.Builder());
-        buf.setBytes(0, data);
+        buf.writeBytes(data);
         ethernet = Ethernet.newPacket(buf);
     }
 
@@ -61,7 +61,7 @@ public class Ip6HopByHopOptionTest extends BaseTest {
     @After
     public void after() {
         try {
-            buf.release(); // buffer already release to the pool
+            buf.release();
         } catch (Throwable e) {
             //
         }

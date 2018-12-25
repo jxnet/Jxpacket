@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.common.layer;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
@@ -30,7 +31,7 @@ public final class ApplicationLayer extends NamedNumber<Short, ApplicationLayer>
     private static final Map<ApplicationLayer, Short> registry =
             new HashMap<>();
 
-    private static final Map<Short, Packet.Builder> builder =
+    private static final Map<Short, AbstractPacket.Builder> builder =
             new HashMap<>();
 
     public ApplicationLayer(Short value, String name) {
@@ -39,7 +40,7 @@ public final class ApplicationLayer extends NamedNumber<Short, ApplicationLayer>
 
     @Override
     public Packet newInstance(ByteBuf buffer) {
-        Packet.Builder packetBuilder = builder.get(this.getValue());
+        AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
         if (packetBuilder == null) {
             if (buffer == null || buffer.capacity() <= 0) {
                 return null;
@@ -77,7 +78,7 @@ public final class ApplicationLayer extends NamedNumber<Short, ApplicationLayer>
      * @param dataLinkLayer application type.
      * @param packetBuilder packet builder.
      */
-    public static void register(ApplicationLayer dataLinkLayer, Packet.Builder packetBuilder) {
+    public static void register(ApplicationLayer dataLinkLayer, AbstractPacket.Builder packetBuilder) {
         synchronized (builder) {
             builder.put(dataLinkLayer.getValue(), packetBuilder);
         }
