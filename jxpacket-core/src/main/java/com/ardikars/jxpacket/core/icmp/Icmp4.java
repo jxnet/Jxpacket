@@ -48,7 +48,8 @@ public class Icmp4 extends AbstractPacket {
 
     private Icmp4(Builder builder) {
         this.header = new Header(builder);
-        this.payload = null;
+        this.payload = Icmp.IcmpTypeAndCode.valueOf(this.header.getPayloadType().getValue().byteValue())
+                .newInstance(builder.payloadBuffer);
         payloadBuffer = builder.payloadBuffer;
     }
 
@@ -72,7 +73,7 @@ public class Icmp4 extends AbstractPacket {
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
-            return null;
+            return (T) typeAndCode;
         }
 
         @Override

@@ -19,7 +19,12 @@ package com.ardikars.jxpacket.core.icmp;
 
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
+import com.ardikars.jxpacket.common.Packet;
+import com.ardikars.jxpacket.common.UnknownPacket;
 import io.netty.buffer.ByteBuf;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Icmp extends AbstractPacket {
 
@@ -68,7 +73,25 @@ public abstract class Icmp extends AbstractPacket {
 
     }
 
-    public static class IcmpTypeAndCode {
+    public static class IcmpTypeAndCode extends NamedNumber<Byte, IcmpTypeAndCode> implements Packet.Factory {
+
+        public static final IcmpTypeAndCode NEIGHBOR_SOLICITATION
+                = new IcmpTypeAndCode((byte) 0x87, (byte) 0x0, "Neighbor Solicitation");
+
+        public static final IcmpTypeAndCode NEIGHBOR_ADVERTISEMENT
+                = new IcmpTypeAndCode((byte) 0x88, (byte) 0x0, "Neighbor Advertisement");
+
+        public static final IcmpTypeAndCode ROUTER_SOLICICATION
+                = new IcmpTypeAndCode((byte) 0x85, (byte) 0x0, "Router Solicitation");
+
+        public static final IcmpTypeAndCode ROUTER_ADVERTISEMENT
+                = new IcmpTypeAndCode((byte) 0x86, (byte) 0x0, "Router Advertisement");
+
+        public static final IcmpTypeAndCode UNKNOWN = new IcmpTypeAndCode((byte) -1, (byte) -1, "Unknown");
+
+        private static Map<Byte, IcmpTypeAndCode> registry = new HashMap<>();
+
+        private static Map<Byte, AbstractPacket.Builder> builder = new HashMap<>();
 
         private final byte type;
         private final byte code;
@@ -81,6 +104,7 @@ public abstract class Icmp extends AbstractPacket {
          * @param name icmp name.
          */
         public IcmpTypeAndCode(byte type, byte code, String name) {
+            super(type, name);
             this.type = type;
             this.code = code;
             this.name = name;
@@ -105,6 +129,56 @@ public abstract class Icmp extends AbstractPacket {
                     .append(", code=").append(code)
                     .append(", name='").append(name).append('\'')
                     .append('}').toString();
+        }
+
+        @Override
+        public Packet newInstance(ByteBuf buffer) {
+            AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
+            if (packetBuilder == null) {
+                if (buffer == null || buffer.capacity() <= 0) {
+                    return null;
+                }
+                return new UnknownPacket.Builder().build(buffer);
+            }
+            return packetBuilder.build(buffer);
+        }
+
+        /**
+         *
+         * @param value value.
+         * @return returns {@link IcmpTypeAndCode} object.
+         */
+        public static IcmpTypeAndCode valueOf(final Byte value) {
+            IcmpTypeAndCode icmpTypeAndCode = registry.get(value);
+            if (icmpTypeAndCode == null) {
+                return UNKNOWN;
+            } else {
+                return icmpTypeAndCode;
+            }
+        }
+
+        /**
+         *
+         * @param type type
+         */
+        public static void register(final IcmpTypeAndCode type) {
+            registry.put(type.getValue(), type);
+        }
+
+        /**
+         *
+         * @param type type.
+         * @param packetBuilder packet builder.
+         */
+        public static void register(IcmpTypeAndCode type, AbstractPacket.Builder packetBuilder) {
+            builder.put(type.getValue(), packetBuilder);
+        }
+
+        static {
+            registry.put(ROUTER_SOLICICATION.getValue(), ROUTER_SOLICICATION);
+            registry.put(ROUTER_ADVERTISEMENT.getValue(), ROUTER_ADVERTISEMENT);
+            registry.put(NEIGHBOR_SOLICITATION.getValue(), NEIGHBOR_SOLICITATION);
+            registry.put(NEIGHBOR_ADVERTISEMENT.getValue(), NEIGHBOR_ADVERTISEMENT);
         }
 
     }

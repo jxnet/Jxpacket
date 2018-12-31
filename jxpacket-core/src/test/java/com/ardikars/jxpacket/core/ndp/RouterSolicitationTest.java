@@ -1,4 +1,4 @@
-package com.ardikars.jxpacket.core.ip;
+package com.ardikars.jxpacket.core.ndp;
 
 import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
@@ -6,13 +6,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.util.internal.StringUtil;
 import org.junit.After;
 
-/**
- * @author jxpacket 2018/11/29
- * @author <a href="mailto:contact@ardikars.com">Langkuy</a>
- */
-public class Ip6HopByHopOptionTest extends BaseTest {
+public class RouterSolicitationTest extends BaseTest {
 
-    private byte[] data = StringUtil.decodeHexDump(IPV6_HOP_BY_HOP_OPTION);
+    private byte[] data = StringUtil.decodeHexDump(NDP_ROUTER_SOLICITATION);
 
     private ByteBuf buf = allocator.directBuffer(data.length);
 
