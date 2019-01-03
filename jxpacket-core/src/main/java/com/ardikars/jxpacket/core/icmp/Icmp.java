@@ -21,6 +21,11 @@ import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
+import com.ardikars.jxpacket.core.ndp.NeighborAdvertisement;
+import com.ardikars.jxpacket.core.ndp.NeighborSolicitation;
+import com.ardikars.jxpacket.core.ndp.Redirect;
+import com.ardikars.jxpacket.core.ndp.RouterAdvertisement;
+import com.ardikars.jxpacket.core.ndp.RouterSolicitation;
 import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
@@ -86,6 +91,9 @@ public abstract class Icmp extends AbstractPacket {
 
         public static final IcmpTypeAndCode ROUTER_ADVERTISEMENT
                 = new IcmpTypeAndCode((byte) 0x86, (byte) 0x0, "Router Advertisement");
+
+        public static final IcmpTypeAndCode REDIRECT
+                = new IcmpTypeAndCode((byte) 0x89, (byte) 0x0, "Redirect");
 
         public static final IcmpTypeAndCode UNKNOWN = new IcmpTypeAndCode((byte) -1, (byte) -1, "Unknown");
 
@@ -179,6 +187,12 @@ public abstract class Icmp extends AbstractPacket {
             registry.put(ROUTER_ADVERTISEMENT.getValue(), ROUTER_ADVERTISEMENT);
             registry.put(NEIGHBOR_SOLICITATION.getValue(), NEIGHBOR_SOLICITATION);
             registry.put(NEIGHBOR_ADVERTISEMENT.getValue(), NEIGHBOR_ADVERTISEMENT);
+            registry.put(REDIRECT.getValue(), REDIRECT);
+            Icmp.IcmpTypeAndCode.register(Icmp.IcmpTypeAndCode.NEIGHBOR_SOLICITATION, new NeighborSolicitation.Builder());
+            Icmp.IcmpTypeAndCode.register(Icmp.IcmpTypeAndCode.NEIGHBOR_ADVERTISEMENT, new NeighborAdvertisement.Builder());
+            Icmp.IcmpTypeAndCode.register(Icmp.IcmpTypeAndCode.ROUTER_SOLICICATION, new RouterSolicitation.Builder());
+            Icmp.IcmpTypeAndCode.register(Icmp.IcmpTypeAndCode.ROUTER_ADVERTISEMENT, new RouterAdvertisement.Builder());
+            Icmp.IcmpTypeAndCode.register(Icmp.IcmpTypeAndCode.REDIRECT, new Redirect.Builder());
         }
 
     }
