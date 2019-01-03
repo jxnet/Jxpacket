@@ -17,15 +17,15 @@
 
 package com.ardikars.jxpacket.common.util;
 
+import com.ardikars.common.util.AbstractReadOnlyIterator;
 import com.ardikars.jxpacket.common.Packet;
 
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
  * A {@link Packet} iterator implementation.
  */
-public class PacketIterator implements Iterator<Packet> {
+public class PacketIterator extends AbstractReadOnlyIterator<Packet> {
 
     private Packet next;
 
@@ -46,11 +46,6 @@ public class PacketIterator implements Iterator<Packet> {
         Packet previous = next;
         next = next.getPayload();
         return previous;
-    }
-
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException();
     }
 
 }

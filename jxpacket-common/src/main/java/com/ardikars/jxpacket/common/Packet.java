@@ -17,7 +17,9 @@
 
 package com.ardikars.jxpacket.common;
 
+import com.ardikars.common.util.CommonIterable;
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.jxpacket.common.util.PacketIterator;
 import io.netty.buffer.ByteBuf;
 
 import java.io.Serializable;
@@ -28,7 +30,7 @@ import java.util.List;
  * @author Ardika Rommy Sanjaya
  * @since 1.5.0
  */
-public interface Packet extends Iterable<Packet>, Serializable {
+public interface Packet extends CommonIterable<Packet, PacketIterator>, Serializable {
 
     /**
      * Returns the {@link Header} object representing this packet's header.

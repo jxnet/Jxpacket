@@ -65,7 +65,7 @@ public abstract class AbstractPacket implements Packet {
     }
 
     @Override
-    public Iterator<Packet> iterator() {
+    public PacketIterator iterator() {
         return new PacketIterator(this);
     }
 
