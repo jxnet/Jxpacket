@@ -181,7 +181,7 @@ public class Fragment extends AbstractPacket {
 		public static final FlagType UNKNOWN = new FlagType((byte) -1, "UNKNOWN.");
 
 		private static final Map<Byte, FlagType> registry
-				= new HashMap<>();
+				= new HashMap<Byte, FlagType>();
 
 		protected FlagType(Byte value, String name) {
 			super(value, name);

@@ -238,7 +238,7 @@ public class Routing extends AbstractPacket {
 				"May be used for testing, not for actual implementations. RFC3692-style Experiment 2.[13]");
 
 		private static Map<Byte, Type> registry =
-				new HashMap<>();
+				new HashMap<Byte, Type>();
 
 		protected Type(Byte value, String name) {
 			super(value, name);

@@ -12,7 +12,7 @@ ext {
 
 	MAVEN_LOCAL_REPOSITORY = "${System.env.HOME}/.m2/repository"
 
-	JAVA_VERSION = '1.8'
+	JAVA_VERSION = '1.6'
 	JUNIT_VERSION = '4.12'
 	MOCKITO_VERSION = '2.13.0'
 	GRADLE_VERSION = '5.0'

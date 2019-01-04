@@ -67,19 +67,6 @@ public interface Packet extends CommonIterable<Packet, PacketIterator>, Serializ
     @Deprecated
     interface Builder extends com.ardikars.common.util.Builder<Packet, ByteBuf> {
 
-        @Deprecated
-        default void release(ByteBuf buffer) {
-            int refCnt = buffer.refCnt();
-            while (refCnt > 0) {
-                try {
-                    buffer.release();
-                } catch (Throwable throwable) {
-                    // do nothing
-                }
-                refCnt--;
-            }
-        }
-
     }
 
     /**

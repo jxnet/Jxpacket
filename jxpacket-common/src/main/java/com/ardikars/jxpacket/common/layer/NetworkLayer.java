@@ -105,7 +105,7 @@ public final class NetworkLayer extends NamedNumber<Short, NetworkLayer> impleme
             = new HashMap<Short, NetworkLayer>();
 
     private static final Map<Short, AbstractPacket.Builder> builder
-            = new HashMap<>();
+            = new HashMap<Short, AbstractPacket.Builder>();
 
     /**
      * @param value value

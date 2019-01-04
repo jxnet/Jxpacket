@@ -33,7 +33,6 @@ import com.ardikars.jxpacket.core.icmp.icmp4.Icmp4TimestampReply;
 import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -41,7 +40,7 @@ import java.util.Optional;
  */
 public class Icmp4 extends AbstractPacket {
 
-    public static final Collection<Icmp.IcmpTypeAndCode> ICMP4_REGISTRY = new HashSet<>();
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP4_REGISTRY = new HashSet<Icmp.IcmpTypeAndCode>();
 
     private final Icmp4.Header header;
     private final Packet payload;
@@ -114,14 +113,7 @@ public class Icmp4 extends AbstractPacket {
         public Packet build(ByteBuf buffer) {
             byte type = buffer.readByte();
             byte code = buffer.readByte();
-            Optional<Icmp.IcmpTypeAndCode> optional = Icmp4.ICMP4_REGISTRY.stream()
-                    .filter(typeAndCode -> typeAndCode.getType() == type && typeAndCode.getCode() == code)
-                    .findFirst();
-            if (optional.isPresent()) {
-                super.typeAndCode = optional.get();
-            } else {
-                super.typeAndCode = new Icmp.IcmpTypeAndCode(type, code, "Unknown");
-            }
+            super.typeAndCode = Icmp.findIcmpTypeAndCode(type, code, Icmp4.ICMP4_REGISTRY);
             super.checksum = buffer.readShort();
             if (calculateChecksum) {
                 int index = 0;

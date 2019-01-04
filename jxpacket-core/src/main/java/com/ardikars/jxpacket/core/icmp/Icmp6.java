@@ -48,7 +48,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -56,7 +55,7 @@ import java.util.Optional;
  */
 public class Icmp6 extends AbstractPacket {
 
-    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<>();
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<Icmp.IcmpTypeAndCode>();
 
     private final Icmp6.Header header;
     private final Packet payload;
@@ -126,14 +125,7 @@ public class Icmp6 extends AbstractPacket {
         public Packet build(ByteBuf buffer) {
             byte type = buffer.readByte();
             byte code = buffer.readByte();
-            Optional<Icmp.IcmpTypeAndCode> optional = Icmp6.ICMP6_REGISTRY.stream()
-                    .filter(typeAndCode -> typeAndCode.getType() == type && typeAndCode.getCode() == code)
-                    .findFirst();
-            if (optional.isPresent()) {
-                super.typeAndCode = optional.get();
-            } else {
-                super.typeAndCode = new Icmp.IcmpTypeAndCode(type, code, "Unknown");
-            }
+            super.typeAndCode = Icmp.findIcmpTypeAndCode(type, code, Icmp6.ICMP6_REGISTRY);
             super.checksum = buffer.readShort();
             this.buffer = buffer;
             this.payloadBuffer = buffer.slice();

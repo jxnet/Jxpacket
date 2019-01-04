@@ -29,10 +29,10 @@ import java.util.Map;
 public final class ApplicationLayer extends NamedNumber<Short, ApplicationLayer> implements Packet.Factory {
 
     private static final Map<ApplicationLayer, Short> registry =
-            new HashMap<>();
+            new HashMap<ApplicationLayer, Short>();
 
     private static final Map<Short, AbstractPacket.Builder> builder =
-            new HashMap<>();
+            new HashMap<Short, AbstractPacket.Builder>();
 
     public ApplicationLayer(Short value, String name) {
         super(value, name);

@@ -1,5 +1,6 @@
 package com.ardikars.jxpacket.core;
 
+import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
@@ -24,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.stream.StreamSupport;
+import java.util.Iterator;
 
 @RunWith(JUnit4.class)
 public abstract class BaseTest {
@@ -107,8 +108,10 @@ public abstract class BaseTest {
 	@Test
 	public void printAllPackets() {
 		if (ethernet != null) {
-			StreamSupport.stream(ethernet.spliterator(), false)
-					.forEach(System.out::println);
+			Iterator<Packet> packetIterator = ethernet.iterator();
+			while (packetIterator.hasNext()) {
+				System.out.println(packetIterator.next());
+			}
 		}
 	}
 

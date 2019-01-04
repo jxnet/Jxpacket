@@ -137,7 +137,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 new OptionType((byte) 5, "MTU");
 
         private static Map<Byte, OptionType> registry =
-                new HashMap<>();
+                new HashMap<Byte, OptionType>();
 
         protected OptionType(Byte value, String name) {
             super(value, name);
@@ -213,7 +213,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     public static class Builder extends AbstractPacket.Builder {
 
-        private List<Option> options = new ArrayList<>();
+        private List<Option> options = new ArrayList<Option>();
 
         private ByteBuf buffer;
         private ByteBuf payloadBuffer;

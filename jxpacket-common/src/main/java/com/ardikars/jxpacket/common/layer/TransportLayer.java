@@ -54,9 +54,9 @@ public final class TransportLayer extends NamedNumber<Byte, TransportLayer> impl
 
     public static final TransportLayer UNKNOWN = new TransportLayer((byte) -1, "Unknown");
 
-    private static Map<Byte, TransportLayer> registry = new HashMap<>();
+    private static Map<Byte, TransportLayer> registry = new HashMap<Byte, TransportLayer>();
 
-    private static Map<Byte, AbstractPacket.Builder> builder = new HashMap<>();
+    private static Map<Byte, AbstractPacket.Builder> builder = new HashMap<Byte, AbstractPacket.Builder>();
 
     protected TransportLayer(Byte value, String name) {
         super(value, name);

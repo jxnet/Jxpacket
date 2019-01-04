@@ -28,10 +28,23 @@ import com.ardikars.jxpacket.core.ndp.RouterAdvertisement;
 import com.ardikars.jxpacket.core.ndp.RouterSolicitation;
 import io.netty.buffer.ByteBuf;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public abstract class Icmp extends AbstractPacket {
+
+    protected static IcmpTypeAndCode findIcmpTypeAndCode(byte type, byte code, Collection<IcmpTypeAndCode> typeAndCodes) {
+        Iterator<IcmpTypeAndCode> icmpTypeAndCodeIterator = typeAndCodes.iterator();
+        while (icmpTypeAndCodeIterator.hasNext()) {
+            Icmp.IcmpTypeAndCode typeAndCode = icmpTypeAndCodeIterator.next();
+            if (typeAndCode.getType() == type && typeAndCode.getCode() == code) {
+                return typeAndCode;
+            }
+        }
+        return new Icmp.IcmpTypeAndCode(type, code, "Unknown");
+    }
 
     protected static abstract class AbstractPacketHeader extends Header {
 
@@ -97,9 +110,9 @@ public abstract class Icmp extends AbstractPacket {
 
         public static final IcmpTypeAndCode UNKNOWN = new IcmpTypeAndCode((byte) -1, (byte) -1, "Unknown");
 
-        private static Map<Byte, IcmpTypeAndCode> registry = new HashMap<>();
+        private static Map<Byte, IcmpTypeAndCode> registry = new HashMap<Byte, IcmpTypeAndCode>();
 
-        private static Map<Byte, AbstractPacket.Builder> builder = new HashMap<>();
+        private static Map<Byte, AbstractPacket.Builder> builder = new HashMap<Byte, AbstractPacket.Builder>();
 
         private final byte type;
         private final byte code;

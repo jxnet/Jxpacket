@@ -44,10 +44,10 @@ public final class DataLinkLayer extends NamedNumber<Short, DataLinkLayer> imple
     public static final DataLinkLayer LINUX_SLL = new DataLinkLayer((short) 113, "Linux SLL");
 
     private static final Map<DataLinkLayer, Short> registry =
-            new HashMap<>();
+            new HashMap<DataLinkLayer, Short>();
 
     private static final Map<Short, AbstractPacket.Builder> builder =
-            new HashMap<>();
+            new HashMap<Short, AbstractPacket.Builder>();
 
     public DataLinkLayer(Short value, String name) {
         super(value, name);
