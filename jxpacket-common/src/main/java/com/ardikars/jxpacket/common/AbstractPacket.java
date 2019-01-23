@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,9 @@ import java.util.List;
  * @since 1.5.0
  */
 public abstract class AbstractPacket implements Packet {
+
+    protected static final IllegalArgumentException ILLEGAL_HEADER_EXCEPTION
+            = new IllegalArgumentException("Missing required header field(s).");
 
     protected ByteBuf payloadBuffer;
 
@@ -86,12 +90,22 @@ public abstract class AbstractPacket implements Packet {
             return buffer;
         }
 
+        public abstract Builder getBuilder();
+
     }
 
     /**
      * Packet builder.
      */
-    public static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf> {
+    public static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf>, Serializable {
+
+        public void reset() {
+            reset(-1, -1);
+        }
+
+        public void reset(int offset, int length) {
+            throw new UnsupportedOperationException("Not implemented yet.");
+        }
 
     }
 

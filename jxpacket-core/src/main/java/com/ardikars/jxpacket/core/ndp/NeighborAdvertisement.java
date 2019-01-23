@@ -63,6 +63,8 @@ public class NeighborAdvertisement extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.routerFlag = builder.routerFlag;
             this.solicitedFlag = builder.solicitedFlag;
@@ -70,6 +72,7 @@ public class NeighborAdvertisement extends AbstractPacket {
             this.targetAddress = builder.targetAddress;
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public boolean isRouterFlag() {
@@ -113,6 +116,11 @@ public class NeighborAdvertisement extends AbstractPacket {
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public NeighborAdvertisement.Builder getBuilder() {
+            return builder;
         }
 
         @Override

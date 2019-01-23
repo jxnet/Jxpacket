@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.core.ethernet;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
@@ -65,12 +66,15 @@ public class Vlan extends AbstractPacket {
 		private final short vlanIdentifier; // 12 bit
 		private final NetworkLayer type;
 
+		private final Builder builder;
+
 		private Header(final Builder builder) {
 			this.priorityCodePoint = builder.priorityCodePoint;
 			this.canonicalFormatIndicator = builder.canonicalFormatIndicator;
 			this.vlanIdentifier = builder.vlanIdentifier;
 			this.type = builder.type;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public PriorityCodePoint getPriorityCodePoint() {
@@ -108,6 +112,11 @@ public class Vlan extends AbstractPacket {
 						| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff));
 			}
 			return buffer;
+		}
+
+		@Override
+		public Vlan.Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -180,6 +189,30 @@ public class Vlan extends AbstractPacket {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Vlan(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.VLAN_HEADER_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(priorityCodePoint != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(canonicalFormatIndicator >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(vlanIdentifier >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(type != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				int tci = ((priorityCodePoint.getValue() << 13) & 0x07)
+						| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff);
+				buffer.setShort(index, tci);
+				index += 2;
+				buffer.setShort(index, type.getValue());
+			}
 		}
 
 	}

@@ -57,6 +57,8 @@ public class RouterSolicitation extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         /**
          * Builde Router Solicitation packet.
          * @param builder builder.
@@ -65,6 +67,7 @@ public class RouterSolicitation extends AbstractPacket {
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0,
                     ROUTER_SOLICITATION_HEADER_LENGTH + options.getHeader().getLength());
+            this.builder = builder;
         }
 
         public NeighborDiscoveryOptions getOptions() {
@@ -89,6 +92,11 @@ public class RouterSolicitation extends AbstractPacket {
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public AbstractPacket.Builder getBuilder() {
+            return builder;
         }
 
         @Override

@@ -63,6 +63,8 @@ public class RouterAdvertisement extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.currentHopLimit = builder.currentHopLimit;
             this.manageFlag = builder.manageFlag;
@@ -72,6 +74,7 @@ public class RouterAdvertisement extends AbstractPacket {
             this.retransmitTimer = builder.retransmitTimer;
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public int getCurrentHopLimit() {
@@ -124,6 +127,11 @@ public class RouterAdvertisement extends AbstractPacket {
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public RouterAdvertisement.Builder getBuilder() {
+            return builder;
         }
 
         @Override

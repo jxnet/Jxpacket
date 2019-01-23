@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
@@ -63,6 +64,8 @@ public class Routing extends AbstractPacket {
 
 		private final byte[] routingData;
 
+		private final Builder builder;
+
 		private Header(final Builder builder) {
 			this.nextHeader = builder.nextHeader;
 			this.extensionLength = builder.extensionLength;
@@ -70,6 +73,7 @@ public class Routing extends AbstractPacket {
 			this.segmentLeft = builder.segmentLeft;
 			this.routingData = builder.routingData;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public TransportLayer getNextHeader() {
@@ -132,6 +136,11 @@ public class Routing extends AbstractPacket {
 					.append("\t\tsegmentLeft: ").append(segmentLeft).append('\n')
 					.append("\t\troutingData: ").append(Arrays.toString(routingData)).append('\n')
 					.toString();
+		}
+
+		@Override
+		public Routing.Builder getBuilder() {
+			return builder;
 		}
 
 	}
@@ -202,6 +211,35 @@ public class Routing extends AbstractPacket {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Routing(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.FIXED_ROUTING_HEADER_LENGTH + routingData.length);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(nextHeader != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(extensionLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(routingType != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(segmentLeft >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(routingData != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				buffer.setByte(index, nextHeader.getValue());
+				index += 1;
+				buffer.setByte(index, extensionLength);
+				index += 1;
+				buffer.setByte(index, routingType.getValue());
+				index += 1;
+				buffer.setByte(index, segmentLeft);
+				index += 1;
+				buffer.setBytes(index, routingData);
+			}
 		}
 
 	}

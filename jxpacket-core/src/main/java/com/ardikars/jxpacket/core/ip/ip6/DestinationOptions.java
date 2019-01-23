@@ -17,6 +17,7 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import io.netty.buffer.ByteBuf;
@@ -45,14 +46,22 @@ public class DestinationOptions extends Options {
 
 	public static final class Header extends Options.Header {
 
+		private final Builder builder;
+
 		protected Header(Builder builder) {
 			super(builder, builder.nextHeader);
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		@Override
 		public String toString() {
 			return super.toString();
+		}
+
+		@Override
+		public DestinationOptions.Builder getBuilder() {
+			return builder;
 		}
 
 	}
@@ -85,6 +94,29 @@ public class DestinationOptions extends Options {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new DestinationOptions(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.FIXED_OPTIONS_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(nextHeader != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(extensionLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(options != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				buffer.setByte(index, nextHeader.getValue());
+				index += 1;
+				buffer.setInt(index, extensionLength);
+				index += 4;
+				buffer.setBytes(index, options);
+			}
 		}
 
 	}

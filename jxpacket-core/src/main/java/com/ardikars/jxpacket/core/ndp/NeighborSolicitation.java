@@ -59,10 +59,13 @@ public class NeighborSolicitation extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.targetAddress = builder.targetAddress;
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public Inet6Address getTargetAddress() {
@@ -91,6 +94,11 @@ public class NeighborSolicitation extends AbstractPacket {
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public NeighborSolicitation.Builder getBuilder() {
+            return builder;
         }
 
         @Override

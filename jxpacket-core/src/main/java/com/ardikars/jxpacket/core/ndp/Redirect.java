@@ -61,11 +61,14 @@ public class Redirect extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.targetAddress = builder.targetAddress;
             this.destinationAddress = builder.destinationAddress;
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public Inet6Address getTargetAddress() {
@@ -100,6 +103,11 @@ public class Redirect extends AbstractPacket {
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public Redirect.Builder getBuilder() {
+            return builder;
         }
 
         @Override

@@ -18,6 +18,7 @@
 package com.ardikars.jxpacket.core.icmp;
 
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.core.icmp.icmp4.Icmp4DestinationUnreachable;
@@ -64,15 +65,23 @@ public class Icmp4 extends AbstractPacket {
 
     public static class Header extends Icmp.AbstractPacketHeader {
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             typeAndCode = builder.typeAndCode;
             checksum = builder.checksum;
             buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         @Override
         public <T extends NamedNumber> T getPayloadType() {
             return (T) typeAndCode;
+        }
+
+        @Override
+        public Builder getBuilder() {
+            return builder;
         }
 
         @Override
@@ -139,6 +148,28 @@ public class Icmp4 extends AbstractPacket {
             this.buffer = buffer;
             this.payloadBuffer = buffer.slice();
             return new Icmp4(this);
+        }
+
+        @Override
+        public void reset() {
+            if (buffer != null) {
+                reset(buffer.readerIndex(), Header.ICMP_HEADER_LENGTH);
+            }
+        }
+
+        @Override
+        public void reset(int offset, int length) {
+            if (buffer != null) {
+                Validate.notIllegalArgument(offset + length <= buffer.capacity());
+                Validate.notIllegalArgument(typeAndCode != null, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(checksum >= 0, ILLEGAL_HEADER_EXCEPTION);
+                int index = offset;
+                buffer.setByte(index, typeAndCode.getType());
+                index += 1;
+                buffer.setByte(index, typeAndCode.getCode());
+                index += 1;
+                buffer.setShort(index, checksum);
+            }
         }
 
     }

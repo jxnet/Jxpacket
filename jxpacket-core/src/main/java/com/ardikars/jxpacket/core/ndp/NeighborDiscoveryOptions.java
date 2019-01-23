@@ -62,9 +62,12 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         private final List<Option> options;
         private int length;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public List<Option> getOptions() {
@@ -101,6 +104,11 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 }
             }
             return buffer;
+        }
+
+        @Override
+        public NeighborDiscoveryOptions.Builder getBuilder() {
+            return builder;
         }
 
         @Override

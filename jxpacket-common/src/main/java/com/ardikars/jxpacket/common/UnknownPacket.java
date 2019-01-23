@@ -62,10 +62,13 @@ public class UnknownPacket extends AbstractPacket {
 
 	public static final class Header extends AbstractPacket.Header {
 
-		final private ByteBuf buffer;
+		private final ByteBuf buffer;
+
+		private final Builder builder;
 
 		public Header(final Builder builder) {
 			this.buffer = builder.payloadBuffer;
+			this.builder = builder;
 		}
 
 		@Override
@@ -81,6 +84,11 @@ public class UnknownPacket extends AbstractPacket {
 		@Override
 		public <T extends NamedNumber> T getPayloadType() {
 			return (T) UNKNOWN_PAYLOAD_TYPE;
+		}
+
+		@Override
+		public UnknownPacket.Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -117,6 +125,16 @@ public class UnknownPacket extends AbstractPacket {
 			Builder builder = new Builder()
 					.payloadBuffer(buffer);
 			return new UnknownPacket(builder);
+		}
+
+		@Override
+		public void reset() {
+			// nothing to do
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			// do nothing
 		}
 
 	}
