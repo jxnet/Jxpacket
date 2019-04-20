@@ -17,11 +17,12 @@
 
 package com.ardikars.jxpacket.core.ip;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet6Address;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 public class Ip6 extends Ip {
 
@@ -59,6 +60,8 @@ public class Ip6 extends Ip {
 		private final Inet6Address sourceAddress;
 		private final Inet6Address destinationAddress;
 
+		private final Builder builder;
+
 		protected Header(final Builder builder) {
 			super((byte) 0x06);
 			this.trafficClass = builder.trafficClass;
@@ -69,6 +72,7 @@ public class Ip6 extends Ip {
 			this.sourceAddress = builder.sourceAddress;
 			this.destinationAddress = builder.destinationAddress;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public int getTrafficClass() {
@@ -110,9 +114,9 @@ public class Ip6 extends Ip {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeInt((super.version & 0xf) << 28 | (trafficClass & 0xff) << 20 | flowLabel & 0xfffff);
 				buffer.writeShort(payloadLength);
 				buffer.writeByte(nextHeader.getValue());
@@ -121,6 +125,11 @@ public class Ip6 extends Ip {
 				buffer.writeBytes(destinationAddress.toBytes());
 			}
 			return buffer;
+		}
+
+		@Override
+		public Ip6.Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -156,8 +165,8 @@ public class Ip6 extends Ip {
 		private Inet6Address sourceAddress;
 		private Inet6Address destinationAddress;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder trafficClass(final int trafficClass) {
 			this.trafficClass = (byte) (trafficClass & 0xff);
@@ -194,7 +203,7 @@ public class Ip6 extends Ip {
 			return this;
 		}
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -205,7 +214,7 @@ public class Ip6 extends Ip {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			int iscratch = buffer.readInt();
 			this.trafficClass = (byte) (iscratch >> 20 & 0xff);
 			this.flowLabel = iscratch & 0xfffff;
@@ -221,6 +230,40 @@ public class Ip6 extends Ip {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Ip6(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.IPV6_HEADER_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+                Validate.notIllegalArgument(offset + length <= buffer.capacity());
+                Validate.notIllegalArgument(trafficClass >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(flowLabel >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(payloadLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(nextHeader != null, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(hopLimit >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(sourceAddress != null, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(destinationAddress != null, ILLEGAL_HEADER_EXCEPTION);
+                int index = offset;
+                int scratch = ((trafficClass << 20) & 0xff) | (flowLabel & 0xfffff);
+			    buffer.setInt(offset, scratch);
+			    index += 4;
+			    buffer.setShort(offset, payloadLength);
+			    index += 2;
+			    buffer.setByte(index, nextHeader.getValue());
+			    index += 1;
+			    buffer.setByte(index, hopLimit);
+			    index += 1;
+			    buffer.setBytes(index, sourceAddress.toBytes());
+			    index += Inet6Address.IPV6_ADDRESS_LENGTH;
+			    buffer.setBytes(index, destinationAddress.toBytes());
+			}
 		}
 
 	}

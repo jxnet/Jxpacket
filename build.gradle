@@ -60,13 +60,12 @@ subprojects {
 
     dependencyManagement {
         imports { mavenBom("com.ardikars.common:common:${COMMON_VERSION}") }
-        imports { mavenBom("io.netty:netty-bom:${NETTY_VERSION}") }
     }
 
     dependencies {
         implementation ("com.ardikars.common:common-net")
         implementation ("com.ardikars.common:common-util")
-        implementation ("io.netty:netty-buffer")
+        implementation ("com.ardikars.common:common-memory")
         testImplementation ('junit:junit:4.12')
     }
 

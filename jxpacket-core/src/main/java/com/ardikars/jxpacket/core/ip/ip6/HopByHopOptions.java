@@ -17,9 +17,10 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 public class HopByHopOptions extends Options {
 
@@ -45,14 +46,22 @@ public class HopByHopOptions extends Options {
 
 	public static final class Header extends Options.Header {
 
+		private final Builder builder;
+
 		protected Header(final HopByHopOptions.Builder builder) {
 			super(builder, builder.nextHeader);
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		@Override
 		public String toString() {
 			return super.toString();
+		}
+
+		@Override
+		public HopByHopOptions.Builder getBuilder() {
+			return builder;
 		}
 
 	}
@@ -76,7 +85,7 @@ public class HopByHopOptions extends Options {
 		}
 
 		@Override
-		public HopByHopOptions build(final ByteBuf buffer) {
+		public HopByHopOptions build(final Memory buffer) {
 			nextHeader = TransportLayer.valueOf(buffer.readByte());
 			extensionLength = buffer.readByte();
 			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH
@@ -85,6 +94,29 @@ public class HopByHopOptions extends Options {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new HopByHopOptions(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.FIXED_OPTIONS_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(nextHeader != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(extensionLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(options != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				buffer.setByte(index, nextHeader.getValue());
+				index += 1;
+				buffer.setByte(index, extensionLength);
+				index += 1;
+				buffer.setBytes(index, options);
+			}
 		}
 
 	}

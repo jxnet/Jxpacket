@@ -17,8 +17,8 @@
 
 package com.ardikars.jxpacket.common;
 
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
+import com.ardikars.common.memory.Memories;
+import com.ardikars.common.memory.MemoryAllocator;
 
 /**
  * Peroperties
@@ -26,12 +26,12 @@ import io.netty.buffer.PooledByteBufAllocator;
  */
 final class Properties {
 
-    static final ByteBufAllocator BYTE_BUF_ALLOCATOR;
+    static final MemoryAllocator BYTE_BUF_ALLOCATOR;
 
     private Properties() { }
 
     static {
-        BYTE_BUF_ALLOCATOR = PooledByteBufAllocator.DEFAULT;
+        BYTE_BUF_ALLOCATOR = Memories.allocator();
     }
 
 }

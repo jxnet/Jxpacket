@@ -2,15 +2,15 @@ package com.ardikars.jxpacket.core.ndp;
 
 import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
-import io.netty.buffer.ByteBuf;
-import io.netty.util.internal.StringUtil;
+import com.ardikars.common.memory.Memory;
+ import com.ardikars.common.util.Hexs;
 import org.junit.After;
 
 public class NeighborSolicitationTest extends BaseTest {
 
-    private byte[] data = StringUtil.decodeHexDump(NDP_NEIGHBOR_SOLICITATION);
+    private byte[] data = Hexs.parseHex(NDP_NEIGHBOR_SOLICITATION);
 
-    private ByteBuf buf = allocator.directBuffer(data.length);
+    private Memory buf = allocator.allocate(data.length);
 
     @Override
     public void before() {

@@ -17,7 +17,9 @@
 
 package com.ardikars.jxpacket.core.icmp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6DestinationUnreachable;
@@ -44,11 +46,9 @@ import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6RouterAdvertisement;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6RouterRenumbering;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6RouterSolicitation;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6TimeExceeded;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Optional;
 
 /**
  * @author Ardika Rommy Sanjaya
@@ -56,7 +56,7 @@ import java.util.Optional;
  */
 public class Icmp6 extends AbstractPacket {
 
-    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<>();
+    public static final Collection<Icmp.IcmpTypeAndCode> ICMP6_REGISTRY = new HashSet<Icmp.IcmpTypeAndCode>();
 
     private final Icmp6.Header header;
     private final Packet payload;
@@ -84,10 +84,13 @@ public class Icmp6 extends AbstractPacket {
 
     public static class Header extends Icmp.AbstractPacketHeader {
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             typeAndCode = builder.typeAndCode;
             checksum = builder.checksum;
             buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         @Override
@@ -103,6 +106,11 @@ public class Icmp6 extends AbstractPacket {
                     .toString();
         }
 
+        @Override
+        public AbstractPacket.Builder getBuilder() {
+            return builder;
+        }
+
     }
 
     @Override
@@ -114,8 +122,8 @@ public class Icmp6 extends AbstractPacket {
 
     public static class Builder extends Icmp.AbstractPacketBuilder {
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         @Override
         public Packet build() {
@@ -123,21 +131,36 @@ public class Icmp6 extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             byte type = buffer.readByte();
             byte code = buffer.readByte();
-            Optional<Icmp.IcmpTypeAndCode> optional = Icmp6.ICMP6_REGISTRY.stream()
-                    .filter(typeAndCode -> typeAndCode.getType() == type && typeAndCode.getCode() == code)
-                    .findFirst();
-            if (optional.isPresent()) {
-                super.typeAndCode = optional.get();
-            } else {
-                super.typeAndCode = new Icmp.IcmpTypeAndCode(type, code, "Unknown");
-            }
+            super.typeAndCode = Icmp.findIcmpTypeAndCode(type, code, Icmp6.ICMP6_REGISTRY);
             super.checksum = buffer.readShort();
             this.buffer = buffer;
             this.payloadBuffer = buffer.slice();
             return new Icmp6(this);
+        }
+
+        @Override
+        public void reset() {
+            if (buffer != null) {
+                reset(buffer.readerIndex(), Header.ICMP_HEADER_LENGTH);
+            }
+        }
+
+        @Override
+        public void reset(int offset, int length) {
+            if (buffer != null) {
+                Validate.notIllegalArgument(offset + length <= buffer.capacity());
+                Validate.notIllegalArgument(typeAndCode != null, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(checksum >= 0, ILLEGAL_HEADER_EXCEPTION);
+                int index = offset;
+                buffer.setByte(index, typeAndCode.getType());
+                index += 1;
+                buffer.setByte(index, typeAndCode.getCode());
+                index += 1;
+                buffer.setShort(index, checksum);
+            }
         }
 
     }

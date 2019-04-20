@@ -17,12 +17,14 @@
 
 package com.ardikars.jxpacket.core.ndp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -62,9 +64,12 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         private final List<Option> options;
         private int length;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public List<Option> getOptions() {
@@ -87,9 +92,9 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 for (Option option : options) {
                     buffer.writeByte(option.getType().getValue());
                     buffer.writeByte(option.getLength());
@@ -101,6 +106,11 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 }
             }
             return buffer;
+        }
+
+        @Override
+        public NeighborDiscoveryOptions.Builder getBuilder() {
+            return builder;
         }
 
         @Override
@@ -137,7 +147,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                 new OptionType((byte) 5, "MTU");
 
         private static Map<Byte, OptionType> registry =
-                new HashMap<>();
+                new HashMap<Byte, OptionType>();
 
         protected OptionType(Byte value, String name) {
             super(value, name);
@@ -213,10 +223,10 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
     public static class Builder extends AbstractPacket.Builder {
 
-        private List<Option> options = new ArrayList<>();
+        private List<Option> options = new ArrayList<Option>();
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder options(List<Option> options) {
             this.options = options;
@@ -229,7 +239,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             while (buffer.isReadable(2)) {
                 final OptionType type = OptionType.registry.get(buffer.readByte());
                 byte lengthField = buffer.readByte();

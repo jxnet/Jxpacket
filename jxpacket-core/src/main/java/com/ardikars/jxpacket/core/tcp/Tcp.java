@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.core.tcp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -65,6 +65,8 @@ public class Tcp extends AbstractPacket {
         private final short urgentPointer;
         private final byte[] options;
 
+        private final Builder builder;
+
         private Header(final Builder builder) {
             this.sourcePort = builder.sourcePort;
             this.destinationPort = builder.destinationPort;
@@ -77,6 +79,7 @@ public class Tcp extends AbstractPacket {
             this.urgentPointer = builder.urgentPointer;
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public int getSourcePort() {
@@ -143,9 +146,9 @@ public class Tcp extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeShort(this.sourcePort);
                 buffer.writeShort(this.destinationPort);
                 buffer.writeInt(this.sequence);
@@ -159,6 +162,11 @@ public class Tcp extends AbstractPacket {
                 }
             }
             return buffer;
+        }
+
+        @Override
+        public Tcp.Builder getBuilder() {
+            return builder;
         }
 
         @Override
@@ -199,8 +207,8 @@ public class Tcp extends AbstractPacket {
         private short urgentPointer;
         private byte[] options;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
             this.sourcePort = (short) (sourcePort & 0xffff);
@@ -252,7 +260,7 @@ public class Tcp extends AbstractPacket {
             return this;
         }
 
-        public Builder payloadBuffer(ByteBuf buffer) {
+        public Builder payloadBuffer(Memory buffer) {
             this.payloadBuffer = buffer;
             return this;
         }
@@ -263,7 +271,7 @@ public class Tcp extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             this.sourcePort = buffer.getShort(0);
             this.destinationPort = buffer.getShort(2);
             this.sequence = buffer.getInt(4);
@@ -287,6 +295,51 @@ public class Tcp extends AbstractPacket {
             this.buffer = buffer;
             this.payloadBuffer = buffer.slice();
             return new Tcp(this);
+        }
+
+        @Override
+        public void reset() {
+            if (buffer != null) {
+                reset(buffer.readerIndex(), Header.TCP_HEADER_LENGTH);
+            }
+        }
+
+        @Override
+        public void reset(int offset, int length) {
+            if (buffer != null) {
+                Validate.notIllegalArgument(offset + length <= buffer.capacity());
+                Validate.notIllegalArgument(sourcePort >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(destinationPort >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(sequence >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(acknowledge >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(flags != null, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(windowSize >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(checksum >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(urgentPointer >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(dataOffset >= 0, ILLEGAL_HEADER_EXCEPTION);
+                Validate.notIllegalArgument(options != null, ILLEGAL_HEADER_EXCEPTION);
+                int index = offset;
+                buffer.setShort(index, sourcePort);
+                index += 2;
+                buffer.setShort(index, destinationPort);
+                index += 2;
+                buffer.setInt(index, sequence);
+                index += 4;
+                buffer.setInt(index, acknowledge);
+                index += 4;
+                int tmp = ((dataOffset << 12) & 0xf) | (flags.getShortValue() & 0x1ff);
+                buffer.setShort(index, tmp);
+                index += 2;
+                buffer.setShort(index, windowSize);
+                index += 2;
+                buffer.setShort(index, checksum);
+                index += 2;
+                buffer.setShort(index, urgentPointer);
+                index += 2;
+                if (dataOffset > 5 && options != null) {
+                    buffer.setBytes(index, options);
+                }
+            }
         }
 
     }

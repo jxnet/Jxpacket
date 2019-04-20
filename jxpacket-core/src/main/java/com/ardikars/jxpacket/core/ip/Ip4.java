@@ -17,10 +17,11 @@
 
 package com.ardikars.jxpacket.core.ip;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet4Address;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -67,6 +68,8 @@ public class Ip4 extends Ip {
 		private final Inet4Address destinationAddress;
 		private final byte[] options;
 
+		private final Builder builder;
+
 		protected Header(final Builder builder) {
 			super((byte) 0x04);
 			this.headerLength = builder.headerLength;
@@ -83,6 +86,7 @@ public class Ip4 extends Ip {
 			this.destinationAddress = builder.destinationAddress;
 			this.options = builder.options;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public int getHeaderLength() {
@@ -168,9 +172,9 @@ public class Ip4 extends Ip {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeByte((byte) ((super.version & 0xf) << 4 | headerLength & 0xf));
 				buffer.writeByte((byte) (((diffServ << 2) & 0x3f) | expCon & 0x3));
 				buffer.writeShort(totalLength);
@@ -186,6 +190,11 @@ public class Ip4 extends Ip {
 				}
 			}
 			return buffer;
+		}
+
+		@Override
+		public Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -232,8 +241,8 @@ public class Ip4 extends Ip {
 		private Inet4Address destinationAddress;
 		private byte[] options;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		/**
 		 * A helper field.
@@ -322,7 +331,7 @@ public class Ip4 extends Ip {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			this.headerLength = (byte) (buffer.readByte() & 0xf);
 			byte tmp = buffer.readByte();
 			this.diffServ = (byte) ((tmp >> 2) & 0x3f);
@@ -364,6 +373,57 @@ public class Ip4 extends Ip {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Ip4(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.IPV4_HEADER_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(headerLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(diffServ >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(expCon >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(totalLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(identification >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(flags >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(fragmentOffset >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(ttl >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(protocol != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(checksum >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(sourceAddress != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(destinationAddress != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				buffer.setByte(index, ((4 & 0xf) << 4) | this.headerLength & 0xf);
+				index += 1;
+				int tmp = ((diffServ << 2) & 0x3f) | (expCon & 0x3);
+				buffer.setByte(index, tmp);
+				index += 1;
+				buffer.setShort(index, totalLength);
+				index += 2;
+				buffer.setShort(index, identification);
+				index += 2;
+				int sscratch = ((flags << 13) & 0x7) | (fragmentOffset & 0x1fff);
+				buffer.setShort(index, sscratch);
+				index += 2;
+				buffer.setByte(index, ttl);
+				index += 1;
+				buffer.setByte(index, protocol.getValue());
+				index += 1;
+				buffer.setShort(index, checksum);
+				index += 2;
+				buffer.setBytes(index, sourceAddress.toBytes());
+				index += Inet4Address.IPV4_ADDRESS_LENGTH;
+				buffer.setBytes(index, destinationAddress.toBytes());
+				index += Inet4Address.IPV4_ADDRESS_LENGTH;
+				buffer.setBytes(index, options);
+			}
+
 		}
 
 	}

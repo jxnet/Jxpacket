@@ -17,12 +17,12 @@
 
 package com.ardikars.jxpacket.core.ndp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
 
 /**
  * NeighborAdvertisement
@@ -63,6 +63,8 @@ public class NeighborAdvertisement extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         private Header(Builder builder) {
             this.routerFlag = builder.routerFlag;
             this.solicitedFlag = builder.solicitedFlag;
@@ -70,6 +72,7 @@ public class NeighborAdvertisement extends AbstractPacket {
             this.targetAddress = builder.targetAddress;
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0, getLength());
+            this.builder = builder;
         }
 
         public boolean isRouterFlag() {
@@ -103,9 +106,9 @@ public class NeighborAdvertisement extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeInt((routerFlag ? 1 : 0) << 31
                         | (solicitedFlag ? 1 : 0) << 30
                         | (overrideFlag ? 1 : 0) << 29);
@@ -113,6 +116,11 @@ public class NeighborAdvertisement extends AbstractPacket {
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public NeighborAdvertisement.Builder getBuilder() {
+            return builder;
         }
 
         @Override
@@ -144,8 +152,8 @@ public class NeighborAdvertisement extends AbstractPacket {
 
         private NeighborDiscoveryOptions options;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder routerFlag(boolean routerFlag) {
             this.routerFlag = routerFlag;
@@ -178,7 +186,7 @@ public class NeighborAdvertisement extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             int iscratch = buffer.readInt();
             this.routerFlag = (iscratch >> 31 & 0x1) == 1 ? true : false;
             this.solicitedFlag = (iscratch >> 30 & 0x1) == 1 ? true : false;

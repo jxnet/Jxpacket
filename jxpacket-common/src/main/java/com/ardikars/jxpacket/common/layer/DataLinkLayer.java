@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.common.layer;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,17 +44,17 @@ public final class DataLinkLayer extends NamedNumber<Short, DataLinkLayer> imple
     public static final DataLinkLayer LINUX_SLL = new DataLinkLayer((short) 113, "Linux SLL");
 
     private static final Map<DataLinkLayer, Short> registry =
-            new HashMap<>();
+            new HashMap<DataLinkLayer, Short>();
 
     private static final Map<Short, AbstractPacket.Builder> builder =
-            new HashMap<>();
+            new HashMap<Short, AbstractPacket.Builder>();
 
     public DataLinkLayer(Short value, String name) {
         super(value, name);
     }
 
     @Override
-    public Packet newInstance(ByteBuf buffer) {
+    public Packet newInstance(Memory buffer) {
         AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
         if (packetBuilder == null) {
             if (buffer == null || buffer.capacity() <= 0) {

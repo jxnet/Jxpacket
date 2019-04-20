@@ -17,11 +17,10 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ip.Ip6;
-
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -70,9 +69,9 @@ public abstract class Options extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeByte(nextHeader.getValue());
 				buffer.writeInt(extensionLength);
 				if (options != null) {
@@ -99,8 +98,8 @@ public abstract class Options extends AbstractPacket {
 		protected int extensionLength;
 		protected byte[] options;
 
-		protected ByteBuf buffer;
-		protected ByteBuf payloadBuffer;
+		protected Memory buffer;
+		protected Memory payloadBuffer;
 
 		public Builder(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;

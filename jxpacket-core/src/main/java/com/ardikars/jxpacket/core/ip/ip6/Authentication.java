@@ -17,10 +17,11 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -59,6 +60,8 @@ public class Authentication extends AbstractPacket {
 		private final int sequenceNumber;
 		private final byte[] integrityCheckValue;
 
+		private final Builder builder;
+
 		private Header(final Builder builder) {
 			this.nextHeader = builder.nextHeader;
 			this.payloadLength = builder.payloadLength;
@@ -66,6 +69,7 @@ public class Authentication extends AbstractPacket {
 			this.sequenceNumber = builder.sequenceNumber;
 			this.integrityCheckValue = builder.integrityCheckValue;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public TransportLayer getNextHeader() {
@@ -105,9 +109,9 @@ public class Authentication extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.setByte(0, nextHeader.getValue());
 				buffer.setByte(1, payloadLength);
 				buffer.setShort(2, (short) 0); // reserved
@@ -118,6 +122,11 @@ public class Authentication extends AbstractPacket {
 				}
 			}
 			return buffer;
+		}
+
+		@Override
+		public Authentication.Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -148,8 +157,8 @@ public class Authentication extends AbstractPacket {
 		private int sequenceNumber;
 		private byte[] integrityCheckValue;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
@@ -188,7 +197,7 @@ public class Authentication extends AbstractPacket {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
 			this.payloadLength = buffer.readByte();
 			this.securityParameterIndex = buffer.readInt();
@@ -200,6 +209,35 @@ public class Authentication extends AbstractPacket {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Authentication(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.FIXED_HEADER_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(nextHeader != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(payloadLength >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(securityParameterIndex >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(sequenceNumber >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(integrityCheckValue != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				buffer.setByte(index, nextHeader.getValue());
+				index += 1;
+				buffer.setByte(index, payloadLength);
+				index += 1;
+				buffer.setInt(index, securityParameterIndex);
+				index += 4;
+				buffer.setInt(index, sequenceNumber);
+				index += 4;
+				buffer.setBytes(index, integrityCheckValue);
+			}
 		}
 
 	}

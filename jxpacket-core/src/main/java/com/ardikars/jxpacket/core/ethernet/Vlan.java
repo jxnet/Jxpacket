@@ -17,11 +17,12 @@
 
 package com.ardikars.jxpacket.core.ethernet;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class Vlan extends AbstractPacket {
 		payloadBuffer = builder.payloadBuffer;
 	}
 
-	public static Vlan newPacket(final ByteBuf buffer) {
+	public static Vlan newPacket(final Memory buffer) {
 		return new Vlan.Builder().build(buffer);
 	}
 
@@ -65,12 +66,15 @@ public class Vlan extends AbstractPacket {
 		private final short vlanIdentifier; // 12 bit
 		private final NetworkLayer type;
 
+		private final Builder builder;
+
 		private Header(final Builder builder) {
 			this.priorityCodePoint = builder.priorityCodePoint;
 			this.canonicalFormatIndicator = builder.canonicalFormatIndicator;
 			this.vlanIdentifier = builder.vlanIdentifier;
 			this.type = builder.type;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public PriorityCodePoint getPriorityCodePoint() {
@@ -100,14 +104,19 @@ public class Vlan extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.setShort(0, NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
 				buffer.setShort(2, ((priorityCodePoint.getValue() << 13) & 0x07)
 						| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff));
 			}
 			return buffer;
+		}
+
+		@Override
+		public Vlan.Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -136,8 +145,8 @@ public class Vlan extends AbstractPacket {
 		private short vlanIdentifier; // 12 bit
 		private NetworkLayer type;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder priorityCodePoint(final PriorityCodePoint priorityCodePoint) {
 			this.priorityCodePoint = priorityCodePoint;
@@ -159,7 +168,7 @@ public class Vlan extends AbstractPacket {
 			return this;
 		}
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -170,7 +179,7 @@ public class Vlan extends AbstractPacket {
 		}
 
 		@Override
-		public Vlan build(final ByteBuf buffer) {
+		public Vlan build(final Memory buffer) {
 			short tci = buffer.readShort();
 			short type = buffer.readShort();
 			this.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));
@@ -180,6 +189,30 @@ public class Vlan extends AbstractPacket {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Vlan(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.VLAN_HEADER_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(priorityCodePoint != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(canonicalFormatIndicator >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(vlanIdentifier >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(type != null, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				int tci = ((priorityCodePoint.getValue() << 13) & 0x07)
+						| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff);
+				buffer.setShort(index, tci);
+				index += 2;
+				buffer.setShort(index, type.getValue());
+			}
 		}
 
 	}
@@ -207,7 +240,7 @@ public class Vlan extends AbstractPacket {
 				= new PriorityCodePoint((byte) 7, "Network control (priority=7)");
 
 		private static final Map<Byte, PriorityCodePoint> registry
-				= new HashMap<>();
+				= new HashMap<Byte, PriorityCodePoint>();
 
 		protected PriorityCodePoint(Byte value, String name) {
 			super(value, name);

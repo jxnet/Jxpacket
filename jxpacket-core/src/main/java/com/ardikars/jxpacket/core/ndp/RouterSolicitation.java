@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.core.ndp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
 
 /**
  * RouterSolicitation
@@ -57,6 +57,8 @@ public class RouterSolicitation extends AbstractPacket {
 
         private final NeighborDiscoveryOptions options;
 
+        private final Builder builder;
+
         /**
          * Builde Router Solicitation packet.
          * @param builder builder.
@@ -65,6 +67,7 @@ public class RouterSolicitation extends AbstractPacket {
             this.options = builder.options;
             this.buffer = builder.buffer.slice(0,
                     ROUTER_SOLICITATION_HEADER_LENGTH + options.getHeader().getLength());
+            this.builder = builder;
         }
 
         public NeighborDiscoveryOptions getOptions() {
@@ -82,13 +85,18 @@ public class RouterSolicitation extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeInt(0);
                 buffer.writeBytes(options.getHeader().getBuffer());
             }
             return buffer;
+        }
+
+        @Override
+        public AbstractPacket.Builder getBuilder() {
+            return builder;
         }
 
         @Override
@@ -111,8 +119,8 @@ public class RouterSolicitation extends AbstractPacket {
 
         private NeighborDiscoveryOptions options;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder options(NeighborDiscoveryOptions options) {
             this.options = options;
@@ -125,7 +133,7 @@ public class RouterSolicitation extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             buffer.readInt();
             this.options = (NeighborDiscoveryOptions) new NeighborDiscoveryOptions.Builder()
                     .build(buffer);

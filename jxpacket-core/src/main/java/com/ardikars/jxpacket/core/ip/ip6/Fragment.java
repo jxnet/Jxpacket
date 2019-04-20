@@ -17,11 +17,12 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,12 +58,15 @@ public class Fragment extends AbstractPacket {
 		private final FlagType flagType;
 		private final int identification;
 
+		private final Builder builder;
+
 		private Header(final Builder builder) {
 			this.nextHeader = builder.nextHeader;
 			this.fragmentOffset = builder.fragmentOffset;
 			this.flagType = builder.flagType;
 			this.identification = builder.identification;
 			this.buffer = builder.buffer.slice(0, getLength());
+			this.builder = builder;
 		}
 
 		public TransportLayer getNextHeader() {
@@ -92,9 +96,9 @@ public class Fragment extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeByte(nextHeader.getValue());
 				buffer.writeByte(0); // reserved
 				buffer.writeShort((fragmentOffset & 0x1fff) << 3
@@ -102,6 +106,11 @@ public class Fragment extends AbstractPacket {
 				buffer.writeInt(identification);
 			}
 			return buffer;
+		}
+
+		@Override
+		public Fragment.Builder getBuilder() {
+			return builder;
 		}
 
 		@Override
@@ -130,8 +139,8 @@ public class Fragment extends AbstractPacket {
 		private FlagType flagType;
 		private int identification;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder nextHeader(TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
@@ -159,8 +168,9 @@ public class Fragment extends AbstractPacket {
 		}
 
 		@Override
-		public Fragment build(final ByteBuf buffer) {
+		public Fragment build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
+			buffer.readByte(); // reserved
 			short sscratch = buffer.readShort();
 			this.fragmentOffset = (short) (sscratch >> 3 & 0x1fff);
 			this.flagType = FlagType.valueOf((byte) (sscratch & 0x1));
@@ -168,6 +178,33 @@ public class Fragment extends AbstractPacket {
 			this.buffer = buffer;
 			this.payloadBuffer = buffer.slice();
 			return new Fragment(this);
+		}
+
+		@Override
+		public void reset() {
+			if (buffer != null) {
+				reset(buffer.readerIndex(), Header.FIXED_FRAGMENT_HEADER_LENGTH);
+			}
+		}
+
+		@Override
+		public void reset(int offset, int length) {
+			if (buffer != null) {
+				Validate.notIllegalArgument(offset + length <= buffer.capacity());
+				Validate.notIllegalArgument(nextHeader != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(fragmentOffset >= 0, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(flagType != null, ILLEGAL_HEADER_EXCEPTION);
+				Validate.notIllegalArgument(identification >= 0, ILLEGAL_HEADER_EXCEPTION);
+				int index = offset;
+				buffer.setByte(index, nextHeader.getValue());
+				index += 1;
+				buffer.setByte(index, 0); // reserved
+				index += 1;
+				int sscratch = (fragmentOffset & 0x1fff) << 3 | flagType.getValue() & 0x1;
+				buffer.setShort(index, sscratch);
+				index += 2;
+				buffer.setIndex(index, identification);
+			}
 		}
 
 	}
@@ -181,7 +218,7 @@ public class Fragment extends AbstractPacket {
 		public static final FlagType UNKNOWN = new FlagType((byte) -1, "UNKNOWN.");
 
 		private static final Map<Byte, FlagType> registry
-				= new HashMap<>();
+				= new HashMap<Byte, FlagType>();
 
 		protected FlagType(Byte value, String name) {
 			super(value, name);
