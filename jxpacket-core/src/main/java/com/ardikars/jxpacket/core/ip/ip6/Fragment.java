@@ -17,12 +17,12 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -96,9 +96,9 @@ public class Fragment extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeByte(nextHeader.getValue());
 				buffer.writeByte(0); // reserved
 				buffer.writeShort((fragmentOffset & 0x1fff) << 3
@@ -139,8 +139,8 @@ public class Fragment extends AbstractPacket {
 		private FlagType flagType;
 		private int identification;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder nextHeader(TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
@@ -168,7 +168,7 @@ public class Fragment extends AbstractPacket {
 		}
 
 		@Override
-		public Fragment build(final ByteBuf buffer) {
+		public Fragment build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
 			buffer.readByte(); // reserved
 			short sscratch = buffer.readShort();

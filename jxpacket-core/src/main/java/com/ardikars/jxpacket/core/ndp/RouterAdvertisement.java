@@ -17,10 +17,10 @@
 
 package com.ardikars.jxpacket.core.ndp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
-import io.netty.buffer.ByteBuf;
 
 /**
  * RouterAdvertisement
@@ -116,9 +116,9 @@ public class RouterAdvertisement extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeByte(currentHopLimit);
                 buffer.writeByte((manageFlag ? 1 : 0) << 7 | (otherFlag ? 1 : 0) << 6);
                 buffer.writeShort(routerLifetime);
@@ -167,8 +167,8 @@ public class RouterAdvertisement extends AbstractPacket {
 
         private NeighborDiscoveryOptions options;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder currentHopLimit(int currentHopLimit) {
             this.currentHopLimit = (byte) (currentHopLimit & 0xff);
@@ -211,7 +211,7 @@ public class RouterAdvertisement extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             this.currentHopLimit = buffer.readByte();
             int bscratch = buffer.readByte();
             this.manageFlag = ((bscratch >> 7) & 0x1) == 1 ? true : false;

@@ -2,15 +2,15 @@ package com.ardikars.jxpacket.core.udp;
 
 import com.ardikars.jxpacket.core.BaseTest;
 import com.ardikars.jxpacket.core.ethernet.Ethernet;
-import io.netty.buffer.ByteBuf;
-import io.netty.util.internal.StringUtil;
+import com.ardikars.common.memory.Memory;
+ import com.ardikars.common.util.Hexs;
 import org.junit.After;
 
 public class Ip6UdpTest extends BaseTest {
 
-    private byte[] data = StringUtil.decodeHexDump(IPV6_UDP);
+    private byte[] data = Hexs.parseHex(IPV6_UDP);
 
-    private ByteBuf buf = allocator.directBuffer(data.length);
+    private Memory buf = allocator.allocate(data.length);
 
     @Override
     public void before() {

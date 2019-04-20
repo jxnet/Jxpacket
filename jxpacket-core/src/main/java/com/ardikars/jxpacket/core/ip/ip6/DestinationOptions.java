@@ -17,10 +17,10 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 public class DestinationOptions extends Options {
 
@@ -85,7 +85,7 @@ public class DestinationOptions extends Options {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			nextHeader = TransportLayer.valueOf(buffer.readByte());
 			extensionLength = buffer.readInt();
 			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH

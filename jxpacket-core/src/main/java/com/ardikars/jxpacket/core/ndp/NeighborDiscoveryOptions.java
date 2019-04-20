@@ -17,12 +17,14 @@
 
 package com.ardikars.jxpacket.core.ndp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
+
 import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -90,9 +92,9 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 for (Option option : options) {
                     buffer.writeByte(option.getType().getValue());
                     buffer.writeByte(option.getLength());
@@ -223,8 +225,8 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
         private List<Option> options = new ArrayList<Option>();
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder options(List<Option> options) {
             this.options = options;
@@ -237,7 +239,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             while (buffer.isReadable(2)) {
                 final OptionType type = OptionType.registry.get(buffer.readByte());
                 byte lengthField = buffer.readByte();

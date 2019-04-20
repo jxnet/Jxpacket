@@ -5,7 +5,7 @@ import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.iso8583.dataelement.DataElement;
-import io.netty.buffer.ByteBuf;
+import com.ardikars.common.memory.Memory;
 
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class Iso8583 extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             return null;
         }
 
@@ -86,7 +86,7 @@ public class Iso8583 extends AbstractPacket {
 
         private String separator;
         private boolean noMit;
-        private ByteBuf payloadBuffer;
+        private Memory payloadBuffer;
 
         public Builder messageVersion(MessageVersion messageVersion) {
             this.messageVersion = messageVersion;
@@ -123,7 +123,7 @@ public class Iso8583 extends AbstractPacket {
             return this;
         }
 
-        public Builder payloadBuffer(ByteBuf payloadBuffer) {
+        public Builder payloadBuffer(Memory payloadBuffer) {
             this.payloadBuffer = payloadBuffer;
             return this;
         }
@@ -149,7 +149,7 @@ public class Iso8583 extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             int headerIndex = 0;
             if (!noMit) {
                 this.messageVersion = MessageVersion.valueOf(buffer.getByte(0));

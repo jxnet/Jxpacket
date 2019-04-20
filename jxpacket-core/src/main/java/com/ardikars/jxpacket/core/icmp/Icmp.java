@@ -17,6 +17,7 @@
 
 package com.ardikars.jxpacket.core.icmp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
@@ -26,7 +27,6 @@ import com.ardikars.jxpacket.core.ndp.NeighborSolicitation;
 import com.ardikars.jxpacket.core.ndp.Redirect;
 import com.ardikars.jxpacket.core.ndp.RouterAdvertisement;
 import com.ardikars.jxpacket.core.ndp.RouterSolicitation;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,9 +62,9 @@ public abstract class Icmp extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeByte(typeAndCode.getType());
                 buffer.writeByte(typeAndCode.getCode());
                 buffer.writeShort(checksum);
@@ -153,7 +153,7 @@ public abstract class Icmp extends AbstractPacket {
         }
 
         @Override
-        public Packet newInstance(ByteBuf buffer) {
+        public Packet newInstance(Memory buffer) {
             AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
             if (packetBuilder == null) {
                 if (buffer == null || buffer.capacity() <= 0) {

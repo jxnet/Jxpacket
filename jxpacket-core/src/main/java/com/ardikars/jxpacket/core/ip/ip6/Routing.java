@@ -17,14 +17,13 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ip.Ip6;
-
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,9 +112,9 @@ public class Routing extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeByte(nextHeader.getValue());
 				buffer.writeByte(extensionLength);
 				buffer.writeByte(routingType.getValue());
@@ -161,8 +160,8 @@ public class Routing extends AbstractPacket {
 
 		private byte[] routingData;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
@@ -201,7 +200,7 @@ public class Routing extends AbstractPacket {
 		}
 
 		@Override
-		public Routing build(final ByteBuf buffer) {
+		public Routing build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
 			this.extensionLength = buffer.readByte();
 			this.routingType = Routing.Type.valueOf(buffer.readByte());

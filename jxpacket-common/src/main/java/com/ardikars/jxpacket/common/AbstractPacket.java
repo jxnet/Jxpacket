@@ -17,10 +17,10 @@
 
 package com.ardikars.jxpacket.common;
 
+import com.ardikars.common.memory.Memory;
+import com.ardikars.common.memory.MemoryAllocator;
+import com.ardikars.common.util.CommonConsumer;
 import com.ardikars.jxpacket.common.util.PacketIterator;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.Unpooled;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,15 +37,15 @@ public abstract class AbstractPacket implements Packet {
     protected static final IllegalArgumentException ILLEGAL_HEADER_EXCEPTION
             = new IllegalArgumentException("Missing required header field(s).");
 
-    protected ByteBuf payloadBuffer;
+    protected Memory payloadBuffer;
 
     /**
-     * Returns the {@link ByteBuf} object representing this packet's payload.
-     * @return returns empty buffer if a payload doesn't exits, {@link ByteBuf} object otherwise.
+     * Returns the {@link Memory} object representing this packet's payload.
+     * @return returns empty buffer if a payload doesn't exits, {@link Memory} object otherwise.
      */
-    public ByteBuf getPayloadBuffer() {
+    public Memory getPayloadBuffer() {
         if (payloadBuffer == null) {
-            payloadBuffer = Unpooled.EMPTY_BUFFER;
+            payloadBuffer = Properties.BYTE_BUF_ALLOCATOR.allocate(0);
         }
         return payloadBuffer;
     }
@@ -73,19 +73,31 @@ public abstract class AbstractPacket implements Packet {
         return new PacketIterator(this);
     }
 
+    @Override
+    public void forEach(CommonConsumer<? super Packet> action) throws NullPointerException {
+        PacketIterator iterator = iterator();
+        while (iterator.hasNext()) {
+            try {
+                action.consume(iterator.next());
+            } catch (Exception e) {
+                // do nothing
+            }
+        }
+    }
+
     public static abstract class Header implements Packet.Header {
 
-        protected static final ByteBufAllocator ALLOCATOR = Properties.BYTE_BUF_ALLOCATOR;
+        protected static final MemoryAllocator ALLOCATOR = Properties.BYTE_BUF_ALLOCATOR;
 
-        protected ByteBuf buffer;
+        protected Memory buffer;
 
         /**
          * Returns header as byte buffer.
          * @return return byte buffer.
          */
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = Unpooled.EMPTY_BUFFER;
+                buffer = ALLOCATOR.allocate(0);
             }
             return buffer;
         }
@@ -97,7 +109,7 @@ public abstract class AbstractPacket implements Packet {
     /**
      * Packet builder.
      */
-    public static abstract class Builder implements com.ardikars.common.util.Builder<Packet, ByteBuf>, Serializable {
+    public static abstract class Builder implements com.ardikars.common.util.Builder<Packet, Memory>, Serializable {
 
         public void reset() {
             reset(-1, -1);
@@ -112,7 +124,7 @@ public abstract class AbstractPacket implements Packet {
     /**
      * Packet factory.
      */
-    public static abstract class Factory implements com.ardikars.common.util.Factory<Packet, ByteBuf> {
+    public static abstract class Factory implements com.ardikars.common.util.Factory<Packet, Memory> {
 
     }
 

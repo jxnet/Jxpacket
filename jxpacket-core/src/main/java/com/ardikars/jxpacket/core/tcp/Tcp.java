@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.core.tcp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -146,9 +146,9 @@ public class Tcp extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeShort(this.sourcePort);
                 buffer.writeShort(this.destinationPort);
                 buffer.writeInt(this.sequence);
@@ -207,8 +207,8 @@ public class Tcp extends AbstractPacket {
         private short urgentPointer;
         private byte[] options;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
             this.sourcePort = (short) (sourcePort & 0xffff);
@@ -260,7 +260,7 @@ public class Tcp extends AbstractPacket {
             return this;
         }
 
-        public Builder payloadBuffer(ByteBuf buffer) {
+        public Builder payloadBuffer(Memory buffer) {
             this.payloadBuffer = buffer;
             return this;
         }
@@ -271,7 +271,7 @@ public class Tcp extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             this.sourcePort = buffer.getShort(0);
             this.destinationPort = buffer.getShort(2);
             this.sequence = buffer.getInt(4);

@@ -17,12 +17,12 @@
 
 package com.ardikars.jxpacket.core.ethernet;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.MacAddress;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
-import io.netty.buffer.ByteBuf;
 
 public class Ethernet extends AbstractPacket {
 
@@ -36,7 +36,7 @@ public class Ethernet extends AbstractPacket {
 		payloadBuffer = builder.payloadBuffer;
 	}
 
-	public static final Ethernet newPacket(final ByteBuf buffer) {
+	public static final Ethernet newPacket(final Memory buffer) {
 		return new Ethernet.Builder().build(buffer);
 	}
 
@@ -94,9 +94,9 @@ public class Ethernet extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeBytes(destinationMacAddress.toBytes());
 				buffer.writeBytes(sourceMacAddress.toBytes());
 				buffer.writeShort(ethernetType.getValue());
@@ -133,8 +133,8 @@ public class Ethernet extends AbstractPacket {
 		private MacAddress sourceMacAddress;
 		private NetworkLayer ethernetType;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder destinationMacAddress(final MacAddress destinationMacAddress) {
 			this.destinationMacAddress = destinationMacAddress;
@@ -151,7 +151,7 @@ public class Ethernet extends AbstractPacket {
 			return this;
 		}
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -162,7 +162,7 @@ public class Ethernet extends AbstractPacket {
 		}
 
 		@Override
-		public Ethernet build(final ByteBuf buffer) {
+		public Ethernet build(final Memory buffer) {
 			byte[] hardwareAddressBuffer;
 			hardwareAddressBuffer = new byte[MacAddress.MAC_ADDRESS_LENGTH];
 			buffer.readBytes(hardwareAddressBuffer);

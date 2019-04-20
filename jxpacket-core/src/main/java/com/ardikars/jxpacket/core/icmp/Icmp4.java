@@ -17,6 +17,7 @@
 
 package com.ardikars.jxpacket.core.icmp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
@@ -31,7 +32,6 @@ import com.ardikars.jxpacket.core.icmp.icmp4.Icmp4RouterSolicitation;
 import com.ardikars.jxpacket.core.icmp.icmp4.Icmp4TimeExceeded;
 import com.ardikars.jxpacket.core.icmp.icmp4.Icmp4Timestamp;
 import com.ardikars.jxpacket.core.icmp.icmp4.Icmp4TimestampReply;
-import io.netty.buffer.ByteBuf;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -103,8 +103,8 @@ public class Icmp4 extends AbstractPacket {
 
     public static class Builder extends Icmp.AbstractPacketBuilder {
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         private boolean calculateChecksum;
 
@@ -119,7 +119,7 @@ public class Icmp4 extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             byte type = buffer.readByte();
             byte code = buffer.readByte();
             super.typeAndCode = Icmp.findIcmpTypeAndCode(type, code, Icmp4.ICMP4_REGISTRY);

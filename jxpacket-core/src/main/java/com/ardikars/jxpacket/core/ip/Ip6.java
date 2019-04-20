@@ -17,12 +17,12 @@
 
 package com.ardikars.jxpacket.core.ip;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 public class Ip6 extends Ip {
 
@@ -114,9 +114,9 @@ public class Ip6 extends Ip {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeInt((super.version & 0xf) << 28 | (trafficClass & 0xff) << 20 | flowLabel & 0xfffff);
 				buffer.writeShort(payloadLength);
 				buffer.writeByte(nextHeader.getValue());
@@ -165,8 +165,8 @@ public class Ip6 extends Ip {
 		private Inet6Address sourceAddress;
 		private Inet6Address destinationAddress;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder trafficClass(final int trafficClass) {
 			this.trafficClass = (byte) (trafficClass & 0xff);
@@ -203,7 +203,7 @@ public class Ip6 extends Ip {
 			return this;
 		}
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -214,7 +214,7 @@ public class Ip6 extends Ip {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			int iscratch = buffer.readInt();
 			this.trafficClass = (byte) (iscratch >> 20 & 0xff);
 			this.flowLabel = iscratch & 0xfffff;

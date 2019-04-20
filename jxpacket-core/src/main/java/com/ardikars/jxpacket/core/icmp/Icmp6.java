@@ -17,6 +17,7 @@
 
 package com.ardikars.jxpacket.core.icmp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
@@ -45,7 +46,6 @@ import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6RouterAdvertisement;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6RouterRenumbering;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6RouterSolicitation;
 import com.ardikars.jxpacket.core.icmp.icmp6.Icmp6TimeExceeded;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -122,8 +122,8 @@ public class Icmp6 extends AbstractPacket {
 
     public static class Builder extends Icmp.AbstractPacketBuilder {
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         @Override
         public Packet build() {
@@ -131,7 +131,7 @@ public class Icmp6 extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             byte type = buffer.readByte();
             byte code = buffer.readByte();
             super.typeAndCode = Icmp.findIcmpTypeAndCode(type, code, Icmp6.ICMP6_REGISTRY);

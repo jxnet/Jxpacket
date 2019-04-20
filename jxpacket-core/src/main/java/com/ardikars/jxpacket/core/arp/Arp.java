@@ -17,6 +17,7 @@
 
 package com.ardikars.jxpacket.core.arp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.net.MacAddress;
 import com.ardikars.common.util.NamedNumber;
@@ -25,7 +26,6 @@ import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class Arp extends AbstractPacket {
 		return payload;
 	}
 
-	public static final Arp newPacket(final ByteBuf buffer) {
+	public static final Arp newPacket(final Memory buffer) {
 		return new Arp.Builder().build(buffer);
 	}
 
@@ -136,9 +136,9 @@ public class Arp extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeShort(hardwareType.getValue());
 				buffer.writeShort(protocolType.getValue());
 				buffer.writeByte(hardwareAddressLength);
@@ -193,8 +193,8 @@ public class Arp extends AbstractPacket {
 		private MacAddress targetHardwareAddress;
 		private Inet4Address targetProtocolAddress;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder hardwareType(final DataLinkLayer hardwareType) {
 			this.hardwareType = hardwareType;
@@ -241,7 +241,7 @@ public class Arp extends AbstractPacket {
 			return this;
 		}
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -252,7 +252,7 @@ public class Arp extends AbstractPacket {
 		}
 
 		@Override
-		public Arp build(final ByteBuf buffer) {
+		public Arp build(final Memory buffer) {
 			this.hardwareType = DataLinkLayer.valueOf(buffer.readShort());
 			this.protocolType = NetworkLayer.valueOf(buffer.readShort());
 			this.hardwareAddressLength = buffer.readByte();

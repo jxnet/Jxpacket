@@ -17,12 +17,12 @@
 
 package com.ardikars.jxpacket.core.ndp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet6Address;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
 
 /**
  * Redirect
@@ -94,9 +94,9 @@ public class Redirect extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeInt(0);
                 buffer.writeBytes(targetAddress.getAddress());
                 buffer.writeBytes(destinationAddress.getAddress());
@@ -135,8 +135,8 @@ public class Redirect extends AbstractPacket {
 
         private NeighborDiscoveryOptions options;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder targetAddrss(Inet6Address targetAddress) {
             this.targetAddress = targetAddress;
@@ -154,7 +154,7 @@ public class Redirect extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             buffer.readInt();
             byte[] target = new byte[Inet6Address.IPV6_ADDRESS_LENGTH];
             buffer.readBytes(target);

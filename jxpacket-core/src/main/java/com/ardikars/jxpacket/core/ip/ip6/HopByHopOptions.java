@@ -17,10 +17,10 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 public class HopByHopOptions extends Options {
 
@@ -85,7 +85,7 @@ public class HopByHopOptions extends Options {
 		}
 
 		@Override
-		public HopByHopOptions build(final ByteBuf buffer) {
+		public HopByHopOptions build(final Memory buffer) {
 			nextHeader = TransportLayer.valueOf(buffer.readByte());
 			extensionLength = buffer.readByte();
 			options = new byte[Options.Header.FIXED_OPTIONS_LENGTH

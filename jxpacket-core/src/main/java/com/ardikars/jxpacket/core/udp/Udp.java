@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.core.udp;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
-import io.netty.buffer.ByteBuf;
 
 public class Udp extends AbstractPacket {
 
@@ -88,9 +88,9 @@ public class Udp extends AbstractPacket {
         }
 
         @Override
-        public ByteBuf getBuffer() {
+        public Memory getBuffer() {
             if (buffer == null) {
-                buffer = ALLOCATOR.directBuffer(getLength());
+                buffer = ALLOCATOR.allocate(getLength());
                 buffer.writeShort(this.sourcePort);
                 buffer.writeShort(this.destinationPort);
                 buffer.writeShort(this.length);
@@ -130,8 +130,8 @@ public class Udp extends AbstractPacket {
         private short length;
         private short checksum;
 
-        private ByteBuf buffer;
-        private ByteBuf payloadBuffer;
+        private Memory buffer;
+        private Memory payloadBuffer;
 
         public Builder sourcePort(int sourcePort) {
             this.sourcePort = (short) (sourcePort & 0xffff);
@@ -153,7 +153,7 @@ public class Udp extends AbstractPacket {
             return this;
         }
 
-        public Builder payloadBuffer(ByteBuf payloadBuffer) {
+        public Builder payloadBuffer(Memory payloadBuffer) {
             this.payloadBuffer = payloadBuffer;
             return this;
         }
@@ -164,7 +164,7 @@ public class Udp extends AbstractPacket {
         }
 
         @Override
-        public Packet build(ByteBuf buffer) {
+        public Packet build(Memory buffer) {
             this.sourcePort = buffer.getShort(0);
             this.destinationPort = buffer.getShort(2);
             this.length = buffer.getShort(4);

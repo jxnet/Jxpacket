@@ -17,8 +17,8 @@
 
 package com.ardikars.jxpacket.common;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
-import io.netty.buffer.ByteBuf;
 
 /**
  * Unknown packet.
@@ -46,7 +46,7 @@ public class UnknownPacket extends AbstractPacket {
 		payloadBuffer = builder.payloadBuffer;
 	}
 
-	public static UnknownPacket newPacket(final ByteBuf buffer) {
+	public static UnknownPacket newPacket(final Memory buffer) {
 		return new UnknownPacket.Builder().build(buffer);
 	}
 
@@ -62,7 +62,7 @@ public class UnknownPacket extends AbstractPacket {
 
 	public static final class Header extends AbstractPacket.Header {
 
-		private final ByteBuf buffer;
+		private final Memory buffer;
 
 		private final Builder builder;
 
@@ -77,7 +77,7 @@ public class UnknownPacket extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			return buffer;
 		}
 
@@ -108,9 +108,9 @@ public class UnknownPacket extends AbstractPacket {
 
 	public static final class Builder extends AbstractPacket.Builder {
 
-		private ByteBuf payloadBuffer;
+		private Memory payloadBuffer;
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -121,7 +121,7 @@ public class UnknownPacket extends AbstractPacket {
 		}
 
 		@Override
-		public UnknownPacket build(ByteBuf buffer) {
+		public UnknownPacket build(Memory buffer) {
 			Builder builder = new Builder()
 					.payloadBuffer(buffer);
 			return new UnknownPacket(builder);

@@ -17,10 +17,10 @@
 
 package com.ardikars.jxpacket.common;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.CommonIterable;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.util.PacketIterator;
-import io.netty.buffer.ByteBuf;
 
 import java.io.Serializable;
 import java.util.List;
@@ -65,7 +65,7 @@ public interface Packet extends CommonIterable<Packet, PacketIterator>, Serializ
      * The interface for packet builder.
      */
     @Deprecated
-    interface Builder extends com.ardikars.common.util.Builder<Packet, ByteBuf> {
+    interface Builder extends com.ardikars.common.util.Builder<Packet, Memory> {
 
     }
 
@@ -73,7 +73,7 @@ public interface Packet extends CommonIterable<Packet, PacketIterator>, Serializ
      * The interface for packet factory.
      */
     @Deprecated
-    interface Factory extends com.ardikars.common.util.Factory<Packet, ByteBuf> {
+    interface Factory extends com.ardikars.common.util.Factory<Packet, Memory> {
 
     }
 
@@ -100,7 +100,7 @@ public interface Packet extends CommonIterable<Packet, PacketIterator>, Serializ
          * @return return byte buffer.
          */
         @Deprecated
-        ByteBuf getBuffer();
+        Memory getBuffer();
 
     }
 

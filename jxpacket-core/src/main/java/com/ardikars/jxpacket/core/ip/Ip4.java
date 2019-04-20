@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.core.ip;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.net.Inet4Address;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -172,9 +172,9 @@ public class Ip4 extends Ip {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.writeByte((byte) ((super.version & 0xf) << 4 | headerLength & 0xf));
 				buffer.writeByte((byte) (((diffServ << 2) & 0x3f) | expCon & 0x3));
 				buffer.writeShort(totalLength);
@@ -241,8 +241,8 @@ public class Ip4 extends Ip {
 		private Inet4Address destinationAddress;
 		private byte[] options;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		/**
 		 * A helper field.
@@ -331,7 +331,7 @@ public class Ip4 extends Ip {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			this.headerLength = (byte) (buffer.readByte() & 0xf);
 			byte tmp = buffer.readByte();
 			this.diffServ = (byte) ((tmp >> 2) & 0x3f);

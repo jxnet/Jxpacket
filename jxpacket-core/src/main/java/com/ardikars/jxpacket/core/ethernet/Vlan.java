@@ -17,12 +17,12 @@
 
 package com.ardikars.jxpacket.core.ethernet;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class Vlan extends AbstractPacket {
 		payloadBuffer = builder.payloadBuffer;
 	}
 
-	public static Vlan newPacket(final ByteBuf buffer) {
+	public static Vlan newPacket(final Memory buffer) {
 		return new Vlan.Builder().build(buffer);
 	}
 
@@ -104,9 +104,9 @@ public class Vlan extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.setShort(0, NetworkLayer.DOT1Q_VLAN_TAGGED_FRAMES.getValue());
 				buffer.setShort(2, ((priorityCodePoint.getValue() << 13) & 0x07)
 						| ((canonicalFormatIndicator << 14) & 0x01) | (vlanIdentifier & 0x0fff));
@@ -145,8 +145,8 @@ public class Vlan extends AbstractPacket {
 		private short vlanIdentifier; // 12 bit
 		private NetworkLayer type;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder priorityCodePoint(final PriorityCodePoint priorityCodePoint) {
 			this.priorityCodePoint = priorityCodePoint;
@@ -168,7 +168,7 @@ public class Vlan extends AbstractPacket {
 			return this;
 		}
 
-		public Builder payloadBuffer(final ByteBuf buffer) {
+		public Builder payloadBuffer(final Memory buffer) {
 			this.payloadBuffer = buffer;
 			return this;
 		}
@@ -179,7 +179,7 @@ public class Vlan extends AbstractPacket {
 		}
 
 		@Override
-		public Vlan build(final ByteBuf buffer) {
+		public Vlan build(final Memory buffer) {
 			short tci = buffer.readShort();
 			short type = buffer.readShort();
 			this.priorityCodePoint = PriorityCodePoint.valueOf((byte) (tci >> 13 & 0x07));

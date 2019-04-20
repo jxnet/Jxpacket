@@ -1,5 +1,7 @@
 package com.ardikars.jxpacket.core;
 
+import com.ardikars.common.memory.Memories;
+import com.ardikars.common.memory.MemoryAllocator;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.DataLinkLayer;
 import com.ardikars.jxpacket.common.layer.NetworkLayer;
@@ -18,8 +20,6 @@ import com.ardikars.jxpacket.core.ndp.RouterAdvertisement;
 import com.ardikars.jxpacket.core.ndp.RouterSolicitation;
 import com.ardikars.jxpacket.core.tcp.Tcp;
 import com.ardikars.jxpacket.core.udp.Udp;
-import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +76,7 @@ public abstract class BaseTest {
 
 	protected static final String NDP_ROUTER_ADVERTISEMENT = "333300000001c20054f5000086dd6e00000000403afffe80000000000000c00054fffef50000ff0200000000000000000000000000018600c4fe4000070800000000000000000101c20054f5000005010000000005dc030440c000278d0000093a800000000020010db8000000010000000000000000";
 
-	protected ByteBufAllocator allocator = PooledByteBufAllocator.DEFAULT;
+	protected MemoryAllocator allocator = Memories.allocator();
 
 	protected Ethernet ethernet;
 

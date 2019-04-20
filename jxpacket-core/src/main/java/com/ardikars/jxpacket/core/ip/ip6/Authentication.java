@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.core.ip.ip6;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-import io.netty.buffer.ByteBuf;
 
 import java.util.Arrays;
 
@@ -109,9 +109,9 @@ public class Authentication extends AbstractPacket {
 		}
 
 		@Override
-		public ByteBuf getBuffer() {
+		public Memory getBuffer() {
 			if (buffer == null) {
-				buffer = ALLOCATOR.directBuffer(getLength());
+				buffer = ALLOCATOR.allocate(getLength());
 				buffer.setByte(0, nextHeader.getValue());
 				buffer.setByte(1, payloadLength);
 				buffer.setShort(2, (short) 0); // reserved
@@ -157,8 +157,8 @@ public class Authentication extends AbstractPacket {
 		private int sequenceNumber;
 		private byte[] integrityCheckValue;
 
-		private ByteBuf buffer;
-		private ByteBuf payloadBuffer;
+		private Memory buffer;
+		private Memory payloadBuffer;
 
 		public Builder nextHeader(final TransportLayer nextHeader) {
 			this.nextHeader = nextHeader;
@@ -197,7 +197,7 @@ public class Authentication extends AbstractPacket {
 		}
 
 		@Override
-		public Packet build(final ByteBuf buffer) {
+		public Packet build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
 			this.payloadLength = buffer.readByte();
 			this.securityParameterIndex = buffer.readInt();

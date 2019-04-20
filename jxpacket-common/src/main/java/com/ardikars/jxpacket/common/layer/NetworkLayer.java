@@ -17,11 +17,11 @@
 
 package com.ardikars.jxpacket.common.layer;
 
+import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
-import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,7 +116,7 @@ public final class NetworkLayer extends NamedNumber<Short, NetworkLayer> impleme
     }
 
     @Override
-    public Packet newInstance(ByteBuf buffer) {
+    public Packet newInstance(Memory buffer) {
         AbstractPacket.Builder packetBuilder = builder.get(this.getValue());
         if (packetBuilder == null) {
             if (buffer == null || buffer.capacity() <= 0) {
