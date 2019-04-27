@@ -165,10 +165,10 @@ public class Udp extends AbstractPacket {
 
         @Override
         public Packet build(Memory buffer) {
-            this.sourcePort = buffer.getShort(0);
-            this.destinationPort = buffer.getShort(2);
-            this.length = buffer.getShort(4);
-            this.checksum = buffer.getShort(6);
+            this.sourcePort = buffer.readShort();
+            this.destinationPort = buffer.readShort();
+            this.length = buffer.readShort();
+            this.checksum = buffer.readShort();
             this.buffer = buffer;
             this.payloadBuffer = buffer.slice();
             return new Udp(this);
