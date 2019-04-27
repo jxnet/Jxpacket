@@ -71,7 +71,7 @@ public class Routing extends AbstractPacket {
 			this.routingType = builder.routingType;
 			this.segmentLeft = builder.segmentLeft;
 			this.routingData = builder.routingData;
-			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
 			this.builder = builder;
 		}
 

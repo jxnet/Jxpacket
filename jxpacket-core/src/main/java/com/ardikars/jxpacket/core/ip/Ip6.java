@@ -71,7 +71,7 @@ public class Ip6 extends Ip {
 			this.hopLimit = builder.hopLimit;
 			this.sourceAddress = builder.sourceAddress;
 			this.destinationAddress = builder.destinationAddress;
-			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
 			this.builder = builder;
 		}
 

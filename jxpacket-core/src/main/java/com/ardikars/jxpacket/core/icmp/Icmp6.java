@@ -89,7 +89,7 @@ public class Icmp6 extends AbstractPacket {
         private Header(Builder builder) {
             typeAndCode = builder.typeAndCode;
             checksum = builder.checksum;
-            buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
+            buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
             this.builder = builder;
         }
 

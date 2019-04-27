@@ -67,7 +67,7 @@ public class Ethernet extends AbstractPacket {
 			this.destinationMacAddress = builder.destinationMacAddress;
 			this.sourceMacAddress = builder.sourceMacAddress;
 			this.ethernetType = builder.ethernetType;
-			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
 			this.builder = builder;
 		}
 
