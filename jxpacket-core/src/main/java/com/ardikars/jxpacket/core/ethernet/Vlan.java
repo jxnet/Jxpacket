@@ -73,7 +73,7 @@ public class Vlan extends AbstractPacket {
 			this.canonicalFormatIndicator = builder.canonicalFormatIndicator;
 			this.vlanIdentifier = builder.vlanIdentifier;
 			this.type = builder.type;
-			this.buffer = builder.buffer.slice(0, getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
 			this.builder = builder;
 		}
 

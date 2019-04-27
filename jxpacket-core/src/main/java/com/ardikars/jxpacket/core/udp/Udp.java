@@ -61,7 +61,7 @@ public class Udp extends AbstractPacket {
             this.destinationPort = builder.destinationPort;
             this.length = builder.length;
             this.checksum = builder.checksum;
-            this.buffer = builder.buffer.slice(0, getLength());
+            this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
             this.builder = builder;
         }
 

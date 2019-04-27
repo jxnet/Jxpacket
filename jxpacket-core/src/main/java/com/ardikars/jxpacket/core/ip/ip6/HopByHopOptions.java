@@ -50,7 +50,7 @@ public class HopByHopOptions extends Options {
 
 		protected Header(final HopByHopOptions.Builder builder) {
 			super(builder, builder.nextHeader);
-			this.buffer = builder.buffer.slice(0, getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
 			this.builder = builder;
 		}
 

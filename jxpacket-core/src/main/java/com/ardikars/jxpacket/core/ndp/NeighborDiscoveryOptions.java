@@ -68,7 +68,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
 
         private Header(Builder builder) {
             this.options = builder.options;
-            this.buffer = builder.buffer.slice(0, getLength());
+            this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
             this.builder = builder;
         }
 
