@@ -154,7 +154,7 @@ public class Ip4 extends Ip {
 		public boolean isValidChecksum() {
 			int accumulation = 0;
 			for (int i = 0; i < headerLength * 2; ++i) {
-				accumulation += 0xffff & buffer.getShort(0);
+				accumulation += 0xffff & buffer.getShort(i + 2);
 			}
 			accumulation = (accumulation >> 16 & 0xffff)
 					+ (accumulation & 0xffff);

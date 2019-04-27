@@ -272,23 +272,23 @@ public class Tcp extends AbstractPacket {
 
         @Override
         public Packet build(Memory buffer) {
-            this.sourcePort = buffer.getShort(0);
-            this.destinationPort = buffer.getShort(2);
-            this.sequence = buffer.getInt(4);
-            this.acknowledge = buffer.getInt(8);
-            short flags = buffer.getShort(12);
+            this.sourcePort = buffer.readShort();
+            this.destinationPort = buffer.readShort();
+            this.sequence = buffer.readInt();
+            this.acknowledge = buffer.readInt();
+            short flags = buffer.readShort();
             this.dataOffset = (byte) (flags >> 12 & 0xf);
             this.flags = new TcpFlags.Builder().build((short) (flags & 0x1ff));
-            this.windowSize = buffer.getShort(14);
-            this.checksum = buffer.getShort(16);
-            this.urgentPointer = buffer.getShort(18);
+            this.windowSize = buffer.readShort();
+            this.checksum = buffer.readShort();
+            this.urgentPointer = buffer.readShort();
             if (this.dataOffset > 5) {
                 int optionLength = (this.dataOffset << 2) - Header.TCP_HEADER_LENGTH;
                 if (buffer.capacity() < Header.TCP_HEADER_LENGTH + optionLength) {
                     optionLength = buffer.capacity() - Header.TCP_HEADER_LENGTH;
                 }
                 this.options = new byte[optionLength];
-                buffer.getBytes(20, options);
+                buffer.readBytes(options);
                 int length = 20 + optionLength;
                 this.payloadBuffer = buffer.copy(length, buffer.capacity() - length);
             }
