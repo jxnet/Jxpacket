@@ -78,7 +78,7 @@ public class Tcp extends AbstractPacket {
             this.checksum = builder.checksum;
             this.urgentPointer = builder.urgentPointer;
             this.options = builder.options;
-            this.buffer = builder.buffer.slice(0, getLength());
+            this.buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
             this.builder = builder;
         }
 

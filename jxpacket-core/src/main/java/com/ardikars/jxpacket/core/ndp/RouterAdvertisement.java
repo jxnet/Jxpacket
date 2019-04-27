@@ -73,7 +73,7 @@ public class RouterAdvertisement extends AbstractPacket {
             this.reachableTime = builder.reachableTime;
             this.retransmitTimer = builder.retransmitTimer;
             this.options = builder.options;
-            this.buffer = builder.buffer.slice(0, getLength());
+            this.buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
             this.builder = builder;
         }
 

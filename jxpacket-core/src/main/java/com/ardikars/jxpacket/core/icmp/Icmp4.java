@@ -70,7 +70,7 @@ public class Icmp4 extends AbstractPacket {
         private Header(Builder builder) {
             typeAndCode = builder.typeAndCode;
             checksum = builder.checksum;
-            buffer = builder.buffer.slice(0, getLength());
+            buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
             this.builder = builder;
         }
 

@@ -68,7 +68,7 @@ public class Authentication extends AbstractPacket {
 			this.securityParameterIndex = builder.securityParameterIndex;
 			this.sequenceNumber = builder.sequenceNumber;
 			this.integrityCheckValue = builder.integrityCheckValue;
-			this.buffer = builder.buffer.slice(0, getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex() - getLength(), getLength());
 			this.builder = builder;
 		}
 
