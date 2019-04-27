@@ -65,7 +65,7 @@ public class Fragment extends AbstractPacket {
 			this.fragmentOffset = builder.fragmentOffset;
 			this.flagType = builder.flagType;
 			this.identification = builder.identification;
-			this.buffer = builder.buffer.slice(0, getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
 			this.builder = builder;
 		}
 

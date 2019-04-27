@@ -85,7 +85,7 @@ public class Ip4 extends Ip {
 			this.sourceAddress = builder.sourceAddress;
 			this.destinationAddress = builder.destinationAddress;
 			this.options = builder.options;
-			this.buffer = builder.buffer.slice(0, getLength());
+			this.buffer = builder.buffer.slice(builder.buffer.readerIndex(), getLength());
 			this.builder = builder;
 		}
 
