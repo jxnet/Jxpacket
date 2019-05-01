@@ -18,12 +18,11 @@
 package com.ardikars.jxpacket.core.tcp;
 
 import com.ardikars.common.memory.Memory;
+import com.ardikars.common.util.Strings;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.ApplicationLayer;
-
-import java.util.Arrays;
 
 public class Tcp extends AbstractPacket {
 
@@ -181,7 +180,7 @@ public class Tcp extends AbstractPacket {
                     .append("\twindowSize: ").append(windowSize).append('\n')
                     .append("\tchecksum: ").append(checksum).append('\n')
                     .append("\turgentPointer: ").append(urgentPointer).append('\n')
-                    .append("\toptions: ").append(Arrays.toString(options)).append('\n')
+                    .append("\toptions: ").append(Strings.toHexString(options)).append('\n')
                     .toString();
         }
 

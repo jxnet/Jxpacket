@@ -18,11 +18,10 @@
 package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.common.memory.Memory;
+import com.ardikars.common.util.Strings;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ip.Ip6;
-
-import java.util.Arrays;
 
 public abstract class Options extends AbstractPacket {
 
@@ -86,7 +85,7 @@ public abstract class Options extends AbstractPacket {
 			return new StringBuilder()
 					.append("\t\tnextHeader: ").append(nextHeader).append('\n')
 					.append("\t\textensionLength: ").append(extensionLength).append('\n')
-					.append("\t\toptions: ").append(Arrays.toString(options)).append('\n')
+					.append("\t\toptions: ").append(Strings.toHexString(options)).append('\n')
 					.toString();
 		}
 

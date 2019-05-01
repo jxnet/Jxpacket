@@ -19,6 +19,7 @@ package com.ardikars.jxpacket.core.ndp;
 
 import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Strings;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.UnknownPacket;
@@ -26,7 +27,6 @@ import com.ardikars.jxpacket.common.UnknownPacket;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -215,7 +215,7 @@ public class NeighborDiscoveryOptions extends AbstractPacket {
                     .append("Type: ")
                     .append(this.getType())
                     .append(", Data: ")
-                    .append(Arrays.toString(this.getData()))
+                    .append(Strings.toHexString(this.getData()))
                     .append("]").toString();
         }
 

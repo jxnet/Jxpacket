@@ -19,13 +19,13 @@ package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.common.memory.Memory;
 import com.ardikars.common.util.NamedNumber;
+import com.ardikars.common.util.Strings;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
 import com.ardikars.jxpacket.core.ip.Ip6;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -133,7 +133,7 @@ public class Routing extends AbstractPacket {
 					.append("\t\textensionLength: ").append(extensionLength).append('\n')
 					.append("\t\troutingType: ").append(routingType).append('\n')
 					.append("\t\tsegmentLeft: ").append(segmentLeft).append('\n')
-					.append("\t\troutingData: ").append(Arrays.toString(routingData)).append('\n')
+					.append("\t\troutingData: ").append(Strings.toHexString(routingData)).append('\n')
 					.toString();
 		}
 
