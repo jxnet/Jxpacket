@@ -18,12 +18,11 @@
 package com.ardikars.jxpacket.core.ip.ip6;
 
 import com.ardikars.common.memory.Memory;
+import com.ardikars.common.util.Strings;
 import com.ardikars.common.util.Validate;
 import com.ardikars.jxpacket.common.AbstractPacket;
 import com.ardikars.jxpacket.common.Packet;
 import com.ardikars.jxpacket.common.layer.TransportLayer;
-
-import java.util.Arrays;
 
 public class Authentication extends AbstractPacket {
 
@@ -136,7 +135,7 @@ public class Authentication extends AbstractPacket {
 					.append("\t\tpayloadLength: ").append(payloadLength).append('\n')
 					.append("\t\tsecurityParameterIndex: ").append(securityParameterIndex).append('\n')
 					.append("\t\tsequenceNumber: ").append(sequenceNumber).append('\n')
-					.append("\t\tintegrityCheckValue: ").append(Arrays.toString(integrityCheckValue)).append('\n')
+					.append("\t\tintegrityCheckValue: ").append(Strings.toHexString(integrityCheckValue)).append('\n')
 					.toString();
 		}
 
@@ -200,6 +199,7 @@ public class Authentication extends AbstractPacket {
 		public Packet build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
 			this.payloadLength = buffer.readByte();
+			buffer.readShort(); // reserved
 			this.securityParameterIndex = buffer.readInt();
 			this.sequenceNumber = buffer.readInt();
 			this.integrityCheckValue = new byte[(this.payloadLength + 2) * 4 - 12];
