@@ -199,7 +199,7 @@ public class Authentication extends AbstractPacket {
 		public Packet build(final Memory buffer) {
 			this.nextHeader = TransportLayer.valueOf(buffer.readByte());
 			this.payloadLength = buffer.readByte();
-			buffer.readShort(); // reserved
+			buffer.skipBytes(2); // reserved
 			this.securityParameterIndex = buffer.readInt();
 			this.sequenceNumber = buffer.readInt();
 			this.integrityCheckValue = new byte[(this.payloadLength + 2) * 4 - 12];
