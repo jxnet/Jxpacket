@@ -1,4 +1,7 @@
 
+Development has been stopped, please use https://github.com/ardikars/pcap instead.
+=
+
 Jxpacket
 =====
 
